@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Intranet.png</file>
+        <file>the_network_icon.png</file>
+    </qresource>
+</RCC>
