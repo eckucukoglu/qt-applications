@@ -8,6 +8,7 @@
 #include <QtNetwork>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -66,6 +67,8 @@ private slots:
     void on_ifdownifupFinished(int, QProcess::ExitStatus);
 
     void on_checkConnectionButton_clicked();
+
+    void on_timeout();
 
 private:
     Ui::MainWindow *ui;

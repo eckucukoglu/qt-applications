@@ -9,6 +9,7 @@
 //          /etc/network/interfaces.d/  -r      (for config files)
 //          /run/network/                       (for ifstate)
 //          /etc/resolvconf/resolv.conf.d/head  (write permission)
+//          /sys/class/net/$c0/carrier  $c = connectionType (read permission)
 //
 //***************************************************************
 
@@ -88,6 +89,10 @@ MainWindow::MainWindow(QWidget *parent) :
     process = new QProcess(this);
     getGatewayCommand = "netstat -rn | grep 0.0.0.0 | awk '{print $2}' | grep -v '0.0.0.0'";
 
+    ui->tickLabel->setHidden(true);
+    ui->crossLabel->setHidden(true);
+
+
     initializeValues();
 
 }
@@ -154,19 +159,21 @@ void MainWindow::initializeValues(){
 
             QNetworkInterface iface = QNetworkInterface::interfaceFromName(list.at(i).name());
 
-            QList<QNetworkAddressEntry> entries = iface.addressEntries();
+            if(iface.flags().testFlag(QNetworkInterface::IsRunning)){
+                QList<QNetworkAddressEntry> entries = iface.addressEntries();
 
-            if (!entries.isEmpty())
-            {
-                QNetworkAddressEntry entry = entries.first();
+                if (!entries.isEmpty())
+                {
+                    QNetworkAddressEntry entry = entries.first();
+                    initialIP = entry.ip().toString();
+                    initialNetmask = entry.netmask().toString();
 
-                initialIP = entry.ip().toString();
-                initialNetmask = entry.netmask().toString();
-                process->start("bash", QStringList() << "-c" << getGatewayCommand);
-                process->waitForFinished();
-                initialGateway = process->readAllStandardOutput();
-                initialGateway.chop(1);
-
+                }
+                else{
+                    initialIP = "0.0.0.0";
+                    initialNetmask = "255.255.255.0";
+                    initialGateway = "0.0.0.0";
+                }
             }
             else{
                 initialIP = "0.0.0.0";
@@ -174,6 +181,28 @@ void MainWindow::initializeValues(){
                 initialGateway = "0.0.0.0";
             }
 
+        }
+    }
+
+
+    process->start("bash", QStringList() << "-c" << getGatewayCommand);
+    process->waitForFinished();
+    QString gatewayPerhaps = process->readAllStandardOutput();
+    if(gatewayPerhaps.isEmpty())
+        initialGateway = "0.0.0.0";
+    else{
+        gatewayPerhaps.chop(1);
+        QHostAddress gate(gatewayPerhaps);
+        QHostAddress ipadd(initialIP);
+        QHostAddress netm(initialNetmask);
+
+        if(gate.isInSubnet(QHostAddress::parseSubnet(initialIP + "/" + initialNetmask)))
+        {
+            initialGateway = gatewayPerhaps;
+        }
+
+        else{
+            initialGateway = "0.0.0.0";
         }
     }
 
@@ -191,10 +220,18 @@ void MainWindow::initializeValues(){
 
 void MainWindow::on_connTypeComboBox_currentIndexChanged(int index)
 {
-    if(index == 1)
+    foreach(QLineEdit* e, lineEditList){
+        e->setText("");
+    }
+    if(index == 1){
+
         defaultConnection = "eth0";
-    else if(index == 0)
+    }
+
+    else if(index == 0){
         defaultConnection = "wlan0";
+    }
+
 
     initializeValues();
 
@@ -310,11 +347,15 @@ void MainWindow::on_applyButton_clicked()
     if(ui->NetwConfComboBox->currentIndex() == 1){  //MANUAL
         warningBox.setText("This configuration might corrupt your network settings:");
         warningBoxInfoText = "Are you sure you want to apply these changes? \n\n";
-        if(candidateIP != "0.0.0.0")
-            warningBoxInfoText += "IP Addr: " + candidateIP + "\n";
-        warningBoxInfoText += "Netmask: " + candidateNetmask + "\n";
-        if(candidateGateway != "0.0.0.0")
-            warningBoxInfoText += "Gateway: " + candidateGateway + "\n";
+        if(candidateIP != initialIP){
+            if(candidateIP != "0.0.0.0")
+                warningBoxInfoText += "IP Addr: " + candidateIP + "\n";
+            warningBoxInfoText += "Netmask: " + candidateNetmask + "\n";
+            if(candidateGateway != "0.0.0.0")
+                warningBoxInfoText += "Gateway: " + candidateGateway + "\n";
+        }
+
+
         if(candidateDNS != "0.0.0.0")
             warningBoxInfoText += "DNS: " + candidateDNS + "\n";
     }
@@ -344,12 +385,19 @@ void MainWindow::on_applyButton_clicked()
 //The content of the .cfg file that will be added to /etc/network/interfaces.d/ directory
 QString MainWindow::prepareCfg(){
     QString contentOfTheConfig= "auto " + defaultConnection + "\n";
-    contentOfTheConfig += "iface " + defaultConnection + " inet static\n";
-    if(candidateIP != "0.0.0.0")
-        contentOfTheConfig += "\taddress " + candidateIP + "\n";
-    if(candidateGateway != "0.0.0.0")
-        contentOfTheConfig += "\tgateway " + candidateGateway + "\n";
-    contentOfTheConfig += "\tnetmask " + candidateNetmask + "\n";
+    if(candidateIP != initialIP){
+        if(candidateIP == "0.0.0.0")
+            return "";
+
+        contentOfTheConfig += "iface " + defaultConnection + " inet static\n";
+        if(candidateIP != "0.0.0.0")
+            contentOfTheConfig += "\taddress " + candidateIP + "\n";
+        if(candidateGateway != "0.0.0.0")
+            contentOfTheConfig += "\tgateway " + candidateGateway + "\n";
+        contentOfTheConfig += "\tnetmask " + candidateNetmask + "\n";
+    }
+
+
 
     return contentOfTheConfig;
 }
@@ -496,7 +544,7 @@ void MainWindow::applyNetworkConfiguration(){
     QFile ifstateFile(ifstatePath);
 
     //Give necessary permissions:
-    process->execute("gksudo", QStringList()<<  "chmod -R ogu+rwx /run/network/");
+    process->execute("gksudo", QStringList()<<  "chmod -R +774 /run/network/");
 
     //open the file
     if(!ifstateFile.open(QIODevice::ReadWrite | QIODevice::Text))
@@ -524,11 +572,14 @@ void MainWindow::applyNetworkConfiguration(){
     //Now update the network status by using QProcess (ifdown ifup)
     //***********************************************************
     commandProgressDialog = new QProgressDialog(this, Qt::Dialog);
+
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(on_ifdownifupFinished(int, QProcess::ExitStatus)));
+
     commandProgressDialog->setWindowModality(Qt::WindowModal);
     commandProgressDialog->setMaximum(0);
     commandProgressDialog->setMinimum(0);
     commandProgressDialog->setCancelButton(0);
+    commandProgressDialog->setDisabled(true);
 
     process->start("bash", QStringList() << "-c" << ifdownifup);
     commandProgressDialog->exec();
@@ -552,15 +603,36 @@ void MainWindow::on_ifdownifupFinished(int exitCode, QProcess::ExitStatus exitSt
 
 void MainWindow::on_checkConnectionButton_clicked()
 {
-    QNetworkConfigurationManager mgr;
-    qDebug() << "mgr is online:" + mgr.isOnline();
-    QList<QNetworkConfiguration> activeConfigs = mgr.allConfigurations(QNetworkConfiguration::Active);
+    QFile carrierFile("/sys/class/net/" + defaultConnection + "/carrier");
 
-    for(int i = 0; i < activeConfigs.length(); ++i) {
-        qDebug() << activeConfigs[i].isRoamingAvailable();
-        qDebug() << activeConfigs[i].isValid();
-        qDebug() << activeConfigs[i].bearerTypeName();
-        qDebug() << activeConfigs[i].bearerType();
-        qDebug() << activeConfigs[i].bearerTypeFamily();
+    if(!carrierFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        qDebug() << " carrierfile file couldnt open";
+
+    QTextStream carrierIn(&carrierFile);
+    int connectedStatus = carrierIn.readAll().toInt();
+
+    QTimer *timer = new QTimer(this);
+    timer->setInterval(1500);
+    timer->setSingleShot(true);
+    connect(timer, SIGNAL(timeout()), this, SLOT(on_timeout()));
+    timer->start();
+
+    qDebug() << "connected status: " << connectedStatus;
+    if(connectedStatus == 1){
+        ui->tickLabel->setVisible(true);
     }
+    else if (connectedStatus == 0)
+    {
+        ui->crossLabel->setVisible(true);
+    }
+    else{
+        qDebug() << "file is empty. device is turned off";
+    }
+
+
+}
+
+void MainWindow::on_timeout(){
+    ui->tickLabel->setVisible(false);
+    ui->crossLabel->setVisible(false);
 }
