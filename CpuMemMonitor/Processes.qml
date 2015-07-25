@@ -4,6 +4,9 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls.Styles 1.3
 import Qt.labs.folderlistmodel 2.1
+import FileIO 1.0
+import SortFilterProxyModel 0.1
+
 Item{
     width:1024
     height: 400
@@ -44,9 +47,9 @@ Item{
         MouseArea{
             anchors.fill: parent
             hoverEnabled:true
-//            onClicked: {if(processListView.opacity == 0) processListView.opacity = 1;
-//                        else    processListView.opacity = 0;
-//                        arrow1.rotation += 180; arrow2.rotation += 180}
+            onClicked: {if(processListView.opacity == 0) processListView.opacity = 1;
+                else    processListView.opacity = 0;
+                arrow1.rotation += 180; arrow2.rotation += 180}
 
             onEntered: parent.color = "#97B9F7";
             onExited: parent.color = "white";
@@ -55,81 +58,86 @@ Item{
 
     ListModel{
         id: processListModel
-        //Create list elements of 'processes' from proc/pid/stat
+        property bool isRefreshing: false
+        //Create list elements of 'processes' from proc/pid/'s
 
     }
-
-//    ListView{
-//        id: folderView
-//        width: parent.width
-//        height: 350
-//        anchors.top: processesTitle.bottom
-//        anchors.bottom: killProcessBar.top
-//        FolderListModel{
-//            id:foldermodel
-//            folder: "/proc"
-//            nameFilters: [ "*" ]
-//        }
-
-//        Item{
-//            id:fileDelegate
-//            width: parent.width
-//            height: 50
-
-//            Rectangle{
-//                height: parent.height
-//                width: parent.width
-
-//                Text{
-//                    text: fileName
-//                }
-//            }
-//        }
-
-//        model: foldermodel
-//        delegate: fileDelegate
-//    }
-
 
     TableView{
         id: processListView
         width: parent.width
         height: 350
+
+        sortIndicatorVisible: true
+        sortIndicatorColumn: 3
+        sortIndicatorOrder: Qt.DescendingOrder
+
+        alternatingRowColors: true
+
+        TableViewColumn{
+            role: "pid"
+            title: "Process ID"
+            width: (parent.width/ 4) - 22
+        }
+
         TableViewColumn{
             role: "name"
             title: "Name"
-            width: 256
+            width: parent.width/ 4
         }
 
         TableViewColumn{
-            role: "cpuUsage"
-            title: "CPU Usage"
-            width: 256
-        }
-
-        TableViewColumn{
-            role: "memUsageValue"
+            role: "mem"
             title: "Memory Usage (MB)"
-            width: 256
+            width: parent.width/4
         }
 
         TableViewColumn{
             role: "memUsage"
-            title: "Memory Usage"
-            width: 256
+            title: "Memory Usage (%)"
+            width: parent.width/4
         }
 
-
-        model: processListModel
-        opacity: 0
+        opacity: 1
         Behavior on opacity{ NumberAnimation{duration: 500; easing.type: Easing.OutCubic} }
         clip: true
         anchors.top: processesTitle.bottom
         anchors.bottom: killProcessBar.top
+        //rowDelegate: processDelegate
 
+
+        //FOCUS HERe
+        //FOCUS HEER
+        //FOCUS HERe
+        //FOCUS HEER
+        //FOCUS HERe
+        //FOCUS HEER
+        //FOCUS HERe
+        //FOCUS HEER
+
+        itemDelegate: Item{
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                color:  styleData.textColor
+                elide: styleData.elideMode
+                text: "  " + styleData.value
+            }
+            MouseArea{
+                onClicked:{processListView.selection.select(index)}
+            }
+
+
+        }
         style: TableViewStyle{
         }
 
+        model: SortFilterProxyModel{
+            id: proxyModel
+            source: processListModel.count > 0 ? processListModel : null
+            sortOrder: processListView.sortIndicatorOrder
+            sortCaseSensitivity: Qt.CaseInsensitive
+            sortRole: processListView.getColumn(processListView.sortIndicatorColumn).role
+        }
     }
 
     Component{
@@ -144,58 +152,97 @@ Item{
                 id: topBorder
                 width: parent.width
                 height: 1
-                color: "black"
-            }
-
-            Rectangle{
-                id: contentRect
-                width: parent.width
-                height: 80
-                anchors.top: topBorder.bottom
-
-                color: processListView.currentIndex == index ?  "#97B9F7" : "white"
-
-                Grid{
-                    anchors.leftMargin: 10
-                    columns: 7
-                    spacing: 100
-                    Rectangle{
-                        height: parent.height
-                        width: 2
-                        color: "black"
-                    }
-
-                    Text{text: "Name: " + name}
-                    Rectangle{
-                        height: parent.height
-                        width: 2
-                        color: "black"
-                    }
-                    Text{text: "MemUsage: " + memUsage}
-                    Rectangle{
-                        height: parent.height
-                        width: 2
-                        color: "black"
-                    }
-                    Text{text: "CpuUsage: " + cpuUsage}
-
-                }
+                color: "blue"
             }
 
             Rectangle{
                 id: botBorder
                 width: parent.width
                 height: 1
-                color: "black"
-                anchors.top: contentRect.bottom
+                color: "blue"
+                //anchors.top: contentRect.bottom
             }
 
             MouseArea{
                 anchors.fill: parent
-                onClicked: {processListView.currentIndex = index}
+                onClicked: {styleData.selected = true}
             }
         }
     }
+
+    Component.onCompleted: {
+        processListModel.isRefreshing = true;
+        fillProcessList();
+        processListModel.isRefreshing = false;
+    }
+
+    function fillProcessList(){
+        processListModel.isRefreshing = true
+
+
+        //Get total RAM stats from meminfo file.
+        var content = meminfoFile.read();
+        var splitted = content.split("\n");
+        var ramTotalStat = splitted[0].split(/\s+/);
+        ramTotalStat = (parseInt(ramTotalStat[1]) / 1024).toFixed()
+
+        //First, clear the model.
+        processListModel.clear();
+
+        //Get stats about all processes from proc pid status
+        var processedStats = statReader.readAllStatFiles();
+        var processedStatList = processedStats.split("\n");
+        var nameTemp, pidTemp, memTemp, memPerc
+        var memTempHumanReadable
+
+        for(var i = 0; i < processedStatList.length; i++){
+
+            var processEntry = processedStatList[i].split(" ");
+
+            nameTemp = processEntry[0]
+            pidTemp = parseInt(processEntry[1])
+            memTemp = (parseInt(processEntry[2]) / 1024).toPrecision(3)
+            memPerc = parseFloat(((memTemp / ramTotalStat) * 100).toFixed(2))
+
+
+            if(parseFloat(memTemp) < 1){
+                memTempHumanReadable = parseFloat(memTemp) * 1024;
+                memTempHumanReadable = memTempHumanReadable.toPrecision(3);
+                memTempHumanReadable += " KB"
+            }
+            else{
+                memTempHumanReadable = memTemp + " MB"
+            }
+
+            //Add the parsed pid name and memory values to our list model
+            processListModel.append({pid: pidTemp, name: nameTemp,
+                                        mem: memTempHumanReadable, memUsage: memPerc })
+        }
+
+        processListModel.isRefreshing = false
+    }
+
+    FileIO{
+        id: statReader
+    }
+
+    FileIO{
+        id: meminfoFile
+        source: "/proc/meminfo"
+        onError: console.log(msg)
+    }
+
+    Timer{
+        id:refresher
+        interval: 5000
+        running: true
+        repeat: true
+
+        onTriggered: {
+            fillProcessList()
+        }
+    }
+
 
     Rectangle{
         id: killProcessBar
@@ -218,7 +265,11 @@ Item{
                     color: control.pressed ? "#97B9F7" : "white"
 
                 }
+            }
 
+            onClicked:{
+                var currentpid = processListModel.get(processListView.currentIndex).pid
+                console.log(currentpid)
             }
 
         }

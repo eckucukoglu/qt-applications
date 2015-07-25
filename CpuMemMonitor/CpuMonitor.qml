@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
+import FileIO 1.0
 
 Item{
     property alias cpu0progressBar: cpu0pbar
@@ -108,6 +109,74 @@ Item{
                         border.color: "steelblue"
                     }
 
+        }
+    }
+
+
+
+    FileIO{
+        id: procstatFile
+        source: "/proc/stat"
+        onError: console.log(msg)
+    }
+
+    //Variables for cpu stats
+    property int prevtotal0:0
+    property int total0:0
+    property int prevtotal1:0
+    property int total1:0
+    property int previdle0:0
+    property int idle0:0
+    property int previdle1:0
+    property int idle1:0
+
+    function getOverallCpuStats(){
+        //Works for two cpus (cpu0 and cpu1 only)
+
+        //Assign old values to prev. totals
+        prevtotal0 = total0;
+        previdle0 = idle0;
+        prevtotal1 = total1;
+        previdle1 = idle1;
+
+        var content = procstatFile.read();
+        var lines = content.split('\n');
+        var cpu0stats = lines[1].split(" ");
+        var cpu1stats = lines[2].split(" ");
+
+        //Getting idle0 and idle1 values:
+        idle0 = parseInt(cpu0stats[4]);
+        idle1 = parseInt(cpu1stats[4]);
+
+        //calculate total:
+        total0 = 0
+        total1 = 0
+        for(var i = 1; i < 8; i++){
+            total0 += parseInt(cpu0stats[i])
+            total1 += parseInt(cpu1stats[i])
+        }
+
+        //Calculate the differences, then percentage of cpu working
+        var cpu0PercentageWorking = ((total0 - prevtotal0) - (idle0 - previdle0)) / (total0 - prevtotal0)
+        var cpu1PercentageWorking = ((total1 - prevtotal1) - (idle1 - previdle1)) / (total1 - prevtotal1)
+
+        cpu0percentage.text = (cpu0PercentageWorking * 100).toFixed(2) + " %"
+        cpu1percentage.text = (cpu1PercentageWorking * 100).toFixed(2) + " %"
+        cpu0progressBar.value = cpu0PercentageWorking
+        cpu1progressBar.value = cpu1PercentageWorking
+
+    }
+
+    Component.onCompleted: { getOverallCpuStats()}
+
+    Timer{
+        id:refresher
+        interval: 3000
+        running: true
+        repeat: true
+
+        onTriggered: {
+            getOverallCpuStats()
         }
     }
 }

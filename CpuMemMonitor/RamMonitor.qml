@@ -1,17 +1,15 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
+import FileIO 1.0
 
 Item{
     property alias ramBar: pBar
     property alias ramPercentage: ramPerc
     property alias usedFreeTotalRow: uftrow
 
-
     width: 1024
     height: 80
-
-
 
     Column{
         width: parent.width
@@ -103,6 +101,51 @@ Item{
             }
 
 
+        }
+    }
+
+    FileIO{
+        id: meminfoFile
+        source: "/proc/meminfo"
+        onError: console.log(msg)
+    }
+    function getOverallRamStats(){
+        var content = meminfoFile.read();
+        var splitted = content.split("\n");
+        var ramTotalStat = splitted[0].split(/\s+/);
+        var ramFreeStat = splitted[1].split(/\s+/);
+        var ramBufferStat = splitted[3].split(/\s+/);
+        var ramCachedStat = splitted[4].split(/\s+/);
+
+        //Refresh the RamBar
+        var total = parseInt(ramTotalStat[1])
+        var free = parseInt(ramFreeStat[1])
+        var cached = parseInt(ramCachedStat[1])
+        var buffered = parseInt(ramBufferStat[1])
+        var used = total - (free + cached + buffered)
+
+        ramBar.maximumValue = total;
+        ramBar.value = used;
+        ramPercentage.text = (ramBar.value / ramBar.maximumValue * 100).toFixed(2) + " %";
+
+        var KILO_CONSTANT = 1024;
+        usedFreeTotalRow.totalRam = (total / KILO_CONSTANT).toFixed();
+        usedFreeTotalRow.usedRam = (ramBar.value / KILO_CONSTANT).toFixed();
+        usedFreeTotalRow.freeRam = usedFreeTotalRow.totalRam - usedFreeTotalRow.usedRam
+
+    }
+
+    Component.onCompleted: { getOverallRamStats();
+                meminfoFile.readAllStatFiles()}
+
+    Timer{
+        id:refresher
+        interval: 1000
+        running: true
+        repeat: true
+
+        onTriggered: {
+            getOverallRamStats()
         }
     }
 }
