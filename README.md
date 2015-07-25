@@ -1,2 +1,2 @@
-# qt-applications
-QT demo applications for MMIS project
+# Qt-applications
+Qt and QML demo applications for MMIS project

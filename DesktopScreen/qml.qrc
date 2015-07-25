@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MenuModel.qml</file>
+        <file>pics/google-apps-logo-111x111.jpg</file>
+        <file>pics/img1.jpg</file>
+        <file>pics/img2.jpg</file>
+        <file>pics/img3.jpg</file>
+        <file>pics/img4.jpg</file>
+        <file>pics/img5.jpg</file>
+        <file>pics/img6.jpg</file>
+        <file>pics/icon1.png</file>
+        <file>pics/icon2.png</file>
+        <file>pics/icon3.png</file>
+        <file>pics/icon4.png</file>
+        <file>pics/icon5.png</file>
+        <file>pics/icon6.png</file>
+        <file>pics/img7.jpg</file>
+        <file>pics/backIcon.png</file>
+        <file>pics/homeIcon.png</file>
+        <file>pics/processes.png</file>
+        <file>SwipeArea.qml</file>
+        <file>pics/bg1.jpg</file>
+        <file>pics/2048600wp.jpg</file>
+        <file>pics/bg2.jpg</file>
+    </qresource>
+</RCC>
