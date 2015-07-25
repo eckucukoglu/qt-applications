@@ -54,7 +54,7 @@ ListModel {
         portrait: "pics/icon1.png"
     }
     ListElement{
-        name: "Garanti Bankası ABLSLBSLBLD"
+        name: "Garanti Bankası"
         portrait: "pics/icon2.png"
     }
     ListElement{
@@ -68,6 +68,10 @@ ListModel {
     ListElement{
         name: "TEB"
         portrait: "pics/icon5.png"
+    }
+    ListElement{
+        name: "ING Bank"
+        portrait: "pics/icon6.png"
     }
     ListElement{
         name: "ING Bank"

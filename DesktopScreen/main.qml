@@ -14,8 +14,17 @@ ApplicationWindow {
     visible: true
     id: root
 
-    property var itemData: ["#22eeeeee", "#22eeeeee"]
+    property var numberOfPages: getNumberOfPages()
     property int currentIndex: 0
+
+    function getNumberOfPages(){
+        var count = menuModel.count
+        var numOfPages = parseInt(count / 18)
+        if(count % 18 != 0)
+            numOfPages++
+
+        return numOfPages
+    }
 
     onCurrentIndexChanged: {
         slide_anim.to = - root.width * currentIndex
@@ -30,7 +39,7 @@ ApplicationWindow {
     }
 
     Image {
-        id: img
+        id: background
         anchors.verticalCenter: root.verticalCenter
         source: "pics/bg2.jpg"
         fillMode: Image.PreserveAspectCrop
@@ -38,19 +47,19 @@ ApplicationWindow {
 
     Item{
         id:content
-        width: root.width * itemData.length
-        height: root.height - topBar.height - bottomBar.height
-        anchors.top: topBar.bottom
-        anchors.bottom: bottomBar.top
-        property double k: (content.width - root.width) / (img.width - root.width)
+        width: root.width * numberOfPages
+        height: root.height - statusBar.height - navigationBar.height
+        anchors.top: statusBar.bottom
+        anchors.bottom: navigationBar.top
+        property double k: (content.width - root.width) / (background.width - root.width)
         onXChanged: {
-            img.x = x / k
+            background.x = x / k
         }
 
         Rectangle{
             id:contentOfGrid
             width: parent.width
-            height: parent.height
+            height: parent.height// - 120
 
             anchors.top: parent.top
             anchors.bottom: parent.bottom
@@ -72,13 +81,13 @@ ApplicationWindow {
                 drag.threshold: 15
 
                 onMove: {
-                    if(currentIndex != 0 && currentIndex != (itemData.length - 1))
+                    if(currentIndex != 0 && currentIndex != (numberOfPages - 1))
                         content.x = (-root.width * currentIndex) + x
                 }
                 onSwipe: {
                     switch (direction) {
                     case "left":
-                        if (currentIndex === itemData.length - 1) {
+                        if (currentIndex === numberOfPages - 1) {
                             currentIndexChanged()
                         }
                         else {
@@ -100,79 +109,69 @@ ApplicationWindow {
                 }
             }
 
-
-            Component {
-                id: appDelegate
-                Rectangle {
-                    width: 111
-                    height: 134
-                    color: "transparent"
-                    Column {
-                        width: parent.width
-                        height: parent.height
-                        spacing: 8
-
-                        Image {
-                            id: appIcon
-                            source: portrait
-                            anchors.horizontalCenter: parent.horizontalCenter
-                        }
-
-                        Text {
-                            id: appName
-                            text: name
-                            width: parent.width + 15
-                            elide: Text.ElideRight
-
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            font.pixelSize: 15
-                            color: "white"
-                        }
-                    }
-
-                    MouseArea{
-                        anchors.fill: parent
-                        preventStealing: true
-                        propagateComposedEvents: true
-                        onClicked:{mainMenuGrid.currentIndex = index;}
-
-                    }
-                }
-            }
-
             GridView{
-                id:mainMenuGrid
+                id:grid
 
                 height: parent.height
-                width: parent.width / 2
+                width: parent.width / numberOfPages
 
-                cellHeight: 164
+                cellHeight: 156
                 cellWidth: 162
 
-                contentWidth: parent.width *2
-                contentHeight: parent.height
+                //contentWidth: parent.width
+                //contentHeight: parent.height
 
                 interactive: false
-                //boundsBehavior: Flickable.DragOverBounds
-                snapMode: GridView.SnapOneRow
-                flow: GridView.LeftToRight
 
-                model: MenuModel {}
-                delegate: appDelegate
-                highlight: Rectangle { color: "lightsteelblue"; opacity: 0.3}
+                boundsBehavior: Flickable.StopAtBounds
+                snapMode: GridView.SnapOneRow
+
+                model: MenuModel {
+                    id:menuModel
+                }
+                delegate: AppDelegate{
+                }
+
+                highlight: Rectangle { color: "lightsteelblue"; opacity: 0.25; radius: 50}
                 focus: true
                 clip:true
+
+                property int draggedItemIndex: -1
+                Item {
+                    id: dndContainer
+                    anchors.fill: parent
+                }
+
+                MouseArea {
+                    id: coords
+                    anchors.fill: parent
+
+                    propagateComposedEvents: true
+                    z: 4
+                    drag.filterChildren: true;
+
+                    onReleased: {
+                        if (grid.draggedItemIndex != -1) {
+                            var draggedIndex = grid.draggedItemIndex
+                            grid.draggedItemIndex = -1
+                            menuModel.move(draggedIndex, grid.indexAt(mouseX, mouseY),1)
+                        }
+                    }
+                    onPressed: {
+                        grid.draggedItemIndex = grid.indexAt(mouseX, mouseY)
+                    }
+                }
             }
         }
     }
 
     //Dots row
     Row {
-        anchors { bottom: parent.bottom; bottomMargin: 48; horizontalCenter: parent.horizontalCenter }
+        id: dotsRow
+        anchors { bottom: parent.bottom; bottomMargin: 58; horizontalCenter: parent.horizontalCenter }
         spacing: 16
         Repeater {
-            model: itemData.length
+            model: numberOfPages
             Rectangle {
                 width: 12; height: 12; radius: 6
                 color: currentIndex === index ? "#88ffffff" : "#88000000"
@@ -181,66 +180,15 @@ ApplicationWindow {
         }
     }
 
-    //TopBar
-    Item{
-        id: topBar
-        height: 34
-        width: parent.width
-        Rectangle{
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
-            anchors.top: parent.top
-        }
+    //StatusBar
+    StatusBarTop{
+        id:statusBar
 
-        Text{
-            id: hourAndDate
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            text: "" + new Date().toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm") + " | " +
-                  new Date().toLocaleDateString(Qt.locale("en_EN"), "dd-MM-yyyy")
-            font.pixelSize: 17
-            color: "white"
-        }
     }
 
-
-
     //BottomBar
-    Rectangle{
-        id: bottomBar
-        width: parent.width
-        height: 48
-        color: "transparent"
-        anchors.bottom: parent.bottom
-
-        Image{
-            id:backButton
-            source: "pics/backIcon.png"
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 81
-
-        }
-
-        Image{
-            id:homeButton
-            source: "pics/homeIcon.png"
-            //scale: 0.25
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.centerIn: parent
-
-        }
-
-        Image{
-            id:processesButton
-            source: "pics/processes.png"
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            anchors.rightMargin: 81
-
-        }
+    NavigationBar{
+        id:navigationBar
     }
 
 
