@@ -1,22 +1,52 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 
 Component {
     id: appDelegate
     Rectangle {
         id: appDelegateRect
-        parent: coords
         width: 111
         height: 134
         color: "transparent"
+
         Column {
             width: parent.width
             height: parent.height
             spacing: 8
 
-            Image {
-                id: appIcon
-                source: portrait
-                anchors.horizontalCenter: parent.horizontalCenter
+            Rectangle{
+                id: overlay
+                width: parent.width
+                height: 111
+                radius: width * 0.5
+                border.width: 2
+                border.color: borderColor
+                color: "transparent"
+
+                Rectangle{
+                    width: parent.width
+                    height: parent.height
+                    radius: parent.radius
+                    color: "transparent"
+                    opacity: 0.50
+
+                    RadialGradient {
+                        anchors.fill: parent
+                        //OpacityMask
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: borderColor }
+                            GradientStop { position: 0.5; color: "transparent" }
+                        }
+                    }
+                }
+
+                Image {
+                    id: appIcon
+                    source: portrait
+                    anchors.centerIn: parent
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
             }
 
             Text {
@@ -32,17 +62,30 @@ Component {
             }
         }
 
-        states: [
-            State {
-                name: "inDrag"
-                when: index == grid.draggedItemIndex
-                PropertyChanges { target: appDelegateRect; parent: dndContainer }
-                PropertyChanges { target: appDelegateRect; x: coords.mouseX - appDelegateRect.width / 2 }
-                PropertyChanges { target: appDelegateRect; y: coords.mouseY - appDelegateRect.height / 2 }
+        MouseArea{
+            anchors.fill: parent
+            propagateComposedEvents: true
+
+            onClicked: {
+                if(containsMouse)
+                    console.log("clicked")
             }
-        ]
 
+            onPressed: {
+                console.log("pressed mousearea")
 
+                grid.currentIndex = index;
+                overlay.border.width = 4;
+                mouse.accepted = false
+            }
+
+            onPressAndHold: {
+                console.log("accepted and hold")
+                mouse.accepted = true
+                overlay.border.width = 2
+            }
+
+        }
 
     }
 }

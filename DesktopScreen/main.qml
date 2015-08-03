@@ -71,13 +71,13 @@ ApplicationWindow {
             color: "transparent"
 
             SwipeArea {
-                id: mouse
                 anchors.fill: parent
+                id:swipeArea
 
                 //preventStealing: true
                 propagateComposedEvents: true
-                z: 1
-                drag.filterChildren: true;
+                //z: 1
+                //drag.filterChildren: true;
                 drag.threshold: 15
 
                 onMove: {
@@ -136,31 +136,6 @@ ApplicationWindow {
                 focus: true
                 clip:true
 
-                property int draggedItemIndex: -1
-                Item {
-                    id: dndContainer
-                    anchors.fill: parent
-                }
-
-                MouseArea {
-                    id: coords
-                    anchors.fill: parent
-
-                    propagateComposedEvents: true
-                    z: 4
-                    drag.filterChildren: true;
-
-                    onReleased: {
-                        if (grid.draggedItemIndex != -1) {
-                            var draggedIndex = grid.draggedItemIndex
-                            grid.draggedItemIndex = -1
-                            menuModel.move(draggedIndex, grid.indexAt(mouseX, mouseY),1)
-                        }
-                    }
-                    onPressed: {
-                        grid.draggedItemIndex = grid.indexAt(mouseX, mouseY)
-                    }
-                }
             }
         }
     }

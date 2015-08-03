@@ -3,12 +3,6 @@
         <file>main.qml</file>
         <file>MenuModel.qml</file>
         <file>pics/google-apps-logo-111x111.jpg</file>
-        <file>pics/icon1.png</file>
-        <file>pics/icon2.png</file>
-        <file>pics/icon3.png</file>
-        <file>pics/icon4.png</file>
-        <file>pics/icon5.png</file>
-        <file>pics/icon6.png</file>
         <file>pics/backIcon.png</file>
         <file>pics/homeIcon.png</file>
         <file>pics/processes.png</file>
@@ -17,5 +11,10 @@
         <file>AppDelegate.qml</file>
         <file>NavigationBar.qml</file>
         <file>StatusBarTop.qml</file>
+        <file>pics/logo.png</file>
+        <file>pics/Registry.png</file>
+        <file>pics/Time.png</file>
+        <file>pics/Show.png</file>
+        <file>pics/Color_filter.png</file>
     </qresource>
 </RCC>

@@ -194,10 +194,11 @@ Item{
         var processedStatList = processedStats.split("\n");
         var nameTemp, pidTemp, memTemp, memPerc
         var memTempHumanReadable
+        var processEntry
 
         for(var i = 0; i < processedStatList.length; i++){
 
-            var processEntry = processedStatList[i].split(" ");
+            processEntry = processedStatList[i].split(" ");
 
             nameTemp = processEntry[0]
             pidTemp = parseInt(processEntry[1])
@@ -268,7 +269,7 @@ Item{
             }
 
             onClicked:{
-                var currentpid = processListModel.get(processListView.currentIndex).pid
+                var currentpid = processListModel.get(processListView.selection.index).pid
                 console.log(currentpid)
             }
 

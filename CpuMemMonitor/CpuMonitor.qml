@@ -141,6 +141,7 @@ Item{
 
         var content = procstatFile.read();
         var lines = content.split('\n');
+        delete content
         var cpu0stats = lines[1].split(" ");
         var cpu1stats = lines[2].split(" ");
 

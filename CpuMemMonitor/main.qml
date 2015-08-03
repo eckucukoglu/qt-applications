@@ -51,9 +51,4 @@ ApplicationWindow {
         anchors.top: border2.bottom
         anchors.bottom: parent.bottom
     }
-
-    Item{
-        id: logic
-
-    }
 }

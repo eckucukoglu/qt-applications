@@ -3,79 +3,98 @@ import QtQuick 2.0
 ListModel {
     ListElement{
         name: "Beko Yazar Kasa"
-        portrait: "pics/icon1.png"
+        borderColor: "blue"
+        portrait: "pics/Registry.png"
     }
     ListElement{
         name: "Romeo Player"
-        portrait: "pics/icon2.png"
+        borderColor: "green"
+        portrait: "pics/Time.png"
     }
     ListElement{
         name: "Device Settings"
-        portrait: "pics/icon3.png"
+        borderColor: "red"
+        portrait: "pics/Show.png"
     }
     ListElement{
         name: "Calculator"
-        portrait: "pics/icon4.png"
+        borderColor: "yellow"
+        portrait: "pics/Color_filter.png"
     }
     ListElement{
         name: "Calendar"
-        portrait: "pics/icon5.png"
+        borderColor: "lightblue"
+        portrait: "pics/Registry.png"
     }
     ListElement{
         name: "Clock"
-        portrait: "pics/icon6.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Time.png"
     }
     ListElement{
         name: "Security Levels"
-        portrait: "pics/icon1.png"
+        borderColor: "#CCEE22"
+        portrait: "pics/Show.png"
     }
     ListElement{
         name: "Mail"
-        portrait: "pics/icon2.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Color_filter.png"
     }
     ListElement{
         name: "Network Settings"
-        portrait: "pics/icon3.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Registry.png"
     }
     ListElement{
         name: "CPU and RAM Monitor"
-        portrait: "pics/icon4.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Time.png"
     }
     ListElement{
         name: "Notebook"
-        portrait: "pics/icon5.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Show.png"
     }
     ListElement{
         name: "Arçelik Assistant"
-        portrait: "pics/icon6.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Color_filter.png"
     }
     ListElement{
         name: "Yapı Kredi"
-        portrait: "pics/icon1.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Registry.png"
     }
     ListElement{
         name: "Garanti Bankası"
-        portrait: "pics/icon2.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Time.png"
     }
     ListElement{
         name: "Google Chrome"
-        portrait: "pics/icon3.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Show.png"
     }
     ListElement{
         name: "Finansbank"
-        portrait: "pics/icon4.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Color_filter.png"
     }
     ListElement{
         name: "TEB"
-        portrait: "pics/icon5.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Registry.png"
     }
     ListElement{
         name: "ING Bank"
-        portrait: "pics/icon6.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Time.png"
     }
     ListElement{
         name: "ING Bank"
-        portrait: "pics/icon6.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/Show.png"
     }
 
 

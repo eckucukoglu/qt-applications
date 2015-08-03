@@ -11,6 +11,7 @@ MouseArea {
 
 
     onPressed: {
+        console.log("pressed swipe area")
         mouse.accepted = true;
 
         drag.axis = Drag.XAndYAxis
@@ -18,7 +19,9 @@ MouseArea {
     }
 
     onPositionChanged: {
-        mouse.accepted = true;
+        console.log("position changed swipe area")
+        mouse.accepted = false;
+
         switch (drag.axis) {
         case Drag.XAndYAxis:
             if (Math.abs(mouse.x - origin.x) > 40) {
@@ -38,7 +41,8 @@ MouseArea {
     }
 
     onReleased: {
-        mouse.accepted = true;
+        console.log("released swipe area")
+        //mouse.accepted = false;
         switch (drag.axis) {
         case Drag.XAndYAxis:
             canceled(mouse)
