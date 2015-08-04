@@ -117,3 +117,11 @@ QString FileIO::readAllStatFiles(){
 
     return allStatsString;
 }
+
+QString FileIO::tryToKillProcess(QString pid){
+    QProcess process;
+    qDebug() << "kill -9 " + pid;
+    process.start("kill -9 " + pid);
+    process.waitForFinished();
+    qDebug() << process.errorString();
+}

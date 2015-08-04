@@ -71,6 +71,7 @@ Item{
         sortIndicatorVisible: true
         sortIndicatorColumn: 3
         sortIndicatorOrder: Qt.DescendingOrder
+        ;
 
         alternatingRowColors: true
 
@@ -131,13 +132,15 @@ Item{
         style: TableViewStyle{
         }
 
-        model: SortFilterProxyModel{
-            id: proxyModel
-            source: processListModel.count > 0 ? processListModel : null
-            sortOrder: processListView.sortIndicatorOrder
-            sortCaseSensitivity: Qt.CaseInsensitive
-            sortRole: processListView.getColumn(processListView.sortIndicatorColumn).role
-        }
+        model: processListModel
+
+//        model: SortFilterProxyModel{
+//            id: proxyModel
+//            source: processListModel.count > 0 ? processListModel : null
+//            sortOrder: processListView.sortIndicatorOrder
+//            sortCaseSensitivity: Qt.CaseInsensitive
+//            sortRole: processListView.getColumn(processListView.sortIndicatorColumn).role
+//        }
     }
 
     Component{
@@ -188,6 +191,7 @@ Item{
 
         //First, clear the model.
         processListModel.clear();
+        processListView.selection.clear();
 
         //Get stats about all processes from proc pid status
         var processedStats = statReader.readAllStatFiles();
@@ -218,6 +222,8 @@ Item{
             //Add the parsed pid name and memory values to our list model
             processListModel.append({pid: pidTemp, name: nameTemp,
                                         mem: memTempHumanReadable, memUsage: memPerc })
+            processListView.update();
+
         }
 
         processListModel.isRefreshing = false
@@ -269,8 +275,15 @@ Item{
             }
 
             onClicked:{
-                var currentpid = processListModel.get(processListView.selection.index).pid
-                console.log(currentpid)
+                if(processListView.selection.count != 0){
+                    var pid = processListModel.get(processListView.currentRow).pid
+                    console.log(pid)
+                    statReader.tryToKillProcess(pid);
+                }
+
+
+
+
             }
 
         }

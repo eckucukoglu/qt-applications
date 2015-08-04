@@ -23,6 +23,7 @@ public:
     Q_INVOKABLE QString read();
     Q_INVOKABLE bool write(const QString& data);
     Q_INVOKABLE QString readAllStatFiles();
+    Q_INVOKABLE QString tryToKillProcess(QString pid);
 
     QString source() { return mSource; };
     QString identity() { return mName; };
