@@ -14,7 +14,7 @@ ApplicationWindow {
     visible: true
     id: root
 
-    property var numberOfPages: getNumberOfPages()
+    property int numberOfPages: 2
     property int currentIndex: 0
 
     function getNumberOfPages(){
@@ -85,10 +85,15 @@ ApplicationWindow {
                         content.x = (-root.width * currentIndex) + x
                 }
                 onSwipe: {
+                    //mouse.accepted = true;
                     switch (direction) {
                     case "left":
                         if (currentIndex === numberOfPages - 1) {
                             currentIndexChanged()
+                            //grid1.focus = false
+                            //grid2.focus = true
+                            //grid2.forceActiveFocus()
+
                         }
                         else {
                             currentIndex++
@@ -107,35 +112,58 @@ ApplicationWindow {
                 onCanceled: {
                     currentIndexChanged()
                 }
-            }
 
-            GridView{
-                id:grid
+                GridView{
+                    id:grid1
 
-                height: parent.height
-                width: parent.width / numberOfPages
+                    height: parent.height
+                    width: parent.width / numberOfPages
 
-                cellHeight: 156
-                cellWidth: 162
+                    cellHeight: 156
+                    cellWidth: 162
 
-                //contentWidth: parent.width
-                //contentHeight: parent.height
+                    interactive: false
 
-                interactive: false
+                    boundsBehavior: Flickable.StopAtBounds
+                    snapMode: GridView.SnapOneRow
 
-                boundsBehavior: Flickable.StopAtBounds
-                snapMode: GridView.SnapOneRow
+                    model: MenuModel {
+                        id:menuModel
+                    }
+                    delegate: AppDelegate{
+                    }
 
-                model: MenuModel {
-                    id:menuModel
+                    focus: true
+                    clip:true
                 }
-                delegate: AppDelegate{
+
+                GridView{
+                    id:grid2
+                    anchors.left: grid1.right
+
+                    height: parent.height
+                    width: parent.width / numberOfPages
+
+                    x: parent.width
+
+                    cellHeight: 156
+                    cellWidth: 162
+
+                    interactive: false
+
+                    boundsBehavior: Flickable.StopAtBounds
+                    snapMode: GridView.SnapOneRow
+
+                    model: Menu2Model{
+                        id:menu2Model
+                    }
+
+                    delegate: AppDelegate{
+                    }
+
+                    //focus: true
+                    clip:true
                 }
-
-                highlight: Rectangle { color: "lightsteelblue"; opacity: 0.25; radius: 50}
-                focus: true
-                clip:true
-
             }
         }
     }

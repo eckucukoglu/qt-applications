@@ -16,5 +16,6 @@
         <file>pics/Time.png</file>
         <file>pics/Show.png</file>
         <file>pics/Color_filter.png</file>
+        <file>Menu2Model.qml</file>
     </qresource>
 </RCC>

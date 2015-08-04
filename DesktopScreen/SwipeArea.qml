@@ -11,16 +11,14 @@ MouseArea {
 
 
     onPressed: {
-        console.log("pressed swipe area")
-        mouse.accepted = true;
+        mouse.accepted = true
 
         drag.axis = Drag.XAndYAxis
         origin = Qt.point(mouse.x, mouse.y)
+
     }
 
     onPositionChanged: {
-        console.log("position changed swipe area")
-        mouse.accepted = false;
 
         switch (drag.axis) {
         case Drag.XAndYAxis:
@@ -41,8 +39,7 @@ MouseArea {
     }
 
     onReleased: {
-        console.log("released swipe area")
-        //mouse.accepted = false;
+
         switch (drag.axis) {
         case Drag.XAndYAxis:
             canceled(mouse)
@@ -54,5 +51,7 @@ MouseArea {
             swipe(mouse.y - origin.y < 0 ? "up" : "down")
             break
         }
+
+        mouse.accepted = true ;
     }
 }

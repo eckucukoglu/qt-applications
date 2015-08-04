@@ -1,6 +1,7 @@
 import QtQuick 2.0
 
 ListModel {
+    id: menu1
     ListElement{
         name: "Beko Yazar Kasa"
         borderColor: "blue"
@@ -87,15 +88,15 @@ ListModel {
         portrait: "pics/Registry.png"
     }
     ListElement{
-        name: "ING Bank"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Time.png"
-    }
-    ListElement{
-        name: "ING Bank"
-        borderColor: "#1ABC9C"
+        name: "Device Settings"
+        borderColor: "red"
         portrait: "pics/Show.png"
     }
-
-
+    ListElement{
+        name: "Calculator"
+        borderColor: "yellow"
+        portrait: "pics/Color_filter.png"
+    }
 }
+
+

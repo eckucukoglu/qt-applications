@@ -66,23 +66,17 @@ Component {
             anchors.fill: parent
             propagateComposedEvents: true
 
-            onClicked: {
-                if(containsMouse)
-                    console.log("clicked")
-            }
-
             onPressed: {
-                console.log("pressed mousearea")
-
-                grid.currentIndex = index;
-                overlay.border.width = 4;
                 mouse.accepted = false
             }
 
-            onPressAndHold: {
-                console.log("accepted and hold")
-                mouse.accepted = true
-                overlay.border.width = 2
+            onClicked: {
+                if(containsMouse){
+                    console.log("clicked")
+                    console.log(appDelegate.GridView.view.currentIndex)
+                }
+
+                mouse.accepted = false
             }
 
         }

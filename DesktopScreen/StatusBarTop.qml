@@ -17,9 +17,19 @@ Rectangle{
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 20
-        text: "" + new Date().toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm") + " | " +
+        text: "" + new Date().toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm:ss") + "  |  " +
               new Date().toLocaleDateString(Qt.locale("en_EN"), "dd-MM-yyyy")
         font.pixelSize: 17
         color: "white"
+    }
+
+    Timer{
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: {
+            hourAndDate.text = new Date().toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm:ss") + "  |  " +
+                      new Date().toLocaleDateString(Qt.locale("tr_TR"), "dd-MM-yyyy")
+        }
     }
 }
