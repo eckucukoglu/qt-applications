@@ -22,10 +22,10 @@ MouseArea {
 
         switch (drag.axis) {
         case Drag.XAndYAxis:
-            if (Math.abs(mouse.x - origin.x) > 40) {
+            if (Math.abs(mouse.x - origin.x) > 140) {
                 drag.axis = Drag.XAxis
             }
-            else if (Math.abs(mouse.y - origin.y) > 40) {
+            else if (Math.abs(mouse.y - origin.y) > 140) {
                 drag.axis = Drag.YAxis
             }
             break
@@ -45,10 +45,10 @@ MouseArea {
             canceled(mouse)
             break
         case Drag.XAxis:
-            swipe(mouse.x - origin.x < 0 ? "left" : "right")
+            swipe(mouse.x - origin.x < 140 ? "left" : "right")
             break
         case Drag.YAxis:
-            swipe(mouse.y - origin.y < 0 ? "up" : "down")
+            swipe(mouse.y - origin.y < 140 ? "up" : "down")
             break
         }
 

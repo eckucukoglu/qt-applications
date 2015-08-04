@@ -17,5 +17,7 @@
         <file>pics/Show.png</file>
         <file>pics/Color_filter.png</file>
         <file>Menu2Model.qml</file>
+        <file>pics/energy39.png</file>
+        <file>pics/blueetooth.png</file>
     </qresource>
 </RCC>

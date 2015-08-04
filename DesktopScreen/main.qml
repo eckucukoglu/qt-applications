@@ -78,11 +78,12 @@ ApplicationWindow {
                 propagateComposedEvents: true
                 //z: 1
                 //drag.filterChildren: true;
-                drag.threshold: 15
+                //drag.threshold: 15
 
                 onMove: {
+
                     if(currentIndex != 0 && currentIndex != (numberOfPages - 1))
-                        content.x = (-root.width * currentIndex) + x
+                        content.x = x
                 }
                 onSwipe: {
                     //mouse.accepted = true;
@@ -125,7 +126,7 @@ ApplicationWindow {
                     interactive: false
 
                     boundsBehavior: Flickable.StopAtBounds
-                    snapMode: GridView.SnapOneRow
+                    //snapMode: GridView.SnapOneRow
 
                     model: MenuModel {
                         id:menuModel
@@ -166,6 +167,12 @@ ApplicationWindow {
                 }
             }
         }
+
+
+        function fillGrids(){
+
+        }
+
     }
 
     //Dots row
