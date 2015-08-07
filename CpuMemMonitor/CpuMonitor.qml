@@ -168,7 +168,8 @@ Item{
 
     }
 
-    Component.onCompleted: { getOverallCpuStats()}
+    Component.onCompleted: { getOverallCpuStats();gc();
+                            }
 
     Timer{
         id:refresher

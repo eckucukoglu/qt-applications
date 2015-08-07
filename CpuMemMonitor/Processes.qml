@@ -182,7 +182,6 @@ Item{
     function fillProcessList(){
         processListModel.isRefreshing = true
 
-
         //Get total RAM stats from meminfo file.
         var content = meminfoFile.read();
         var splitted = content.split("\n");
@@ -227,6 +226,7 @@ Item{
         }
 
         processListModel.isRefreshing = false
+        gc();
     }
 
     FileIO{
@@ -280,9 +280,6 @@ Item{
                     console.log(pid)
                     statReader.tryToKillProcess(pid);
                 }
-
-
-
 
             }
 

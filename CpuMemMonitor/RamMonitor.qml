@@ -136,7 +136,8 @@ Item{
     }
 
     Component.onCompleted: { getOverallRamStats();
-                meminfoFile.readAllStatFiles()}
+                meminfoFile.readAllStatFiles()
+                gc();}
 
     Timer{
         id:refresher
