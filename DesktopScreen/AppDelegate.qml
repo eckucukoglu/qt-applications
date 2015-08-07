@@ -28,11 +28,12 @@ Component {
                     height: parent.height
                     radius: parent.radius
                     color: "transparent"
-                    opacity: 0.50
+                    opacity: 0.45
 
                     RadialGradient {
                         anchors.fill: parent
-                        //OpacityMask
+                        horizontalRadius: 130
+                        verticalRadius: 130
                         gradient: Gradient {
                             GradientStop { position: 0.0; color: borderColor }
                             GradientStop { position: 0.5; color: "transparent" }
@@ -46,7 +47,6 @@ Component {
                     anchors.centerIn: parent
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
-
             }
 
             Text {
@@ -57,7 +57,8 @@ Component {
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: 15
+                font.pixelSize: 14
+                font.family: "Helvetica"
                 color: "white"
             }
         }

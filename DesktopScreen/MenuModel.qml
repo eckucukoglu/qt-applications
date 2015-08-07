@@ -4,98 +4,106 @@ ListModel {
     id: menu1
     ListElement{
         name: "Beko Yazar Kasa"
-        borderColor: "blue"
-        portrait: "pics/Registry.png"
+        borderColor: "#015f9a"
+        portrait: "pics/sober_newspecs/icon/icon_bekopos.png"
     }
     ListElement{
         name: "Romeo Player"
-        borderColor: "green"
-        portrait: "pics/Time.png"
+        borderColor: "#1ABC9C"
+        portrait: "pics/sober_newspecs/icon/icon_player.png"
     }
     ListElement{
         name: "Device Settings"
-        borderColor: "red"
-        portrait: "pics/Show.png"
+        borderColor: "#e74c3c"
+        portrait: "pics/sober_newspecs/icon/icon_deviceset.png"
     }
     ListElement{
         name: "Calculator"
-        borderColor: "yellow"
-        portrait: "pics/Color_filter.png"
+        borderColor: "#88aedb"
+        portrait: "pics/sober_newspecs/icon/icon_calculator.png"
     }
     ListElement{
         name: "Calendar"
-        borderColor: "lightblue"
-        portrait: "pics/Registry.png"
+        borderColor: "#f37021"
+        portrait: "pics/sober_newspecs/icon/icon_calender.png"
     }
     ListElement{
         name: "Clock"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Time.png"
+        borderColor: "#1abc9c"
+        portrait: "pics/sober_newspecs/icon/icon_clock.png"
     }
     ListElement{
         name: "Security Levels"
-        borderColor: "#CCEE22"
-        portrait: "pics/Show.png"
+        borderColor: "#fd9f1b"
+        portrait: "pics/sober_newspecs/icon/icon_security.png"
     }
     ListElement{
         name: "Mail"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Color_filter.png"
+        borderColor: "#88aedb"
+        portrait: "pics/sober_newspecs/icon/icon_mail.png"
     }
     ListElement{
         name: "Network Settings"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Registry.png"
+        borderColor: "#0e95c5"
+        portrait: "pics/sober_newspecs/icon/icon_networkset.png"
     }
     ListElement{
         name: "CPU and RAM Monitor"
         borderColor: "#1ABC9C"
-        portrait: "pics/Time.png"
+        portrait: "pics/sober_newspecs/icon/icon_cpu.png"
     }
     ListElement{
         name: "Notebook"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Show.png"
+        borderColor: "#e74c3c"
+        portrait: "pics/sober_newspecs/icon/icon_notebook.png"
     }
     ListElement{
         name: "Arçelik Assistant"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Color_filter.png"
+        borderColor: "#b80505"
+        portrait: "pics/sober_newspecs/icon/icon_assistant.png"
     }
     ListElement{
         name: "Yapı Kredi"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Registry.png"
+        borderColor: "#015f9a"
+        portrait: "pics/sober_newspecs/icon/icon_ykb.png"
     }
     ListElement{
         name: "Garanti Bankası"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Time.png"
+        borderColor: "#2aaf5c"
+        portrait: "pics/sober_newspecs/icon/icon_garanti.png"
     }
     ListElement{
         name: "Google Chrome"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Show.png"
+        borderColor: "#b80505"
+        portrait: "pics/sober_newspecs/icon/icon_chrome.png"
     }
     ListElement{
         name: "Finansbank"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Color_filter.png"
+        borderColor: "#0e95c5"
+        portrait: "pics/sober_newspecs/icon/icon_tfb.png"
     }
     ListElement{
         name: "TEB"
-        borderColor: "#1ABC9C"
-        portrait: "pics/Registry.png"
+        borderColor: "#2aaf5c"
+        portrait: "pics/sober_newspecs/icon/icon_teb.png"
     }
     ListElement{
-        name: "Device Settings"
-        borderColor: "red"
-        portrait: "pics/Show.png"
+        name: "ING Bank"
+        borderColor: "#88aedb"
+        portrait: "pics/sober_newspecs/icon/icon_ing.png"
     }
-    ListElement{
-        name: "Calculator"
-        borderColor: "yellow"
-        portrait: "pics/Color_filter.png"
+
+    Component.onCompleted: {
+        getDay()
+    }
+
+    function getDay(){
+        var date = new Date();
+        var dayNum = date.toLocaleDateString(Qt.locale("en_EN"), "dd")
+        var dayOfTheWeek = date.toLocaleDateString(Qt.locale("en_EN"), "dddd")
+
+        console.log(dayNum)
+        console.log(dayOfTheWeek)
     }
 }
 

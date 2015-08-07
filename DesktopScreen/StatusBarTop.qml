@@ -6,10 +6,11 @@ Rectangle{
     anchors.top: parent.top
     color: "transparent"
 
+    property var date
     Rectangle{
         anchors.fill: parent
         color: "black"
-        opacity: 0.5
+        opacity: 0.3
     }
 
     Text{
@@ -17,14 +18,10 @@ Rectangle{
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 20
-        text: "" + new Date().toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm:ss") + "  |  " +
-              new Date().toLocaleDateString(Qt.locale("en_EN"), "dd-MM-yyyy")
-        font.pixelSize: 17
+        text: date.toLocaleTimeString(Qt.locale("en_EN"), "hh:mm") + "  |  " +
+              date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM")
+        font.pixelSize: 15
         color: "white"
-
-        onTextChanged: {
-            gc()
-        }
     }
 
     Row{
@@ -48,20 +45,20 @@ Rectangle{
                 font.pixelSize: 15
             }
         }
-
-
     }
 
-
-
     Timer{
-        interval: 200
+        interval: 10000
         running: true
         repeat: true
         onTriggered: {
-            hourAndDate.text = new Date().toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm:ss") + "  |  " +
-                      new Date().toLocaleDateString(Qt.locale("tr_TR"), "dd-MM-yyyy")
-            gc();
+            date = new Date();
+            hourAndDate.text = date.toLocaleTimeString(Qt.locale("en_EN"), "hh:mm") + "  |  " +
+                      date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM")
         }
+    }
+
+    Component.onCompleted: {
+        date = new Date();
     }
 }

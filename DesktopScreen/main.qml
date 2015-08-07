@@ -41,7 +41,7 @@ ApplicationWindow {
     Image {
         id: background
         anchors.verticalCenter: root.verticalCenter
-        source: "pics/bg2.jpg"
+        source: "pics/sober_newspecs/bg.png"
         fillMode: Image.PreserveAspectCrop
     }
 
@@ -179,13 +179,13 @@ ApplicationWindow {
     Row {
         id: dotsRow
         anchors { bottom: parent.bottom; bottomMargin: 58; horizontalCenter: parent.horizontalCenter }
-        spacing: 16
+        spacing: 6
         Repeater {
             model: numberOfPages
             Rectangle {
                 width: 12; height: 12; radius: 6
                 color: currentIndex === index ? "#88ffffff" : "#88000000"
-                border { width: 2; color: currentIndex === index ? "#33000000" : "#11000000" }
+                border { width: 2; color: currentIndex === index ? "#33ffffff" : "#11000000" }
             }
         }
     }

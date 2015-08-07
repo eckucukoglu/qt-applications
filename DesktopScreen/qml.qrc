@@ -2,22 +2,34 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>MenuModel.qml</file>
-        <file>pics/google-apps-logo-111x111.jpg</file>
         <file>pics/backIcon.png</file>
         <file>pics/homeIcon.png</file>
         <file>pics/processes.png</file>
         <file>SwipeArea.qml</file>
-        <file>pics/bg2.jpg</file>
         <file>AppDelegate.qml</file>
         <file>NavigationBar.qml</file>
         <file>StatusBarTop.qml</file>
-        <file>pics/logo.png</file>
-        <file>pics/Registry.png</file>
-        <file>pics/Time.png</file>
-        <file>pics/Show.png</file>
-        <file>pics/Color_filter.png</file>
         <file>Menu2Model.qml</file>
         <file>pics/energy39.png</file>
         <file>pics/blueetooth.png</file>
+        <file>pics/sober_newspecs/icon/icon_assistant.png</file>
+        <file>pics/sober_newspecs/icon/icon_bekopos.png</file>
+        <file>pics/sober_newspecs/icon/icon_calculator.png</file>
+        <file>pics/sober_newspecs/icon/icon_calender.png</file>
+        <file>pics/sober_newspecs/icon/icon_chrome.png</file>
+        <file>pics/sober_newspecs/icon/icon_cpu.png</file>
+        <file>pics/sober_newspecs/icon/icon_deviceset.png</file>
+        <file>pics/sober_newspecs/icon/icon_garanti.png</file>
+        <file>pics/sober_newspecs/icon/icon_ing.png</file>
+        <file>pics/sober_newspecs/icon/icon_mail.png</file>
+        <file>pics/sober_newspecs/icon/icon_networkset.png</file>
+        <file>pics/sober_newspecs/icon/icon_notebook.png</file>
+        <file>pics/sober_newspecs/icon/icon_player.png</file>
+        <file>pics/sober_newspecs/icon/icon_security.png</file>
+        <file>pics/sober_newspecs/icon/icon_teb.png</file>
+        <file>pics/sober_newspecs/icon/icon_tfb.png</file>
+        <file>pics/sober_newspecs/icon/icon_ykb.png</file>
+        <file>pics/sober_newspecs/icon/icon_clock.png</file>
+        <file>pics/sober_newspecs/bg.png</file>
     </qresource>
 </RCC>
