@@ -16,4 +16,4 @@ include(deployment.pri)
 HEADERS += \
     selinuxhandler.h \
 
-LIBS += -L/home/arcelik/qtWorkspace/SecurityLevels/selinuxso -lselinux
+LIBS += -L$$PWD/selinuxso -lselinux

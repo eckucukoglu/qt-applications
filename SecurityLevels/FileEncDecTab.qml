@@ -75,7 +75,7 @@ Item {
             FileDialog{
                 id: fileDialog
                     title: "Please choose a file"
-                    folder: "/home/arcelik"
+                    folder: "$$PWD"
                     onAccepted: {
                         fileLoc.text = fileDialog.fileUrl
                         console.log("You chose: " + fileDialog.fileUrls)

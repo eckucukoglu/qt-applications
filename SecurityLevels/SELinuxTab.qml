@@ -21,8 +21,9 @@ Item {
         }
 
         Text{
+            id: currentModeText
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "Current Mode: ENFORCED"
+            text: "Current Mode : " + (seLinuxHandler.getStatus())
 
         }
 
@@ -54,20 +55,49 @@ Item {
             Switch{
                 id: permissiveEnforcedSwitch
                 style: CustomSwitchStyle{
-                    choice1: "Enforced"
+                    choice1: "Enforcing"
                     choice2: "Permissive"
 
                 }
             }
         }
 
+        Text{
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "PERMANENT CHANGES TAKE EFFECT AFTER REBOOT"
+            color: "red"
+        }
+
         Button{
+            id: applyButton
             text: "Apply"
             anchors.horizontalCenter: parent.horizontalCenter
 
             onClicked:{
-                seLinuxHandler.getStatus()
-                //console.log()
+                if(tempPermSwitch.checked)  //permanently, write to config file
+                    if(permissiveEnforcedSwitch.checked){
+                        console.log("permanently enforce")
+                        seLinuxHandler.setModePermanently(1)
+                    }
+                    else{
+                        console.log("permanently permissive")
+                        seLinuxHandler.setModePermanently(0)
+                    }
+                else{
+                    if(permissiveEnforcedSwitch.checked){
+                        console.log("temporarily enforce")
+                        seLinuxHandler.setTemporarilyEnforcing()
+                    }
+                    else{
+                        console.log("temporarily permissive")
+                        seLinuxHandler.setTemporarilyPermissive()
+                    }
+                    refreshStatus();
+                }
+
+            }
+            function refreshStatus(){
+                currentModeText.text = "Current Mode : " + (seLinuxHandler.getStatus());
             }
         }
     }

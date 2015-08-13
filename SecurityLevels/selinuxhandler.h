@@ -12,8 +12,13 @@ class SELinuxHandler : public QObject
 public:
     explicit SELinuxHandler(QObject *parent = 0);
 
-    Q_INVOKABLE void setEnforced();
-    Q_INVOKABLE void getStatus();
+    Q_INVOKABLE QString getStatus();
+
+    Q_INVOKABLE void setModePermanently(int num);
+
+    Q_INVOKABLE void setTemporarilyEnforcing();
+
+    Q_INVOKABLE void setTemporarilyPermissive();
 
 
 signals:
