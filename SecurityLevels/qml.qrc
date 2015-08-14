@@ -6,5 +6,7 @@
         <file>CustomSwitchStyle.qml</file>
         <file>FileEncDecTab.qml</file>
         <file>FilesystemEncDecTab.qml</file>
+        <file>PasswordDialog.qml</file>
+        <file>path_password_pairs</file>
     </qresource>
 </RCC>

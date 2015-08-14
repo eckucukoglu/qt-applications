@@ -3,7 +3,8 @@ TEMPLATE = app
 QT += qml quick widgets
 
 SOURCES += main.cpp \
-    selinuxhandler.cpp
+    selinuxhandler.cpp \
+    encdechandler.cpp
 
 RESOURCES += qml.qrc
 
@@ -15,5 +16,6 @@ include(deployment.pri)
 
 HEADERS += \
     selinuxhandler.h \
+    encdechandler.h
 
-LIBS += -L$$PWD/selinuxso -lselinux
+LIBS += -L$$_PRO_FILE_PWD_/selinuxso -lselinux

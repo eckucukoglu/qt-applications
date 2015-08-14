@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.4
+import QtQuick.Controls 1.3
 import QtQuick.Dialogs 1.2
 
 Item {
@@ -82,7 +82,8 @@ Item {
             FileDialog{
                 id: fileDialog
                 title: "Please choose a file"
-                folder: "$$PWD"
+                folder: shortcuts.home
+                selectFolder: true
                 onAccepted: {
                     filesystemLoc.text = fileDialog.fileUrl
                     console.log("You chose: " + fileDialog.fileUrls)
