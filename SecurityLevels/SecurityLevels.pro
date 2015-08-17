@@ -18,4 +18,4 @@ HEADERS += \
     selinuxhandler.h \
     encdechandler.h
 
-LIBS += -L$$_PRO_FILE_PWD_/selinuxso -lselinux
+LIBS += -L/usr/lib -lselinux

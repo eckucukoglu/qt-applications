@@ -24,7 +24,25 @@ Item {
             id: currentModeText
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Current Mode : " + (seLinuxHandler.getStatus())
+
         }
+
+        Row{
+            anchors.horizontalCenter: parent.horizontalCenter
+            Text{
+                id: iWantToChangeSELinuxText
+                text: "I want to change SELinux Mode "
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            Switch{
+                id: tempPermSwitch
+                style: CustomSwitchStyle{
+                    choice1: "Permanently"
+                    choice2: "Temporarily"
+                }
+            }
+        }
+
 
         Row{
             anchors.horizontalCenter: parent.horizontalCenter
@@ -46,16 +64,9 @@ Item {
 
         Text{
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "ENFORCING: The strict mode where your access control is heavily restricted. The SELinux policies are enforced."
-            color: "#007700"
+            text: "PERMANENT CHANGES TAKE EFFECT AFTER REBOOT"
+            color: "red"
         }
-
-        Text{
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "PERMISSIVE: The policies are not enforced but SELinux logs what it would have blocked or granted."
-            color: "#003c77"
-        }
-
 
         Button{
             id: applyButton
@@ -63,19 +74,28 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             onClicked:{
-
-                if(permissiveEnforcedSwitch.checked){
-                    console.log("Switch to Enforcing!")
-                    seLinuxHandler.setMode(1)
-                }
+                if(tempPermSwitch.checked)  //permanently, write to config file
+                    if(permissiveEnforcedSwitch.checked){
+                        console.log("permanently enforce")
+                        seLinuxHandler.setModePermanently(1)
+                    }
+                    else{
+                        console.log("permanently permissive")
+                        seLinuxHandler.setModePermanently(0)
+                    }
                 else{
-                    console.log("Switch to Permissive!")
-                    seLinuxHandler.setMode(0)
+                    if(permissiveEnforcedSwitch.checked){
+                        console.log("temporarily enforce")
+                        seLinuxHandler.setTemporarilyEnforcing()
+                    }
+                    else{
+                        console.log("temporarily permissive")
+                        seLinuxHandler.setTemporarilyPermissive()
+                    }
+                    refreshStatus();
                 }
 
-                refreshStatus();
             }
-
             function refreshStatus(){
                 currentModeText.text = "Current Mode : " + (seLinuxHandler.getStatus());
             }

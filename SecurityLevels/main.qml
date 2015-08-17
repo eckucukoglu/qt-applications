@@ -12,7 +12,7 @@ ApplicationWindow {
     TabView{
         anchors.fill: parent
         Tab{
-            title: "SELinux"
+            title: "Access Control"
             SELinuxTab{
 
             }

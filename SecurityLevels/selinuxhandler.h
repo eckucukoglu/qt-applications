@@ -14,11 +14,7 @@ public:
 
     Q_INVOKABLE QString getStatus();
 
-    Q_INVOKABLE void setModePermanently(int num);
-
-    Q_INVOKABLE void setTemporarilyEnforcing();
-
-    Q_INVOKABLE void setTemporarilyPermissive();
+    Q_INVOKABLE void setMode(int num);
 
 
 signals:
