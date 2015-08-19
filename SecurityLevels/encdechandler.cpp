@@ -185,7 +185,6 @@ bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString
 
 
 
-
     saveFilesystemPathPasswordSig(filesystempath, password, sig);
 
     //move everything in .old folder to original named folder
@@ -227,19 +226,43 @@ bool EncDecHandler::initiateFilesystemDecryption(QString filesystempath, QString
         //Remount it back.
         QString decryptFSScript = "mount.ecryptfs " + filesystempath + " " +  filesystempath + " -o key=passphrase:passphrase_passwd=" + password
                 + ",no_sig_cache=yes,verbose=no,ecryptfs_sig=" + sig + ",ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=no";
-        process.execute(decryptFSScript);
-
-
-
+        process.start(decryptFSScript);
+        process.waitForFinished();
         if(process.exitStatus() == QProcess::NormalExit){
-//            //now remove the .enc file since it is decrypted.
-//            //QFile file(filepath);
-//            file.remove();
-            return true;
+            qDebug() << "remounting done.";
+
         }
         else{
             return false;
         }
+
+        //Now, carry all the files in the 'filesystempath' into filesystempath.temp
+        //Then unmount empty filesystempath.
+        //Then rename filesystempath.temp ---> filesystempath
+
+        QString moveCommand = "mv " + filesystempath + "/* " + filesystempath + ".temp/";
+        process.start("bash", QStringList() << "-c" << moveCommand);
+        process.waitForFinished();
+        if(process.exitStatus() == QProcess::NormalExit){
+            qDebug() << "everything is moved into the .temp file";
+        }
+        else{
+            qDebug() << "error when moving";
+        }
+        qDebug() << "now syncing dirs....";
+        process.start("sync");
+        process.waitForFinished();
+
+        //Unmount the previous folder (at filesystempath)
+        if(!unmountFS(filesystempath)){
+            qDebug() << "could not unmount " + filesystempath;
+            return false;
+        }
+
+        QDir dir(filesystempath);
+        dir.rmdir(filesystempath);
+        dir.rename(filesystempath + ".temp", filesystempath);
+
     }
 
 
