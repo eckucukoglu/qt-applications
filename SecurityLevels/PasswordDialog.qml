@@ -46,7 +46,7 @@ Item{
         }
 
         onApply: {
-            console.log(passwordBox.text.length)
+            //console.log(passwordBox.text.length)
             if(passwordBox.text.length > 0){
                 passDialog.close()
                 passwordEntered(passwordBox.text);

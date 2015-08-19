@@ -17,7 +17,7 @@ QString SELinuxHandler::getStatus(){
             return "PERMISSIVE";
         }
         else{
-            return "INVALID";
+            return "UNKNOWN";
         }
 
     }

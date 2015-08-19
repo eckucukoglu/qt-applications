@@ -70,7 +70,8 @@ Item {
             Text{
                 id: fileLoc
                 anchors.verticalCenter: parent.verticalCenter
-                width: 200
+                width: 400
+                font.underline: true
                 text: ""
                 elide: Text.ElideRight
             }

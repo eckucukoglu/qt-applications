@@ -16,6 +16,7 @@ include(deployment.pri)
 
 HEADERS += \
     selinuxhandler.h \
-    encdechandler.h
+    encdechandler.h \
+
 
 LIBS += -L/usr/lib -lselinux
