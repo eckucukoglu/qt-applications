@@ -37,6 +37,7 @@ Item {
                 }
 
                 onCheckedChanged: {
+                    filesystemLoc.text = "";
                     pwDialog.encrypting = !(pwDialog.encrypting)
                     if(checked) //encrypt
                     {
@@ -143,35 +144,29 @@ Item {
                     //we will encrypt the fileystem
                     if(encryptFileNamesCheckBox.checkedState == Qt.Checked){
                         //Encrpyt with encrypt file names.
-                        result = encDecHandler.initiateFilesystemEncryption(filesystemLoc.text, password, true)
+                        if(recognizeMeCheckBox.checkedState == Qt.Checked)
+                            result = encDecHandler.initiateFilesystemEncryption(filesystemLoc.text, password, true, true)
+                        else{
+                            result = encDecHandler.initiateFilesystemEncryption(filesystemLoc.text, password, true, false)
+                        }
                     }
                     else{
-                        result = encDecHandler.initiateFilesystemEncryption(filesystemLoc.text, password, false)
-                    }
-
-
-                    if(recognizeMeCheckBox.checkedState == Qt.Checked){
-                        //Recognize me. Don't unmount
-                        console.log("no unmount.");
-
-                    }
-                    else{
-                        //dont recognize me, unmount.
-                        encDecHandler.unmountFS(filesystemLoc.text)
-                        console.log("unmount the filesystem: " + filesystemLoc.text)
-
+                        if(recognizeMeCheckBox.checkedState == Qt.Checked)
+                            result = encDecHandler.initiateFilesystemEncryption(filesystemLoc.text, password, false, true)
+                        else{
+                            result = encDecHandler.initiateFilesystemEncryption(filesystemLoc.text, password, false, false)
+                        }
                     }
 
                     if(result == false)
                         failedDialog.open();
                     else{
                         doneDialog.open();
-                        encryptedFSListModel.append({filepath: filesystemLoc.text, recognizeMe: recognizeMeCheckBox.checked})
-                        encryptedFSListView.update()
                     }
                 }
                 else{
                     //we will decrypt the file
+
                     result = encDecHandler.initiateFilesystemDecryption(filesystemLoc.text, password)
                     if(result == false)
                         failedDialog.open();
@@ -180,10 +175,23 @@ Item {
                     }
                 }
 
+                refreshFilepathList();
+
             }
             Component.onCompleted:{
                 encrypting: encDecSwitch.checked
 
+            }
+
+            function refreshFilepathList(){
+                encryptedFSListModel.clear();
+                var pathList = encDecHandler.getListOfEncryptedFilesystemNames()
+                if(pathList){
+                    for(var i = 0; i < pathList.length; i++)
+                    {
+                        encryptedFSListModel.append({path: pathList[i]});
+                    }
+                }
             }
         }
 
@@ -201,20 +209,41 @@ Item {
         ListView{
             id: encryptedFSListView
             model: encryptedFSListModel
-            width: 700
-            height: 400
+            width: 400
+            height: 300
 
-            delegate: Text {
-                    text: "filepath: " + filepath + ", recognizeMe: "+ recognizeMe;
+            header: Component{
+                id: headerOfView
+                Item{
+                    width: 300
+                    height: 20
+                    Text{
+                        text: "The List of Encrypted Filesystems"
+                        font.pixelSize: 18
+                        font.underline: true
+                    }
                 }
+            }
+
+            delegate: Component {
+                id: contactDelegate
+                Item {
+                    width: 300; height: 40
+                    Rectangle{
+                        anchors.fill: parent
+                        border.width: 3
+                        border.color: "lightsteelblue"
+                        Text { text: '<b>Path:</b>\t ' + path;
+                            font.pixelSize: 14;
+                            anchors.centerIn: parent}
+                    }
+
+                }
+            }
         }
 
         ListModel{
             id:encryptedFSListModel
-            ListElement{
-                filepath: "sample"
-                recognizeMe: false
-            }
         }
     }
 

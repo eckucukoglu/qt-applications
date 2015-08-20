@@ -18,7 +18,7 @@ bool EncDecHandler::initiateFileEncryption(QString filepath, QString password){
 
     QProcess process;
     saveFilePathPasswordPair(filepath, password);
-    QString encryptScript = "openssl enc -aes-128-cbc -nosalt -pass pass:" + password + " -in " + filepath + " -out " + filepath + ".enc";
+    QString encryptScript = "openssl enc -aes-128-cbc -nosalt -pass pass:" + password + " -in \"" + filepath + "\" -out \"" + filepath + ".enc\"";
     qDebug() << encryptScript;
     process.execute(encryptScript);
 
@@ -49,7 +49,7 @@ bool EncDecHandler::initiateFileDecryption(QString filepath, QString password){
     else{
         QProcess process;
 
-        QString decryptScript = "openssl enc -d -aes-128-cbc -nosalt -pass pass:" + password + " -in " + filepath + " -out " + filepathWithoutEncAtTheEnd;
+        QString decryptScript = "openssl enc -d -aes-128-cbc -nosalt -pass pass:" + password + " -in \"" + filepath + "\" -out \"" + filepathWithoutEncAtTheEnd + "\"";
         qDebug() << "decrypt script workin: " +decryptScript;
         process.execute(decryptScript);
 
@@ -127,8 +127,7 @@ bool EncDecHandler::checkFilePathPasswordPair(QString filepath, QString password
     }
 }
 
-bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString password, bool encryptFileNamesToo){
-    bool success;
+bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString password, bool encryptFileNamesToo, bool recognizeMe){
 
     qDebug() << "Filesystem path: " << filesystempath;
     qDebug() << "Password: " << password;
@@ -141,7 +140,7 @@ bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString
     QString dn = dir.dirName();
     QString tempDir = filesystempath + ".old";
     dir.cd("..");
-    //dir.mkdir(dn + ".old");
+
     // filename ----> filename.old
     if(!dir.rename(dn,dn + ".old")){
         qDebug() << "couldnt change name from: " + dn + " to: " + dn + ".old";
@@ -157,25 +156,12 @@ bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString
     }
 
 
-
-    QString encfsScript = "mount.ecryptfs " + filesystempath + " " +  filesystempath + " -o key=passphrase:passphrase_passwd=" + password
-            + ",no_sig_cache=yes,verbose=no,ecryptfs_sig=" + sig + ",ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto="
-            + (encryptFileNamesToo ? "yes" : "no");
-
-    qDebug() << encfsScript;
-
-    QProcess process;
-    process.start(encfsScript);
-    process.waitForFinished();
-    if(process.exitStatus() == QProcess::NormalExit){
-        qDebug() << process.readAll();
-        success = true;
-    }
-    else{
-        qDebug() << process.errorString();
+    if(!mountFS(filesystempath, password, sig)){
+        qDebug() << "error when mounting " + filesystempath;
         return false;
     }
 
+    QProcess process;
     //********************************************************************
     //to work on my computer
     process.start("chown arcelik:arcelik " + filesystempath);
@@ -183,9 +169,7 @@ bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString
     //to work on my computer
     //********************************************************************
 
-
-
-    saveFilesystemPathPasswordSig(filesystempath, password, sig);
+    saveFilesystemPathPasswordEtc(filesystempath, password, sig, recognizeMe);
 
     //move everything in .old folder to original named folder
     QString moveCommand = "mv " + filesystempath + ".old/* " + filesystempath;
@@ -206,7 +190,14 @@ bool EncDecHandler::initiateFilesystemEncryption(QString filesystempath, QString
     //delete the .old folder
     dir.rmdir(tempDir);
 
-    return success;
+    if(!recognizeMe){
+        if(!unmountFS(filesystempath)){
+            qDebug() << "error when unmounting " + filesystempath;
+            return false;
+        }
+        qDebug() << "unmount of " + filesystempath + " completed";
+        return true;
+    }
 }
 
 bool EncDecHandler::initiateFilesystemDecryption(QString filesystempath, QString password){
@@ -214,59 +205,61 @@ bool EncDecHandler::initiateFilesystemDecryption(QString filesystempath, QString
     qDebug() << "Password: " << password;
     qDebug() << "DEcryption begins..";
     QString sig;
+    bool recognizeMe;
+    QProcess process;
 
-    if(checkFilesystemPathPasswordPair(filesystempath, password, sig) == false)
+    if(checkFilesystemPathPasswordPair(filesystempath, password, sig, recognizeMe) == false)
     {
         qDebug() << "decryption failed. wrong password.";
         return false;
     }
     else{
-        QProcess process;
 
-        //Remount it back.
-        QString decryptFSScript = "mount.ecryptfs " + filesystempath + " " +  filesystempath + " -o key=passphrase:passphrase_passwd=" + password
-                + ",no_sig_cache=yes,verbose=no,ecryptfs_sig=" + sig + ",ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=no";
-        process.start(decryptFSScript);
-        process.waitForFinished();
-        if(process.exitStatus() == QProcess::NormalExit){
-            qDebug() << "remounting done.";
+        if(!recognizeMe){
+            mountFS(filesystempath, password, sig);
+        }
 
-        }
-        else{
-            return false;
-        }
 
         //Now, carry all the files in the 'filesystempath' into filesystempath.temp
         //Then unmount empty filesystempath.
         //Then rename filesystempath.temp ---> filesystempath
 
+        //create .temp directory
+        QDir d(filesystempath);
+        d.cdUp();
+        d.mkdir(filesystempath + ".temp");
+
+
+        //move the files into the .temp folder
         QString moveCommand = "mv " + filesystempath + "/* " + filesystempath + ".temp/";
+        qDebug() << moveCommand;
         process.start("bash", QStringList() << "-c" << moveCommand);
         process.waitForFinished();
         if(process.exitStatus() == QProcess::NormalExit){
             qDebug() << "everything is moved into the .temp file";
+            qDebug() << "now syncing dirs....";
+            process.start("sync");
+            process.waitForFinished();
         }
         else{
             qDebug() << "error when moving";
         }
-        qDebug() << "now syncing dirs....";
-        process.start("sync");
-        process.waitForFinished();
+
 
         //Unmount the previous folder (at filesystempath)
         if(!unmountFS(filesystempath)){
             qDebug() << "could not unmount " + filesystempath;
             return false;
+        }else{
+            //unmounted successfully. now delete that folder and rename filename.temp ----> filename back.
+            qDebug() << "now deleting " + filesystempath + " and replacing " + filesystempath + ".temp with that.";
+            QDir dir(filesystempath);
+            dir.rmdir(filesystempath);
+            dir.rename(filesystempath + ".temp", filesystempath);
+
+            return true;
         }
-
-        QDir dir(filesystempath);
-        dir.rmdir(filesystempath);
-        dir.rename(filesystempath + ".temp", filesystempath);
-
     }
-
-
-    return false;
 }
 
 bool EncDecHandler::unmountFS(QString filesystemPath){
@@ -282,11 +275,27 @@ bool EncDecHandler::unmountFS(QString filesystemPath){
     else{
         return false;
     }
-
-    return false;
 }
 
-bool EncDecHandler::saveFilesystemPathPasswordSig(QString filesystempath, QString password, QString sig){
+bool EncDecHandler::mountFS(QString filesystempath, QString password, QString sig){
+    QProcess process;
+
+    //Remount it back.
+    QString mountScript = "mount.ecryptfs " + filesystempath + " " +  filesystempath + " -o key=passphrase:passphrase_passwd=" + password
+            + ",no_sig_cache=yes,verbose=no,ecryptfs_sig=" + sig + ",ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=no";
+    process.start(mountScript);
+    process.waitForFinished();
+    if(process.exitStatus() == QProcess::NormalExit){
+        qDebug() << "remounting done.";
+        //***********************************************************************************************
+
+    }
+    else{
+        return false;
+    }
+}
+
+bool EncDecHandler::saveFilesystemPathPasswordEtc(QString filesystempath, QString password, QString sig, bool recognizeMe){
     QFile fspp("filesystempath_password_pairs");
 
     if(!fspp.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
@@ -295,7 +304,7 @@ bool EncDecHandler::saveFilesystemPathPasswordSig(QString filesystempath, QStrin
     }
     else{
         QTextStream out(&fspp);
-        QString lineToWrite = filesystempath + "\t" + password + "\t" + sig;
+        QString lineToWrite = filesystempath + "\t" + password + "\t" + sig + "\t" + (recognizeMe ? "true" : "false");
         out << lineToWrite << endl;
 
         fspp.close();
@@ -303,7 +312,7 @@ bool EncDecHandler::saveFilesystemPathPasswordSig(QString filesystempath, QStrin
     }
 }
 
-bool EncDecHandler::checkFilesystemPathPasswordPair(QString filesystempath, QString password, QString& sig){
+bool EncDecHandler::checkFilesystemPathPasswordPair(QString filesystempath, QString password, QString& sig, bool& recognizeMe){
     qDebug() << "checking filesystempath - password pair for : " + filesystempath + "\t" + password;
     QFile fspp("filesystempath_password_pairs");
 
@@ -329,6 +338,7 @@ bool EncDecHandler::checkFilesystemPathPasswordPair(QString filesystempath, QStr
                 //Don't add it to the new content file.
                 qDebug() << "filesystempath password pair found! getting sig.";
                 sig = line.split("\t")[2];
+                recognizeMe = (line.split("\t")[3] == "true" ? true : false);
                 foundYet = true;
             }
         }
@@ -341,9 +351,6 @@ bool EncDecHandler::checkFilesystemPathPasswordPair(QString filesystempath, QStr
         return foundYet;
     }
 }
-
-
-
 
 QString EncDecHandler::getSignatureFromPassword(QString password){
     QProcess process;
@@ -366,48 +373,18 @@ QString EncDecHandler::getSignatureFromPassword(QString password){
 
 }
 
-//bool EncDecHandler::copyRecursively(const QString &srcFilePath,
-//                                    const QString &tgtFilePath){
-
-//    qDebug() << "src file path: " + srcFilePath;
-//    qDebug() << "tgt file path: " + tgtFilePath;
-//    QFileInfo srcFileInfo(srcFilePath);
-//    if (srcFileInfo.isDir()) {
-//        QDir targetDir(tgtFilePath);
-//        targetDir.cdUp();
-//        QDir sourceDir(srcFilePath);
-//        QStringList fileNames = sourceDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
-//        foreach (const QString &fileName, fileNames) {
-//            const QString newSrcFilePath
-//                    = srcFilePath + QLatin1Char('/') + fileName;
-//            const QString newTgtFilePath
-//                    = tgtFilePath + QLatin1Char('/') + fileName;
-//            if (!copyRecursively(newSrcFilePath, newTgtFilePath)){
-//                qDebug() << "checkpoint 1 failed.";
-//                return false;
-//            }
-//        }
-//    } else {
-//        if (!QFile::copy(srcFilePath, tgtFilePath)){
-//            qDebug() << "checkpoint 2 failed.";
-//            return false;
-//        }
-//    }
-//    return true;
-//}
-
-void EncDecHandler::clearDir( const QString path )
-{
-    QDir dir( path );
-
-    dir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
-    foreach( QString dirItem, dir.entryList() )
-        dir.remove( dirItem );
-
-    dir.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
-    foreach( QString dirItem, dir.entryList() )
-    {
-        QDir subDir( dir.absoluteFilePath( dirItem ) );
-        subDir.removeRecursively();
+QStringList EncDecHandler::getListOfEncryptedFilesystemNames(){
+    QStringList resultList;
+    QFile f("filesystempath_password_pairs");
+    if(!f.open(QIODevice::ReadWrite | QIODevice::Text)){
+        qDebug() << f.errorString();
     }
+    else{
+        QTextStream in(&f);
+        while(!in.atEnd()){
+            QString line = in.readLine();
+            resultList << line.split("\t")[0];
+        }
+    }
+    return resultList;
 }
