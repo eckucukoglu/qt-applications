@@ -8,24 +8,26 @@ MouseArea {
     property bool ready: false
     signal move(int x, int y)
     signal swipe(string direction)
-
+    propagateComposedEvents: true
 
     onPressed: {
+        console.log("swipe area on pressed")
         mouse.accepted = true
+        propagateComposedEvents = true
 
-        drag.axis = Drag.XAndYAxis
+        drag.axis = Drag.XAxis
         origin = Qt.point(mouse.x, mouse.y)
 
     }
 
     onPositionChanged: {
-
+        //console.log("mouse.x :" + mouse.x +" and origin.x: " + origin.x)
         switch (drag.axis) {
         case Drag.XAndYAxis:
-            if (Math.abs(mouse.x - origin.x) > 140) {
+            if (Math.abs(mouse.x - origin.x) > 0) {
                 drag.axis = Drag.XAxis
             }
-            else if (Math.abs(mouse.y - origin.y) > 140) {
+            else if (Math.abs(mouse.y - origin.y) > 0) {
                 drag.axis = Drag.YAxis
             }
             break
@@ -39,19 +41,39 @@ MouseArea {
     }
 
     onReleased: {
+        var swiped = false;
+        //propagateComposedEvents = false;
 
+        console.log("swipe area on released")
         switch (drag.axis) {
         case Drag.XAndYAxis:
             canceled(mouse)
             break
         case Drag.XAxis:
-            swipe(mouse.x - origin.x < 140 ? "left" : "right")
+            if(origin.x - mouse.x > 200){
+                swipe("left")
+                swiped = true
+            }
+            else if(mouse.x - origin.x > 200){
+                swipe("right")
+                swiped = true
+            }
+            else{
+                canceled(mouse)
+            }
             break
         case Drag.YAxis:
-            swipe(mouse.y - origin.y < 140 ? "up" : "down")
+            swipe(mouse.y - origin.y < 0 ? "up" : "down")
             break
         }
 
-        mouse.accepted = true ;
+        if(swiped){
+            propagateComposedEvents = false;
+            mouse.accepted = true;
+
+        }
+
+        //propagateComposedEvents = true
+
     }
 }

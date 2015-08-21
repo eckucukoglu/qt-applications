@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.5
 import QtGraphicalEffects 1.0
 
 Component {
@@ -65,15 +65,16 @@ Component {
 
         MouseArea{
             anchors.fill: parent
-            propagateComposedEvents: true
+             propagateComposedEvents: true
 
             onPressed: {
+                console.log("mouse area on pressed")
                 mouse.accepted = false
             }
 
             onClicked: {
+                console.log("mouse area on clicked")
                 appDelegate.GridView.view.currentIndex = index
-
                 if(containsMouse){
                     console.log("clicked")
                     console.log(appDelegate.GridView.view.currentIndex)
@@ -81,8 +82,8 @@ Component {
                     //  DO ANY CLICK ACTION HERE
                 }
 
-                mouse.accepted = false
             }
+
 
         }
 
