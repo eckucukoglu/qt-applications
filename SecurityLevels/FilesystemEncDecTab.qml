@@ -95,11 +95,6 @@ Item {
                 selectFolder: true
                 onAccepted: {
                     filesystemLoc.text = encDecHandler.getLocalFilePath(fileDialog.fileUrl)
-                    console.log("You chose: " + filesystemLoc.text)
-                }
-                onRejected: {
-                    console.log("Canceled")
-
                 }
             }
         }
