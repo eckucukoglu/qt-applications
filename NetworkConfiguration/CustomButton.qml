@@ -4,11 +4,14 @@ import QtQuick.Controls.Styles 1.4
 
 Item{
     property alias text: button.text
+    signal clicked()
     width: 96
     height: 44
     Button{
         id: button
         style: customButtonStyle
+
+        onClicked: parent.clicked()
     }
 
     Component{
@@ -31,7 +34,7 @@ Item{
             label:Text{
                 text: control.text
                 font.family: "Helvetica"
-                font.weight: Font.Light
+                font.pixelSize: 20
                 color: "#d5d1d1"
 
                 verticalAlignment: Text.AlignVCenter

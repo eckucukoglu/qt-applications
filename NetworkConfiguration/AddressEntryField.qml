@@ -1,7 +1,11 @@
 import QtQuick 2.0
 
 Item{
+    id: root
     property string info
+    property alias text: textInput.text
+    property alias readOnly: textInput.readOnly
+    signal textEdited(string txt)
 
     width: 587
     height: 33
@@ -26,12 +30,19 @@ Item{
         height: 33
 
         TextInput{
+            id: textInput
             color: readOnly ? "#858181" : "#d5d1d1"
             font.pixelSize: 20
             font.family: "Helvetica"
             width: 273
 
             anchors.centerIn: parent
+
+            onTextChanged: {
+                root.textEdited(text);
+                console.log(text)
+            }
+
 
 
             inputMask:  "000.000.000.000;"

@@ -2,6 +2,7 @@ import QtQuick 2.0
 
 Item{
     property string info
+    property alias text: textInput.text
 
     width: 587
     height: 33
@@ -26,6 +27,7 @@ Item{
         height: 33
 
         TextInput{
+            id: textInput
             color: readOnly ? "#858181" : "#d5d1d1"
             font.pixelSize: 20
             font.family: "Helvetica"
