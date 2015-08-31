@@ -190,7 +190,8 @@ Item{
         function prepareDetailsText(){
             var str = "";
             if(manualAutoSwitchField.activeText == "Auto")
-                str += "The network settings will be automatically configured for the " + wirelessEthernetSwitchField.activeText.toLowerCase() + " interface \n";
+                str += "The network settings will be automatically configured for the " + wirelessEthernetSwitchField.activeText.toLowerCase() + " interface \n" +
+                        "DNS settings will be also reset.";
             else{
                 str += "The following changes will be made:\n";
                 str += "IP Address: " + currentIP + "\n";

@@ -13,11 +13,17 @@ ApplicationWindow {
         id: applicationArea
         anchors.fill: parent
 
-
         LeftWidgetArea{
             id: leftWidgetArea
             x:0
             y:0
+
+            title: "NETWORK SETTINGS"
+            description: "You can manage your network"
+            iconSource: "assets/network_icon.png"
+
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
     }
 

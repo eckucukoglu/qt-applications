@@ -4,28 +4,38 @@ Item {
     width: 346
     height: 600
 
+    property alias title: titleText.text
+    property alias description: descText.text
+    property alias iconSource: img.source
+
     Rectangle{
         anchors.fill: parent
         color: "#3b393e"
 
         Image{
-            source: "assets/network_icon.png"
+            id: img
             x: 120
             y: 172
         }
 
         SoberText{
-            x: 50
+            id:titleText
+            //x: 50
             y: 306
-            text: "NETWORK SETTINGS"
             font.pixelSize: 24
+            horizontalAlignment: Qt.AlignHCenter
+            anchors.right: parent.right
+            anchors.left: parent.left
         }
 
         SoberText{
-            x:80
+            id:descText
+            //x:80
             y:337
-            text: "You can manage your network"
             font.pixelSize: 14
+            horizontalAlignment: Qt.AlignHCenter
+            anchors.right: parent.right
+            anchors.left: parent.left
         }
 
         Rectangle{
