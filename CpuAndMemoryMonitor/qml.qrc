@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>SoberText.qml</file>
+        <file>LeftWidgetArea.qml</file>
+        <file>assets/icon_cpu.png</file>
+        <file>ApplicationArea.qml</file>
+        <file>CustomProgressBar.qml</file>
+    </qresource>
+</RCC>
