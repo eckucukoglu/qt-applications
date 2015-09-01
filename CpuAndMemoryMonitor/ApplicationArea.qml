@@ -4,15 +4,11 @@ import CpuMemHandler 1.0
 
 Item{
     property int numberOfCpus: cpuMemHandler.getNumberOfCpus();
-
-    property var oldCpuTotals: []
-    property var cpuTotals: []
-    property var oldCpuIdles: []
-    property var cpuIdles: []
-    property var cpuPercentages: []
-    property var cpuColors: ["#fce7c2", "#f68d76", "#679911", "#f17711", "#2366ee", "#d64222", "#229977", "#1caaee"]
+    property var cpuColors: ["#fce7c2", "#f68d76", "#679911", "#f17711", "#42aa48", "#d64222", "#229977", "#1caaee"]
     property double ramPerc
-    property double totalRam
+    property int totalRam
+    property var cpuPercentages: []
+    property var cpuPercentagesHumanReadable: []
 
 
     CpuMemHandler{
@@ -43,12 +39,12 @@ Item{
                     id:totalCpuUsage
                     width: 200
                     height: 20
-                    value: 0.3
+                    value: cpuPercentages[0]
                     text: "CPU Usage"
                     fillColor: "#80808f"
-                    progressBarText: "5%"
-                    bgText: "95%"
-                    progressBarRightMargin: 40
+                    progressBarText: "0 %"
+                    bgText: "100 %"
+                    progressBarRightMargin: 5
                 }
 
                 Repeater{
@@ -57,10 +53,12 @@ Item{
                     CustomProgressBar{
                         width: 200
                         height: 20
-                        value: 0.3
+                        value: cpuPercentages[index + 1]
                         text: "Core " + index
                         fillColor: cpuColors[index % cpuColors.length]
-                        progressBarRightMargin: 40
+                        progressBarRightMargin: 5
+                        progressBarText: "0 %"
+                        bgText: "100 %"
                     }
                 }
 
@@ -68,12 +66,17 @@ Item{
                     id:deviceMemory
                     width: 200
                     height: 20
-                    value: 0.3
+                    value: ramPerc
                     text: "Device Memory"
                     fillColor: "#04caad"
                     progressBarText: (totalRam * ramPerc) + " MB"
                     bgText: (totalRam - totalRam * ramPerc) + " MB"
-                    progressBarRightMargin: 70
+                    progressBarRightMargin: 5
+                }
+
+                Processes{
+                    id: processes
+                    width: 200
                 }
             }
         }
@@ -84,32 +87,50 @@ Item{
         ramPerc = cpuMemHandler.getRamPercentage();
         deviceMemory.value = ramPerc
 
+        //update total percentage
+        cpuPercentages[0] = cpuMemHandler.getCpuPercentage(0);
+        cpuPercentagesHumanReadable[0] = (cpuPercentages[0] * 100).toFixed(0);
+        totalCpuUsage.value = cpuPercentages[0];
+
         //update cpu percentages
-        for(var i = 0; i < numberOfCpus; i++){
-            cpus.itemAt(i).value = cpuPercentages[i];
+        for(var i = 1; i <= numberOfCpus; i++){
+            cpuPercentages[i] = cpuMemHandler.getCpuPercentage(i);
+            cpuPercentagesHumanReadable[i] = (cpuPercentages[i] * 100).toFixed(0);
+            cpus.itemAt(i-1).value = cpuPercentages[i];
+        }
+
+        //refresh the progress bar texts:
+        totalCpuUsage.progressBarText = cpuPercentagesHumanReadable[0] + " %";
+        totalCpuUsage.bgText = (100 - cpuPercentagesHumanReadable[0]) + " %"
+        for(var l = 1; l <= numberOfCpus; l++){
+            cpus.itemAt(l - 1).progressBarText = cpuPercentagesHumanReadable[l] + " %";
+            cpus.itemAt(l - 1).bgText = (100 - cpuPercentagesHumanReadable[l]) + " %"
         }
     }
-
-    function getOverallCpuStats(){
-
-    }
-
 
     Component.onCompleted: {
-        totalRam = cpuMemHandler.getTotalRam();
-        console.log(totalRam)
-        ramPerc = cpuMemHandler.getRamPercentage();
-        deviceMemory.value = ramPerc
+        //******************************************
+        //update cpu values
+        //******************************************
+        cpuMemHandler.updateCpuValues();
+        for(var j = 0; j <= numberOfCpus; j++){
+            cpuPercentages.push(cpuMemHandler.getCpuPercentage(j));
+            cpuPercentagesHumanReadable.push((cpuPercentages[j] * 100).toFixed(0));
+        }
+
+        //initially, the values of the cpus are all zeroes.
+        totalCpuUsage.value = 0;
+        for(var i = 0; i < numberOfCpus; i++){
+            cpus.itemAt(i).value = 0;
+        }
 
         //******************************************
-        for(var i = 0; i < numberOfCpus; i++){
-            oldCpuTotals.push(0);
-            oldCpuIdles.push(0);
-            cpuTotals.push(0);
-            cpuIdles.push(0);
-            cpuPercentages.push(0);
-        }
+        //update ram values
+        //******************************************
+        totalRam = cpuMemHandler.getTotalRam();
+        refreshCpuAndRamValues();
     }
+
 
     Timer{
         id:refresher
@@ -118,6 +139,7 @@ Item{
         repeat: true
 
         onTriggered: {
+            cpuMemHandler.updateCpuValues();
             refreshCpuAndRamValues();
         }
     }

@@ -6,5 +6,8 @@
         <file>assets/icon_cpu.png</file>
         <file>ApplicationArea.qml</file>
         <file>CustomProgressBar.qml</file>
+        <file>Processes.qml</file>
+        <file>ProcessDelegate.qml</file>
+        <file>SwipeArea.qml</file>
     </qresource>
 </RCC>

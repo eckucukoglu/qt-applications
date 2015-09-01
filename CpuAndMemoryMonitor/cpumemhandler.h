@@ -15,6 +15,10 @@ public:
     Q_INVOKABLE void getRamStats(int& total, int& used);
     Q_INVOKABLE double getRamPercentage();
     Q_INVOKABLE int getTotalRam();
+    Q_INVOKABLE void updateCpuValues();
+    Q_INVOKABLE double getCpuPercentage(int i);
+    Q_INVOKABLE QString readAllStatFiles();
+    Q_INVOKABLE QString tryToKillProcess(QString pid);
 
 signals:
 
@@ -22,6 +26,10 @@ public slots:
 
 private:
     int numberOfCpus;
+    int* oldCpuTotals;
+    int* oldCpuIdles;
+    int* cpuTotals;
+    int* cpuIdles;
 };
 
 #endif // CPUMEMHANDLER_H

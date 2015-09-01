@@ -30,7 +30,9 @@ Item{
         anchors.topMargin: 15
         //value: 0.4
         width: 577
-        height: 14
+        height: 15
+
+        Behavior on value {NumberAnimation{easing.type: Easing.OutCubic}}
     }
 
     Component{
@@ -40,10 +42,11 @@ Item{
                 color: "#4e4c55"
 
                 SoberText{
+                    horizontalAlignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.rightMargin: progressBarRightMargin
                     //anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 14
+                    font.pixelSize: 15
                     text: bgText
                 }
             }
@@ -52,10 +55,11 @@ Item{
                 //border.color: "steelblue"
 
                 SoberText{
+                    horizontalAlignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.rightMargin: progressBarRightMargin
                     //anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 14
+                    font.pixelSize: 15
                     font.weight: Font.Normal
                     text: progressBarText
                     color: "#444547"

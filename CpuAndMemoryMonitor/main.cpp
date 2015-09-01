@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     qmlRegisterType<CpuMemHandler, 1>("CpuMemHandler", 1, 0, "CpuMemHandler");
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();
