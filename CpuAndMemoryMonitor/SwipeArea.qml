@@ -11,7 +11,7 @@ MouseArea {
 
     onPressed: {
         console.log("swipe area on pressed")
-        mouse.accepted = true
+        //mouse.accepted = true
         propagateComposedEvents = true
 
         drag.axis = Drag.XAndYAxis
@@ -23,15 +23,20 @@ MouseArea {
         //console.log("mouse.x :" + mouse.x +" and origin.x: " + origin.x)
         switch (drag.axis) {
         case Drag.XAndYAxis:
-            if (Math.abs(mouse.y - origin.y) > 0) {
+            if (mouse.y != origin.y) {
+                //console.log("axis changed to Y axis")
                 drag.axis = Drag.YAxis
             }
-            else if (Math.abs(mouse.x - origin.x) > 0) {
+            if (mouse.x != origin.x) {
+                //console.log("axis changed to X axis")
                 drag.axis = Drag.XAxis
             }
             break
         case Drag.XAxis:
             move(mouse.x - origin.x, 0)
+            break
+        case Drag.YAxis:
+            //move(0, mouse.y - origin.y)
             break
         }
     }
@@ -43,20 +48,22 @@ MouseArea {
         console.log("swipe area on released")
         switch (drag.axis) {
         case Drag.XAndYAxis:
-            canceled(mouse)
+            drag.axis = Drag.YAxis
             break
         case Drag.XAxis:
-            if(origin.x - mouse.x > 50){
+            if(origin.x - mouse.x > 100){
                 swipe("left")
                 swiped = true
             }
-            else if(mouse.x - origin.x > 50){
+            else if(mouse.x - origin.x > 100){
                 swipe("right")
                 swiped = true
             }
             else{
                 canceled(mouse)
             }
+            break
+        case Drag.YAxis:
             break
         }
 

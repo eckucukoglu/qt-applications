@@ -14,7 +14,7 @@ Component{
         width: 577
         height: 45
         onCurrentIndexChanged: {
-            slide_anim.to = - root.width * currentIndex
+            slide_anim.to = - content.width * currentIndex + 400
             slide_anim.start()
             slide_anim.alwaysRunToEnd = true
         }
@@ -32,10 +32,9 @@ Component{
         SwipeArea {
             anchors.fill: parent
             id:swipeArea
-            z:-1
             onMove: {
                 if((x > 0 && currentIndex != 0) || (x < 0 && currentIndex != numberOfPages-1 )){ //only when swipeable
-                    content.x =(-root.width * currentIndex) + x
+                    content.x =(-content.width * currentIndex) + x + 400
                 }
             }
             onSwipe: {
@@ -48,6 +47,9 @@ Component{
                     }
                     else {
                         currentIndex++
+                        memText.opacity = 0
+                        killProcessButton.opacity = 1
+                        cancelButton.opacity = 1
                         //currentIndexChanged()
                     }
                     break
@@ -57,6 +59,9 @@ Component{
                     }
                     else {
                         currentIndex--          //change the index
+                        memText.opacity = 1
+                        killProcessButton.opacity = 0
+                        cancelButton.opacity = 0
                         //currentIndexChanged()   //then realign the view
                     }
                     break
@@ -76,77 +81,95 @@ Component{
             color: "transparent"
             border.width: 1
             border.color: "#4e4c55"
+
+            Rectangle{
+                id: coloredCircle
+                width: 20
+                height: 20
+                radius: width * 0.5
+                border.color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)
+                color: "transparent"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+
+                Rectangle{
+                    anchors.fill: parent
+                    radius: parent.width * 0.5
+                    color: parent.border.color
+                    opacity: 0.4
+                }
+            }
+
+            SoberText{
+                id: processName
+                anchors.left: coloredCircle.right
+                //anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: 10
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                font.pixelSize: 18
+
+                text: name
+            }
+
             Rectangle{
                 id: content
-                width: parent.width * numberOfPages
+                width: 300 * numberOfPages
+                x: contentContainer.x + 400
                 anchors.bottom: parent.bottom
                 anchors.top: parent.top
                 color: "transparent"
 
-                Rectangle{
-                    id: coloredCircle
-                    width: 20
-                    height: 20
-                    radius: width * 0.5
-                    border.color: Qt.rgba(Math.random(), Math.random(), Math.random(), 1)
-                    color: "transparent"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 8
-
-                    Rectangle{
-                        anchors.fill: parent
-                        radius: parent.width * 0.5
-                        color: parent.border.color
-                        opacity: 0.4
-                    }
-                }
-
-                SoberText{
-                    id: processName
-                    anchors.left: coloredCircle.right
-                    //anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: 10
-                    anchors.top: parent.top
-                    anchors.topMargin: 10
-                    font.pixelSize: 18
-
-                    text: name
-                }
 
                 SoberText{
                     id: memText
-                    horizontalAlignment: Qt.AlignRight
-                    anchors.left: processName.right
-                    anchors.leftMargin: 480
+                    horizontalAlignment: Qt.AlignLeft
                     anchors.top: parent.top
                     anchors.topMargin: 10
 
                     font.pixelSize: 18
 
                     text: memory
+                    //Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
                 }
 
-                Button{
+                CustomButton{
+                    id: killProcessButton
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "KILL PROCESS"
-                    x: parent.width * 0.70
+                    text: "End this process"
+                    x: parent.width * 0.90
 
                     onClicked:{
                         var result = cpuMemHandler.tryToKillProcess(parseInt(pid))
+                        updateProcessesList()
                     }
+                    opacity: 0
+                    //Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
+                }
+
+                CustomButton{
+                    id: cancelButton
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: killProcessButton.right
+                    anchors.leftMargin: 10
+                    text: "Cancel"
+                    buttonWidth: 60
+                    x: parent.width * 0.97
+
+                    onClicked: {
+                        swipeArea.swipe("right")
+                    }
+                    opacity: 0
+                    //Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
                 }
             }
+
         }
         CpuMemHandler{
             id: cpuMemHandler
         }
 
-        Component.onCompleted: {
-            console.log("name: " + name)
-            console.log("memory: " + memory)
-            console.log("pid: " + pid)
-        }
     }
 
 

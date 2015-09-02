@@ -38,6 +38,8 @@ Item{
         delegate: ProcessDelegate{
                 }
         model: processListModel
+
+        //flickableDirection: Flickable.HorizontalFlick
     }
 
     ListModel{
@@ -54,8 +56,9 @@ Item{
         var statsString = cpuMemHandler.readAllStatFiles().split("\n");
         var name, mem, pid;
 
-        //processListView.selection.clear();
-        processListModel.clear();
+        //clear the list
+        while(processListModel.count > 0)
+            processListModel.remove(0);
 
         var memHumanReadable
         var processEntry
@@ -66,7 +69,6 @@ Item{
             name = processEntry[0]
             mem = parseInt(processEntry[1])
             pid = parseInt(processEntry[3])
-            console.log(processEntry)
 
             if(mem < 1024){
                 memHumanReadable = mem + " KB"
@@ -84,5 +86,17 @@ Item{
 
     CpuMemHandler{
         id:cpuMemHandler
+    }
+
+    Timer{
+        id:refresher
+        running: true
+        repeat: true
+        interval: 5000
+
+        onTriggered: {
+            //cpuMemHandler.readAllStatFiles();
+            updateProcessesList()   //LEAKY FUNCTION.....
+        }
     }
 }

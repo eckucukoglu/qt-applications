@@ -45,8 +45,11 @@ Item{
                     horizontalAlignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.rightMargin: progressBarRightMargin
+                    anchors.top: parent.top
+                    anchors.topMargin: -3
                     //anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 15
+                    font.pixelSize: 16
+                    font.weight: Font.Normal
                     text: bgText
                 }
             }
@@ -58,8 +61,10 @@ Item{
                     horizontalAlignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.rightMargin: progressBarRightMargin
+                    anchors.top: parent.top
+                    anchors.topMargin: -3
                     //anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 15
+                    font.pixelSize: 16
                     font.weight: Font.Normal
                     text: progressBarText
                     color: "#444547"

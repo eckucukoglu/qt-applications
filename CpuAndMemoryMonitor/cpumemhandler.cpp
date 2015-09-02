@@ -16,7 +16,14 @@ CpuMemHandler::CpuMemHandler(QObject *parent) : QObject(parent)
         cpuIdles[i] = 0;
         cpuTotals[i] = 0;
     }
+    getRamStats();
 }
+//CpuMemHandler::~CpuMemHandler(){
+//    delete oldCpuIdles;
+//    delete oldCpuTotals;
+//    delete cpuIdles;
+//    delete cpuTotals;
+//}
 
 int CpuMemHandler::getNumberOfCpus(){
     int processorCount = 0;
@@ -26,9 +33,9 @@ int CpuMemHandler::getNumberOfCpus(){
         return -1;
     }
     QTextStream in(&f);
-    QString content = in.readAll();
+    cpuinfoContent = in.readAll();
     f.close();
-    QStringList lines = content.split("\n");
+    lines = cpuinfoContent.split("\n");
 
     foreach(QString line, lines){
         if(line.contains("processor"))
@@ -38,17 +45,16 @@ int CpuMemHandler::getNumberOfCpus(){
     return processorCount;
 }
 
-void CpuMemHandler::getRamStats(int& total, int& used){
+void CpuMemHandler::getRamStats(){
     QFile f("/proc/meminfo");
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug() << "error when opening /proc/meminfo";
         return;
     }
 
-    int free, buffer, cached;
     QTextStream in(&f);
-    QString content = in.readAll();
-    QStringList lines = content.split("\n");
+    meminfoContent = in.readAll();
+    lines = meminfoContent.split("\n");
     f.close();
     total = lines[0].split(QRegExp("\\s+"))[1].toInt();
     free = lines[1].split(QRegExp("\\s+"))[1].toInt();
@@ -61,27 +67,16 @@ void CpuMemHandler::getRamStats(int& total, int& used){
 }
 
 int CpuMemHandler::getTotalRam(){
-    int total;
-    QFile f("/proc/meminfo");
-    if(!f.open(QIODevice::ReadOnly | QIODevice::Text)){
-        qDebug() << "error when opening /proc/meminfo";
-        return 0;
-    }
-    QTextStream in(&f);
-    QString content = in.readAll();
-    QStringList lines = content.split("\n");
-    f.close();
-    total = lines[0].split(QRegExp("\\s+"))[1].toInt();
-    return total / 1024;
+    return total;
 }
 
 double CpuMemHandler::getRamPercentage(){
-    int total, used;
-    getRamStats(total, used);
+    getRamStats();
     return (double)used / total;
 }
 
 void CpuMemHandler::updateCpuValues(){
+    qDebug() << "updating cpu values (idles and totals)";
     QFile f("/proc/stat");
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug() << "error when opening /proc/stat";
@@ -90,7 +85,7 @@ void CpuMemHandler::updateCpuValues(){
 
 
     QTextStream in(&f);
-    QString content = in.readAll();
+    procStatContent = in.readAll();
 
     f.close();
 
@@ -100,8 +95,8 @@ void CpuMemHandler::updateCpuValues(){
         oldCpuIdles[i] = cpuIdles[i];
     }
 
-    QStringList lines = content.split("\n");    //all lines of the stat file.
-    QStringList currentLine;
+    lines = procStatContent.split("\n");    //all lines of the stat file.
+
     for(int i = 0; i <= numberOfCpus; i++){
         int currentTotalCount = 0;
         //current line has idle value in 5th value (4th index).
@@ -128,17 +123,21 @@ double CpuMemHandler::getCpuPercentage(int i){
 }
 
 QString CpuMemHandler::readAllStatFiles(){
+    qDebug() << "reading all status files";
     QString allStatsString = "";
     QDir procDir("/proc/");
     procDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     QDirIterator di(procDir);
+    QString currentDir;
+    int numberOfProcesses = 0;
 
     //This loop will traverse all the directories in /proc
     while(di.hasNext()){
-        QString currentDir = di.next();
+        currentDir = di.next();
+        numberOfProcesses++;
 
-        //Check if there is a stat file
-        if(QFile::exists(currentDir + "/stat"))
+        //Check if there is a status file
+        if(QFile::exists(currentDir + "/status"))
         {
             QFile statusFile(currentDir + "/status");
 
@@ -151,13 +150,11 @@ QString CpuMemHandler::readAllStatFiles(){
             }
 
             QTextStream in(&statusFile);
-            QString contentOfStatusFile = in.readAll();
+            procPidStatusContent= in.readAll();
 
             //qDebug() << contentOfStatusFile;
-            QStringList entries = contentOfStatusFile.split("\n");
-            QStringList nameEntry,pidEntry, memEntry;
-
-            foreach(QString line, entries){
+            lines = procPidStatusContent.split("\n");
+            foreach(QString line, lines){
                 if(line.startsWith("Name:"))
                      nameEntry = line.split("\t");
                 else if(line.startsWith("Pid:"))
@@ -175,7 +172,7 @@ QString CpuMemHandler::readAllStatFiles(){
     }//endwhile
     allStatsString.chop(1); //last empty line is deleted.
     //qDebug() << allStatsString;
-
+    qDebug() << numberOfProcesses;
     return allStatsString;
 }
 

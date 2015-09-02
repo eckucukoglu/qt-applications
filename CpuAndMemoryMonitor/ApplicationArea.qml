@@ -44,7 +44,7 @@ Item{
                     fillColor: "#80808f"
                     progressBarText: "0 %"
                     bgText: "100 %"
-                    progressBarRightMargin: 5
+                    progressBarRightMargin: 3
                 }
 
                 Repeater{
@@ -56,7 +56,7 @@ Item{
                         value: cpuPercentages[index + 1]
                         text: "Core " + index
                         fillColor: cpuColors[index % cpuColors.length]
-                        progressBarRightMargin: 5
+                        progressBarRightMargin: 3
                         progressBarText: "0 %"
                         bgText: "100 %"
                     }
@@ -69,9 +69,9 @@ Item{
                     value: ramPerc
                     text: "Device Memory"
                     fillColor: "#04caad"
-                    progressBarText: (totalRam * ramPerc) + " MB"
-                    bgText: (totalRam - totalRam * ramPerc) + " MB"
-                    progressBarRightMargin: 5
+                    progressBarText: (totalRam * ramPerc).toFixed()  + " MB"
+                    bgText: (totalRam - totalRam * ramPerc).toFixed() + " MB"
+                    progressBarRightMargin: 3
                 }
 
                 Processes{
@@ -83,8 +83,9 @@ Item{
     }
 
     function refreshCpuAndRamValues(){
-        //Get ram percntage and update ram progress bar
+        //Get ram percentage and update ram progress bar
         ramPerc = cpuMemHandler.getRamPercentage();
+        console.log(ramPerc)
         deviceMemory.value = ramPerc
 
         //update total percentage
@@ -100,10 +101,11 @@ Item{
         }
 
         //refresh the progress bar texts:
-        totalCpuUsage.progressBarText = cpuPercentagesHumanReadable[0] + " %";
+        //if the value is below 6%, don't write it down to the progress bar since it won't be seen
+        totalCpuUsage.progressBarText = (cpuPercentagesHumanReadable[0] < 6) ? "" : (cpuPercentagesHumanReadable[0]   + " %");
         totalCpuUsage.bgText = (100 - cpuPercentagesHumanReadable[0]) + " %"
         for(var l = 1; l <= numberOfCpus; l++){
-            cpus.itemAt(l - 1).progressBarText = cpuPercentagesHumanReadable[l] + " %";
+            cpus.itemAt(l - 1).progressBarText = (cpuPercentagesHumanReadable[l] < 6) ? "" : (cpuPercentagesHumanReadable[l]   + " %");
             cpus.itemAt(l - 1).bgText = (100 - cpuPercentagesHumanReadable[l]) + " %"
         }
     }
@@ -128,6 +130,7 @@ Item{
         //update ram values
         //******************************************
         totalRam = cpuMemHandler.getTotalRam();
+        console.log(totalRam)
         refreshCpuAndRamValues();
     }
 
@@ -140,7 +143,7 @@ Item{
 
         onTriggered: {
             cpuMemHandler.updateCpuValues();
-            refreshCpuAndRamValues();
+            refreshCpuAndRamValues();   //LEAKY FUNCTION.....
         }
     }
 }

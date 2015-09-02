@@ -9,5 +9,6 @@
         <file>Processes.qml</file>
         <file>ProcessDelegate.qml</file>
         <file>SwipeArea.qml</file>
+        <file>CustomButton.qml</file>
     </qresource>
 </RCC>

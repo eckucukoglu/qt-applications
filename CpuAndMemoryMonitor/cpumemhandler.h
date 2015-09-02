@@ -12,7 +12,7 @@ public:
     explicit CpuMemHandler(QObject *parent = 0);
 
     Q_INVOKABLE int getNumberOfCpus();
-    Q_INVOKABLE void getRamStats(int& total, int& used);
+    Q_INVOKABLE void getRamStats();
     Q_INVOKABLE double getRamPercentage();
     Q_INVOKABLE int getTotalRam();
     Q_INVOKABLE void updateCpuValues();
@@ -30,6 +30,14 @@ private:
     int* oldCpuIdles;
     int* cpuTotals;
     int* cpuIdles;
+    QString cpuinfoContent;
+    QString meminfoContent;
+    QString procStatContent;
+    QString procPidStatusContent;
+    QStringList lines, currentLine;
+    QStringList memEntry, pidEntry, nameEntry;
+    int total, free, buffer, cached, used;
+
 };
 
 #endif // CPUMEMHANDLER_H
