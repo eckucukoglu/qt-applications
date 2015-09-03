@@ -8,7 +8,6 @@ Component{
     id:processDelegate
 
     Item{
-        property int numberOfPages: 2
         property int currentIndex: 0
         id:root
         width: 577
@@ -20,25 +19,17 @@ Component{
         }
 
 
-        PropertyAnimation {
-            id: slide_anim
-            target: content
-            easing.type: Easing.OutQuad
-
-            properties: "x"
-            duration: 500
-        }
-
         SwipeArea {
             anchors.fill: parent
             id:swipeArea
             onMove: {
+                contentContainer.color = "#44888888"
                 if((x > 0 && currentIndex != 0) || (x < 0 && currentIndex != numberOfPages-1 )){ //only when swipeable
                     content.x =(-content.width * currentIndex) + x + 400
                 }
             }
             onSwipe: {
-
+                contentContainer.color = "transparent"
                 console.log("swipe.")
                 switch (direction) {
                 case "left":
@@ -70,6 +61,7 @@ Component{
             }
 
             onCanceled: {
+                contentContainer.color = "transparent"
                 currentIndexChanged()
             }
 
@@ -81,6 +73,15 @@ Component{
             color: "transparent"
             border.width: 1
             border.color: "#4e4c55"
+            PropertyAnimation {
+                id: slide_anim
+                target: content
+                //easing.type: Easing.Linear
+
+                properties: "x"
+                duration: 300
+            }
+
 
             Rectangle{
                 id: coloredCircle
@@ -113,13 +114,13 @@ Component{
                 text: name
             }
 
-            Rectangle{
+            Item{
                 id: content
                 width: 300 * numberOfPages
                 x: contentContainer.x + 400
                 anchors.bottom: parent.bottom
                 anchors.top: parent.top
-                color: "transparent"
+                //color: "transparent"
 
 
                 SoberText{
@@ -131,7 +132,7 @@ Component{
                     font.pixelSize: 18
 
                     text: memory
-                    //Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
+                    Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
                 }
 
                 CustomButton{
@@ -145,7 +146,7 @@ Component{
                         updateProcessesList()
                     }
                     opacity: 0
-                    //Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
+                    Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
                 }
 
                 CustomButton{
@@ -161,14 +162,19 @@ Component{
                         swipeArea.swipe("right")
                     }
                     opacity: 0
-                    //Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
+                    Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
                 }
             }
+
 
         }
         CpuMemHandler{
             id: cpuMemHandler
         }
+
+//        Component.onCompleted: {
+//            contentLoader.sourceComponent = contentComponent
+//        }
 
     }
 

@@ -9,6 +9,18 @@ ApplicationWindow {
     height: 600
     visible: true
 
+    //for the Processes.qml
+    property var statsString
+    property string name
+    property string mem
+    property string pid
+    property string memHumanReadable
+    property var processEntry
+
+    //for delegates
+    property int numberOfPages: 2
+
+
 
     ApplicationArea{
         LeftWidgetArea{

@@ -10,5 +10,6 @@
         <file>ProcessDelegate.qml</file>
         <file>SwipeArea.qml</file>
         <file>CustomButton.qml</file>
+        <file>helperfunctions.js</file>
     </qresource>
 </RCC>

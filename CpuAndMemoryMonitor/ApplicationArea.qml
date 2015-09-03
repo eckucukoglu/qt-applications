@@ -1,6 +1,7 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.4
+import QtQuick.Controls 1.3
 import CpuMemHandler 1.0
+import "helperfunctions.js" as Logic
 
 Item{
     property int numberOfCpus: cpuMemHandler.getNumberOfCpus();
@@ -18,6 +19,23 @@ Item{
     anchors.fill: parent
 
     Rectangle{
+        x:347
+        y:0
+        width: 43
+        height: 600
+        color:"#444347"
+        z: 1
+    }
+    Rectangle{
+        x:970
+        y:0
+        width: 65
+        height: 600
+        color:"#444347"
+        z: 1
+    }
+
+    Rectangle{
         anchors.fill: parent
         color: "#444347"
 
@@ -29,7 +47,7 @@ Item{
             contentWidth: contentColumn.width
             contentHeight: contentColumn.height
             flickableDirection: Flickable.VerticalFlick
-            boundsBehavior: Flickable.OvershootBounds
+            //boundsBehavior: Flickable.OvershootBounds //at Qt5.5
 
             Column{
                 id: contentColumn
@@ -74,43 +92,22 @@ Item{
                     progressBarRightMargin: 3
                 }
 
-                Processes{
-                    id: processes
-                    width: 200
+                Loader{
+                    id: processesLoader
+                    width: 577
                 }
+
+//                Processes{
+//                    id: processes
+//                    width: 200
+//                }
             }
         }
     }
 
-    function refreshCpuAndRamValues(){
-        //Get ram percentage and update ram progress bar
-        ramPerc = cpuMemHandler.getRamPercentage();
-        console.log(ramPerc)
-        deviceMemory.value = ramPerc
-
-        //update total percentage
-        cpuPercentages[0] = cpuMemHandler.getCpuPercentage(0);
-        cpuPercentagesHumanReadable[0] = (cpuPercentages[0] * 100).toFixed(0);
-        totalCpuUsage.value = cpuPercentages[0];
-
-        //update cpu percentages
-        for(var i = 1; i <= numberOfCpus; i++){
-            cpuPercentages[i] = cpuMemHandler.getCpuPercentage(i);
-            cpuPercentagesHumanReadable[i] = (cpuPercentages[i] * 100).toFixed(0);
-            cpus.itemAt(i-1).value = cpuPercentages[i];
-        }
-
-        //refresh the progress bar texts:
-        //if the value is below 6%, don't write it down to the progress bar since it won't be seen
-        totalCpuUsage.progressBarText = (cpuPercentagesHumanReadable[0] < 6) ? "" : (cpuPercentagesHumanReadable[0]   + " %");
-        totalCpuUsage.bgText = (100 - cpuPercentagesHumanReadable[0]) + " %"
-        for(var l = 1; l <= numberOfCpus; l++){
-            cpus.itemAt(l - 1).progressBarText = (cpuPercentagesHumanReadable[l] < 6) ? "" : (cpuPercentagesHumanReadable[l]   + " %");
-            cpus.itemAt(l - 1).bgText = (100 - cpuPercentagesHumanReadable[l]) + " %"
-        }
-    }
 
     Component.onCompleted: {
+        processesLoader.source = "Processes.qml"
         //******************************************
         //update cpu values
         //******************************************
@@ -130,8 +127,8 @@ Item{
         //update ram values
         //******************************************
         totalRam = cpuMemHandler.getTotalRam();
-        console.log(totalRam)
-        refreshCpuAndRamValues();
+        //console.log(totalRam)
+        Logic.refreshCpuAndRamValues();
     }
 
 
@@ -143,7 +140,8 @@ Item{
 
         onTriggered: {
             cpuMemHandler.updateCpuValues();
-            refreshCpuAndRamValues();   //LEAKY FUNCTION.....
+            Logic.refreshCpuAndRamValues();
+            gc()
         }
     }
 }

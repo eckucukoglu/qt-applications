@@ -4,11 +4,13 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls.Styles 1.3
 import CpuMemHandler 1.0
+import "helperfunctions.js" as Logic
 
 Item{
+
     anchors.right: parent.right
     anchors.left: parent.left
-    width: 200
+    width: 577
     height: processListView.height
 
     Item{
@@ -24,6 +26,19 @@ Item{
             height: 20
             color: "#04caad"
             text: "Processes"
+        }
+
+        CustomButton{
+            id: refreshButton
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 30
+            text: "Refresh List"
+
+            onClicked: {
+                Logic.updateProcessesList()
+
+            }
         }
 
     }
@@ -48,55 +63,25 @@ Item{
 
 
     Component.onCompleted: {
-        updateProcessesList();
+        Logic.updateProcessesList();
 
     }
 
-    function updateProcessesList(){
-        var statsString = cpuMemHandler.readAllStatFiles().split("\n");
-        var name, mem, pid;
 
-        //clear the list
-        while(processListModel.count > 0)
-            processListModel.remove(0);
-
-        var memHumanReadable
-        var processEntry
-
-        for(var i = 0; i < statsString.length; i++){
-            processEntry = statsString[i].split(" ")
-
-            name = processEntry[0]
-            mem = parseInt(processEntry[1])
-            pid = parseInt(processEntry[3])
-
-            if(mem < 1024){
-                memHumanReadable = mem + " KB"
-            }
-            else{
-                memHumanReadable = ((mem / 1024).toFixed(2)) + " MB"
-            }
-
-            //now add this entry to our model
-            processListModel.insert(0, {name: name, memory: memHumanReadable, pid: pid})
-        }
-
-        processListView.update()
-    }
 
     CpuMemHandler{
         id:cpuMemHandler
     }
 
-    Timer{
-        id:refresher
-        running: true
-        repeat: true
-        interval: 5000
+//    Timer{
+//        id:refresher
+//        running: true
+//        repeat: true
+//        interval: 5000
 
-        onTriggered: {
-            //cpuMemHandler.readAllStatFiles();
-            updateProcessesList()   //LEAKY FUNCTION.....
-        }
-    }
+//        onTriggered: {
+//            cpuMemHandler.readAllStatFiles();
+//            //Logic.updateProcessesList()   //LEAKY FUNCTION.....
+//        }
+//    }
 }

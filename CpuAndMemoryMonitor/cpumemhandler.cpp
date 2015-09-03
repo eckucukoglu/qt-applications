@@ -76,7 +76,6 @@ double CpuMemHandler::getRamPercentage(){
 }
 
 void CpuMemHandler::updateCpuValues(){
-    qDebug() << "updating cpu values (idles and totals)";
     QFile f("/proc/stat");
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug() << "error when opening /proc/stat";
@@ -123,7 +122,6 @@ double CpuMemHandler::getCpuPercentage(int i){
 }
 
 QString CpuMemHandler::readAllStatFiles(){
-    qDebug() << "reading all status files";
     QString allStatsString = "";
     QDir procDir("/proc/");
     procDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
