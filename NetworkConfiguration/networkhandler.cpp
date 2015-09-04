@@ -70,7 +70,7 @@ QString NetworkHandler::getGateway(QString ip, QString netmask){
     QList<QNetworkInterface> list = interfaces.allInterfaces();
 
 
-    if(ip == "0.0.0.0" && netmask == "0.0.0.0")
+    if(ip == "0.0.0.0")
         return "0.0.0.0";
 
     QString gateway;
@@ -84,13 +84,14 @@ QString NetworkHandler::getGateway(QString ip, QString netmask){
         gateway = "0.0.0.0";
     else{
         gatewayCandidate.chop(1);
+        qDebug() << gatewayCandidate;
         QHostAddress gate(gatewayCandidate);
 
-        if(gate.isInSubnet(QHostAddress::parseSubnet(ip + "/" + netmask)))
+        //if(gate.isInSubnet(QHostAddress::parseSubnet(ip + "/" + netmask)))
             gateway = gatewayCandidate;
-        else{
-            gateway = "0.0.0.0";
-        }
+//        else{
+//            gateway = "0.0.0.0";
+//        }
     }
     return gateway;
 
@@ -205,7 +206,7 @@ void NetworkHandler::updateIfstateFile(QString interfaceName){
 }
 
 void NetworkHandler::resetDNSSettings(QString interfaceName){
-    QString resolvconfHeadpath = "/etc/resolvconf/resolv.conf.d/head";
+    QString resolvconfHeadpath = "/etc/resolvconf/resolv.conf.d";
     QDir resolvConf = QDir::root();
     resolvConf.mkpath(resolvconfHeadpath);
     resolvConf.cd(resolvconfHeadpath);
