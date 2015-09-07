@@ -7,10 +7,10 @@ ApplicationWindow {
     title: qsTr("Desktop Screen")
     width: 1024
     height: 600
-    maximumHeight: height
-    minimumHeight: height
-    maximumWidth: width
-    minimumWidth: width
+//    maximumHeight: height
+//    minimumHeight: height
+//    maximumWidth: width
+//    minimumWidth: width
     visible: true
     id: root
 
@@ -43,7 +43,8 @@ ApplicationWindow {
 
     Image {
         id: background
-        anchors.verticalCenter: root.verticalCenter
+        anchors.fill: parent
+        //anchors.verticalCenter: root.verticalCenter
         source: "pics/sober_newspecs/bg.png"
         fillMode: Image.PreserveAspectCrop
     }

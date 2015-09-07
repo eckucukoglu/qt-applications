@@ -1,9 +1,9 @@
 import QtQuick 2.0
 
-Rectangle{
+Item{
     width: parent.width
     height: 48
-    color: "transparent"
+    //color: "transparent"
     anchors.bottom: parent.bottom
 
     Image{
@@ -12,6 +12,14 @@ Rectangle{
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 81
+
+        MouseArea{
+            anchors.fill: parent
+
+            onClicked:{
+                console.log("Back button clicked!")
+            }
+        }
 
     }
 
@@ -22,6 +30,15 @@ Rectangle{
         anchors.verticalCenter: parent.verticalCenter
         anchors.centerIn: parent
 
+
+        MouseArea{
+            anchors.fill: parent
+
+            onClicked:{
+                console.log("Home button clicked!")
+            }
+        }
+
     }
 
     Image{
@@ -30,6 +47,14 @@ Rectangle{
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 81
+
+        MouseArea{
+            anchors.fill: parent
+
+            onClicked:{
+                console.log("List Processes button clicked!")
+            }
+        }
 
     }
 }
