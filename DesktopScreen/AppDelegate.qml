@@ -68,15 +68,12 @@ Component {
              propagateComposedEvents: true
 
             onPressed: {
-                console.log("mouse area on pressed")
                 mouse.accepted = false
             }
 
             onClicked: {
-                console.log("mouse area on clicked")
                 appDelegate.GridView.view.currentIndex = index
                 if(containsMouse){
-                    console.log("clicked")
                     console.log(appDelegate.GridView.view.currentIndex)
 
                     //  DO ANY CLICK ACTION HERE
