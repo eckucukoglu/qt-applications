@@ -7,6 +7,13 @@ import CpuMemHandler 1.0
 import "helperfunctions.js" as Logic
 
 Item{
+    //for the Processes
+    property var statsString
+    property string name
+    property string mem
+    property string pid
+    property string memHumanReadable
+    property var processEntry
 
     anchors.right: parent.right
     anchors.left: parent.left
@@ -66,8 +73,6 @@ Item{
         Logic.updateProcessesList();
 
     }
-
-
 
     CpuMemHandler{
         id:cpuMemHandler

@@ -18,18 +18,35 @@ Component{
             slide_anim.alwaysRunToEnd = true
         }
 
+        states: [
+            State{
+                name: "selected"
+                PropertyChanges{
+                    target: contentContainer
+                    color: "#44666666"
+                }
+            },
+            State{
+                name: "dropped"
+                PropertyChanges{
+                    target: contentContainer
+                    color: "transparent"
+                }
+            }
+        ]
+
 
         SwipeArea {
             anchors.fill: parent
             id:swipeArea
             onMove: {
-                contentContainer.color = "#44888888"
+                root.state = "selected"
                 if((x > 0 && currentIndex != 0) || (x < 0 && currentIndex != numberOfPages-1 )){ //only when swipeable
                     content.x =(-content.width * currentIndex) + x + 400
                 }
             }
             onSwipe: {
-                contentContainer.color = "transparent"
+                root.state = "dropped"
                 console.log("swipe.")
                 switch (direction) {
                 case "left":
@@ -80,6 +97,12 @@ Component{
 
                 properties: "x"
                 duration: 300
+            }
+
+            Behavior on color{
+                ColorAnimation{
+                    easing.type: Easing.OutQuad
+                }
             }
 
 
@@ -172,9 +195,9 @@ Component{
             id: cpuMemHandler
         }
 
-//        Component.onCompleted: {
-//            contentLoader.sourceComponent = contentComponent
-//        }
+        //        Component.onCompleted: {
+        //            contentLoader.sourceComponent = contentComponent
+        //        }
 
     }
 
