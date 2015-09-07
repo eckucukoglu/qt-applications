@@ -84,8 +84,7 @@ QString NetworkHandler::getGateway(QString ip, QString netmask){
         gateway = "0.0.0.0";
     else{
         gatewayCandidate.chop(1);
-        qDebug() << gatewayCandidate;
-        QHostAddress gate(gatewayCandidate);
+        //QHostAddress gate(gatewayCandidate);
 
         //if(gate.isInSubnet(QHostAddress::parseSubnet(ip + "/" + netmask)))
             gateway = gatewayCandidate;
@@ -129,8 +128,6 @@ void NetworkHandler::applyConfiguration(QString ifaceName, QString autoOrManual,
     }
 
     ifDownIfUp(interfaceName);
-    qDebug() << "ifdown ifup finished";
-
 
 }
 
@@ -172,9 +169,6 @@ void NetworkHandler::addDNS(QString interfaceName, QString dns){
     QProcess process;
     process.execute("bash", QStringList() << "-c" << rccommand);
 
-
-    qDebug() << "resolvconf updated. dns must be set now.";
-
 }
 
 void NetworkHandler::updateIfstateFile(QString interfaceName){
@@ -201,8 +195,6 @@ void NetworkHandler::updateIfstateFile(QString interfaceName){
         ifstateStream << interfaceName + "=" + interfaceName;
 
     ifstateFile.close();
-
-    qDebug() << "added ifstate entry.";
 }
 
 void NetworkHandler::resetDNSSettings(QString interfaceName){
@@ -224,8 +216,6 @@ void NetworkHandler::resetDNSSettings(QString interfaceName){
     resolvConfHeadFileIn << "";
     resolvConfHead.close();
 
-    qDebug() << "resolvconf head is cleared. ";
-
     updateIfstateFile(interfaceName);
 
     //***********************************************************
@@ -234,9 +224,6 @@ void NetworkHandler::resetDNSSettings(QString interfaceName){
     QString rccommand = "resolvconf -u";
     QProcess process;
     process.execute("bash", QStringList() << "-c" << rccommand);
-
-
-    qDebug() << "resolvconf updated. dns must be resetted now.";
 }
 
 bool NetworkHandler::deleteInterfacesConfigFile(QString interfaceName){

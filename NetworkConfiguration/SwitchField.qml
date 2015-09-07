@@ -11,6 +11,26 @@ Item{
     width: 587
     height: 33
 
+    SequentialAnimation{
+        id:blink
+        PropertyAnimation{
+            target: activeTextField
+            property: "opacity"
+            to:0
+            duration: 200
+            easing.type: Easing.OutQuad
+        }
+        PropertyAnimation{
+            target: activeTextField
+            property: "opacity"
+            to:1
+            duration: 200
+            easing.type: Easing.OutQuad
+        }
+    }
+
+    onSwitched: blink.start()
+
 
     SoberText{
         id: infoText
@@ -44,6 +64,7 @@ Item{
         }
 
         SoberText{
+            id: activeTextField
             height: 20
             width: 273
             horizontalAlignment: Text.AlignHCenter
