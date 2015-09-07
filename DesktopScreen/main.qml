@@ -7,20 +7,16 @@ ApplicationWindow {
     title: qsTr("Desktop Screen")
     width: 1024
     height: 600
-//    maximumHeight: height
-//    minimumHeight: height
-//    maximumWidth: width
-//    minimumWidth: width
     visible: true
     id: root
 
     property int numberOfPages: 2
     property int currentIndex: 0
+
     function getNumberOfPages(){
-        var count = menuModel.count
-        var numOfPages = parseInt(count / 18)
-        if(count % 18 != 0)
-            numOfPages++
+        //here in this function, write the logic for the number of pages
+        //that will be displayed in the main screen of sober.
+        // then you can replace the property above to assign numberOfPages value by this fnc
 
         return numOfPages
     }
@@ -44,7 +40,6 @@ ApplicationWindow {
     Image {
         id: background
         anchors.fill: parent
-        //anchors.verticalCenter: root.verticalCenter
         source: "pics/sober_newspecs/bg.png"
         fillMode: Image.PreserveAspectCrop
     }
@@ -56,17 +51,8 @@ ApplicationWindow {
         anchors.bottom: navigationBar.top
         id:swipeArea
 
-        //preventStealing: true
-        //propagateComposedEvents: true
-        //z: 1
-        //drag.filterChildren: true;
-        //drag.threshold: 15
-
         onMove: {
             if((x > 0 && currentIndex != 0) || (x < 0 && currentIndex != numberOfPages-1 )){ //only when swipeable
-                //content.x += x
-                //console.log("x : " + x)
-
                 content.x =(-root.width * currentIndex) + x
             }
         }
@@ -174,16 +160,47 @@ ApplicationWindow {
                 clip:true
             }
 
-        }
+            //THIS REPEATER WILL BE USED IN CASE OF DYNAMICALLY ALLOCATING THE MENU
 
-        property double k: (content.width - root.width) / (background.width - root.width)
-        onXChanged: {
-            background.x = x / k
+//            Repeater{
+//                id: gridList
+//                model: numberOfPages
+
+//                GridView{
+//                    height: parent.height
+//                    width: parent.width / numberOfPages - 25
+
+//                    cellHeight: 156
+//                    cellWidth: 162
+
+//                    interactive: false
+//                    clip:true
+
+//                    boundsBehavior: Flickable.StopAtBounds
+
+//                    model: MenuModel{
+
+//                    }
+
+//                    delegate: AppDelegate{
+
+//                    }
+//                }
+//            }
 
         }
 
         function fillGrids(){
+            //this function can be used to dynamically fill the grids.
+            //a text file can be read here to populate gridList's grids.
+            //the individual grids can be reached by: gridList.itemAt(i).
 
+            //in this function, you must fill the grids according to the number of elements
+            //per page. For instance, you should pass to the next grid for each 18 elements etc.
+
+            //uncomment the repeater above and delete the previously existing grids.
+            //call this function when Component.onCompleted to populate the grids.
+            //the anchors of the grids in gridList must be set accordingly.
         }
 
     }
@@ -205,6 +222,9 @@ ApplicationWindow {
         }
     }
 
+    //StatusBar and NavigationBar should be commented out if
+    //they will be run as separate applications.
+
     //StatusBar
     StatusBarTop{
         id:statusBar
@@ -217,9 +237,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        console.log("root.width: " + root.width)
-        console.log("content.width: " + content.width)
-        //console.log("contentOfGrid.width: " + contentOfGrid.width)
+        // fillGrids();
     }
 
 
