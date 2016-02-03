@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ButtonDelegate.qml</file>
+        <file>NumbersModel.qml</file>
+        <file>pics/sober_newspecs/bg.png</file>
+        <file>pics/img7.jpg</file>
+        <file>InfoTextArea.qml</file>
+    </qresource>
+</RCC>
