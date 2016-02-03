@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>MenuModel.qml</file>
         <file>pics/backIcon.png</file>
         <file>pics/homeIcon.png</file>
         <file>pics/processes.png</file>
@@ -9,7 +8,6 @@
         <file>AppDelegate.qml</file>
         <file>NavigationBar.qml</file>
         <file>StatusBarTop.qml</file>
-        <file>Menu2Model.qml</file>
         <file>pics/energy39.png</file>
         <file>pics/blueetooth.png</file>
         <file>pics/sober_newspecs/icon/icon_assistant.png</file>
@@ -31,5 +29,7 @@
         <file>pics/sober_newspecs/icon/icon_ykb.png</file>
         <file>pics/sober_newspecs/icon/icon_clock.png</file>
         <file>pics/sober_newspecs/bg.png</file>
+        <file>GridListModel.qml</file>
+        <file>DesktopGrid.qml</file>
     </qresource>
 </RCC>

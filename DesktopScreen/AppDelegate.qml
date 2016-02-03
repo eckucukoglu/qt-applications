@@ -1,23 +1,25 @@
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
+import QtQuick.Dialogs 1.1
+import QtQuick.Controls 1.0
 
 Component {
     id: appDelegate
     Rectangle {
         id: appDelegateRect
-        width: 111
-        height: 134
-        color: "transparent"
-
+        width: 90//84 + 6
+        height: 90 //84 + 6px for text area
+        color: "transparent"      
+        x:0
         Column {
             width: parent.width
             height: parent.height
-            spacing: 8
+            spacing: 6 //vertical space btw icon and text
 
             Rectangle{
                 id: overlay
-                width: parent.width
-                height: 111
+                width: 84
+                height: 84//111
                 radius: width * 0.5
                 border.width: 2
                 border.color: borderColor
@@ -32,8 +34,8 @@ Component {
 
                     RadialGradient {
                         anchors.fill: parent
-                        horizontalRadius: 130
-                        verticalRadius: 130
+                        horizontalRadius: 84//130
+                        verticalRadius: 84//130
                         gradient: Gradient {
                             GradientStop { position: 0.0; color: borderColor }
                             GradientStop { position: 0.5; color: "transparent" }
@@ -46,24 +48,32 @@ Component {
                     source: portrait
                     anchors.centerIn: parent
                     anchors.horizontalCenter: parent.horizontalCenter
+                    scale: 0.7
                 }
             }
 
             Text {
                 id: appName
                 text: name
-                width: parent.width + 16
+                width: parent.width + 6// 16
                 elide: Text.ElideRight
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: 14
+                font.pixelSize: 12//14
                 font.family: "Helvetica"
                 color: "white"
             }
         }
 
-        MouseArea{
+      MessageDialog {
+                id: msg
+                title: "Title"
+                text: "index:" + appDelegate.GridView.view.currentIndex
+                onAccepted: visible = false
+      }
+
+      MouseArea{
             anchors.fill: parent
              propagateComposedEvents: true
 
@@ -73,15 +83,10 @@ Component {
 
             onClicked: {
                 appDelegate.GridView.view.currentIndex = index
-                if(containsMouse){
-                    console.log(appDelegate.GridView.view.currentIndex)
-
-                    //  DO ANY CLICK ACTION HERE
-                }
-
+               // msg.visible = true  //opens an alert box
+                console.log(app_id + " page:" + AppsModel.get_page_index()) //appDelegate.GridView.view.currentIndex
+                AppsModel.run_app(app_id)
             }
-
-
         }
 
     }
