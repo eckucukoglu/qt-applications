@@ -1,7 +1,7 @@
 import QtQuick 2.0
 
 Rectangle{
-    height: 34
+    height: 24
     width: parent.width
     anchors.top: parent.top
     color: "transparent"
@@ -20,7 +20,7 @@ Rectangle{
         anchors.leftMargin: 20
         text: date.toLocaleTimeString(Qt.locale("en_EN"), "hh:mm") + "  |  " +
               date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM")
-        font.pixelSize: 15
+        font.pixelSize: 12
         color: "white"
     }
 
@@ -31,18 +31,19 @@ Rectangle{
         spacing: 10
         Image{
             source: "pics/blueetooth.png"
+            scale: 0.7
         }
 
         Image{
             source: "pics/energy39.png"
-
+            scale: 0.9
             Text{
                 anchors.left: parent.right
                 anchors.leftMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
                 text: "62%"
                 color: "white"
-                font.pixelSize: 15
+                font.pixelSize: 12
             }
         }
     }
