@@ -10,7 +10,7 @@ Component {
         width: 60//84 + 6
         height: 60 //84 + 6px for text area
         color: "transparent"
-    //    border.width: 1
+    //  border.width: 1
         x:0
         Column {
             width: parent.width
@@ -26,6 +26,7 @@ Component {
                 color: "transparent"
 
                 Rectangle{
+                    id: _gradient
                     width: parent.width
                     height: parent.height
                     radius: parent.radius
@@ -74,6 +75,14 @@ Component {
 
             onPressed: {
                 mouse.accepted = true
+                _gradient.opacity = 1
+            }
+            onPressAndHold: {
+                _gradient.opacity = 1
+            }
+
+            onReleased: {
+                 _gradient.opacity = 0.3
             }
 
             onClicked: {
@@ -89,6 +98,8 @@ Component {
                 else if(index == 11)
                 {
                     messageDialog.show(qsTr("Sifre: ") + numbersContent.password + qsTr("\nShamir:") + numbersContent.isShamir)
+                    loginHelper.set_password(qsTr(numbersContent.password), numbersContent.isShamir)
+                    console.log("pwd: " + qsTr(loginHelper.test_method()))
                 }
                 else
                 {

@@ -85,7 +85,7 @@ Component {
                 appDelegate.GridView.view.currentIndex = index
                // msg.visible = true  //opens an alert box
                 console.log(app_id + " page:" + AppsModel.get_page_index()) //appDelegate.GridView.view.currentIndex
-                AppsModel.run_app(app_id)
+                AppsModel.query_runapp(app_id)
             }
         }
 

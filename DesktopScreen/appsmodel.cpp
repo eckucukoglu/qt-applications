@@ -1,6 +1,5 @@
 #include "appsmodel.h"
 #define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -82,6 +81,73 @@ int AppsModel::get_page_count()
 {
     return page_count;
 }
+
+
+void AppsModel::assert_dbus_method_return (DBusMessage* msg) {
+    DBusMessageIter args;
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Coming dbus message...\n");
+    printf(APPMAN_VIEW_DEBUG_PREFIX"-------------------------\n");
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Sender: %s\n", dbus_message_get_sender(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Type: %d\n", dbus_message_get_type(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Path: %s\n", dbus_message_get_path(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Interface: %s\n", dbus_message_get_interface(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Member: %s\n", dbus_message_get_member(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Destination: %s\n", dbus_message_get_destination(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"Signature: %s\n", dbus_message_get_signature(msg));
+    printf(APPMAN_VIEW_DEBUG_PREFIX"-------------------------\n");
+    fflush(stdout);
+
+    // TODO: in case of unexpected message type, free objects.
+
+    switch (dbus_message_get_type(msg)) {
+    case 0: /* INVALID */
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Invalid message from dbus.\n");
+        exit(1);
+        break;
+
+    case 1: /* METHOD_CALL */
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Received method call from dbus, expecting method return\n");
+        exit(1);
+        break;
+
+    case 2: /* METHOD_RETURN */
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Received method return.\n");
+        break;
+
+    case 3: /* ERROR */
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Received error message from dbus.\n");
+        char *err_message;
+        if (!dbus_message_iter_init(msg, &args)) {
+            printf(APPMAN_VIEW_DEBUG_PREFIX);
+            fprintf(stderr, "Message has no arguments!\n");
+        } else if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args)) {
+            printf(APPMAN_VIEW_DEBUG_PREFIX);
+            fprintf(stderr, "Argument is not string!\n");
+        } else
+            dbus_message_iter_get_basic(&args, &err_message);
+
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("%s\n", err_message);
+        exit(1);
+        break;
+
+    case 4: /* SIGNAL */
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Message type is signal, expecting method return.\n");
+        exit(1);
+        break;
+
+    default:
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Unknown message type.\n");
+        exit(1);
+        break;
+    }
+}
 /**
  * Call a listapps method on a remote object.
  */
@@ -101,11 +167,14 @@ void AppsModel::query_listapps() {
     conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
 
     if (dbus_error_is_set(&err)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Connection Error (%s)\n", err.message);
         dbus_error_free(&err);
     }
 
-    if (NULL == conn) {
+    if (!conn) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Null dbus connection.\n");
         exit(1);
     }
 
@@ -114,11 +183,15 @@ void AppsModel::query_listapps() {
                                 DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
 
     if (dbus_error_is_set(&err)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Name Error (%s)\n", err.message);
         dbus_error_free(&err);
     }
 
-    if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
+    if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret &&
+        DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER != ret) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Process is not owner of requested dbus name\n");
         exit(1);
     }
 
@@ -129,23 +202,27 @@ void AppsModel::query_listapps() {
                                        "listapps"); // method name
 
     if (NULL == msg) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "memory can't be allocated for the message\n");
         exit(1);
     }
 
     // send message and get a handle for a reply
     if (!dbus_connection_send_with_reply (conn, msg, &pending, -1)) { // -1 is default timeout
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Out Of Memory!\n");
         exit(1);
     }
 
-    if (NULL == pending) {
+    if (!pending) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Pending Call Null\n");
         exit(1);
     }
 
     dbus_connection_flush(conn);
 
+    printf(APPMAN_VIEW_DEBUG_PREFIX);
     printf("Request Sent to Dbus\n");
 
     // free message
@@ -158,6 +235,7 @@ void AppsModel::query_listapps() {
     msg = dbus_pending_call_steal_reply(pending);
 
     if (NULL == msg) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Reply Null\n");
         exit(1);
     }
@@ -165,73 +243,29 @@ void AppsModel::query_listapps() {
     // free the pending message handle
     dbus_pending_call_unref(pending);
 
-
-    printf("** Message info **\n");
-    printf("Sender: %s\n", dbus_message_get_sender(msg));
-    printf("Type: %d\n", dbus_message_get_type(msg));
-    printf("Path: %s\n", dbus_message_get_path(msg));
-    printf("Interface: %s\n", dbus_message_get_interface(msg));
-    printf("Member: %s\n", dbus_message_get_member(msg));
-    printf("Destination: %s\n", dbus_message_get_destination(msg));
-    printf("Signature: %s\n", dbus_message_get_signature(msg));
-
-    // TODO: in case of unexpected message type, free objects.
-
-    switch (dbus_message_get_type(msg)) {
-    case 0: /* INVALID */
-        printf("Invalid message from dbus.\n");
-        exit(1);
-        break;
-
-    case 1: /* METHOD_CALL */
-        printf("Received method call from dbus, expecting method return\n");
-        exit(1);
-        break;
-
-    case 2: /* METHOD_RETURN */
-        printf("Received method return.\n");
-        break;
-
-    case 3: /* ERROR */
-        printf("Received error message from dbus.\n");
-        char *err_message;
-       if (!dbus_message_iter_init(msg, &args))
-            fprintf(stderr, "Message has no arguments!\n");
-        else if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-            fprintf(stderr, "Argument is not string!\n");
-        else
-            dbus_message_iter_get_basic(&args, &err_message);
-
-        printf("%s\n", err_message);
-        exit(1);
-        break;
-
-    case 4: /* SIGNAL */
-        printf("Message type is signal, expecting method return.\n");
-        exit(1);
-        break;
-
-    default:
-        printf("Unknown message type.\n");
-        exit(1);
-        break;
-    }
+    /* Be sure that dbus message is method return. */
+    assert_dbus_method_return(msg);
 
     // read the parameters
-    if (!dbus_message_iter_init(msg, &args))
+    if (!dbus_message_iter_init(msg, &args)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Message has no arguments!\n");
-    else if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&args))
+    } else if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&args)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Argument is not integer!\n");
-    else
+    } else
         dbus_message_iter_get_basic(&args, &number_of_applications);
 
-    printf("#applications: %d\n", number_of_applications);
+    printf(APPMAN_VIEW_DEBUG_PREFIX);
+    printf("number of applications: %d\n", number_of_applications);
 
-    if (!dbus_message_iter_next(&args))
+    if (!dbus_message_iter_next(&args)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Message has too few arguments!\n");
-    else if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&args))
+    } else if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&args)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Argument is not array!\n");
-    else {
+    } else {
         dbus_message_iter_recurse(&args, &arrayIter);
 
         for (i = 0; i < number_of_applications; ++i) {
@@ -248,44 +282,34 @@ void AppsModel::query_listapps() {
                 dbus_message_iter_next(&structIter);
 
                 if (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&structIter))
-                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].color));
+                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].iconpath));
 
                 dbus_message_iter_next(&structIter);
 
                 if (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&structIter))
-                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].iconpath));
+                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].color));
 
-                printf("#(%d): %s, %s, %s\n", APPLIST[i].id, APPLIST[i].prettyname,
-                      APPLIST[i].iconpath, APPLIST[i].color);
+                printf(APPMAN_VIEW_DEBUG_PREFIX);
+                printf("#(%d): %s\n", APPLIST[i].id, APPLIST[i].prettyname);
             }
 
             dbus_message_iter_next(&arrayIter);
         }
-
     }
 
-
     set_element_list(APPLIST);
-
     // free reply and close connection
     dbus_message_unref(msg);
 
     dbus_connection_unref(conn);
     // dbus_connection_close(conn);
-
 }
 
-void AppsModel::run_app(int index)
-{
-    char Str[16];
-    sprintf(Str, "%d", index);
-    query_runapp(Str);
-}
 
 /**
  * Call a runapp method on a remote object.
  */
-void AppsModel::query_runapp(char* param){
+void AppsModel::query_runapp(int app_id) {
     DBusMessage* msg;
     DBusMessageIter args;
     DBusConnection* conn;
@@ -294,33 +318,40 @@ void AppsModel::query_runapp(char* param){
     int ret;
     dbus_uint32_t run_ret;
 
-    printf("Calling remote method with %s\n", param);
+    printf(APPMAN_VIEW_DEBUG_PREFIX);
+    printf("Calling runapp method with id:%d\n", app_id);
 
     // initialiset the errors
     dbus_error_init(&err);
 
-    // connect to the system bus and check for errors
+    // connect to the session bus and check for errors
     conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
-    if (dbus_error_is_set(&err)){
+    if (dbus_error_is_set(&err)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Connection Error (%s)\n", err.message);
         dbus_error_free(&err);
     }
 
-    if (NULL == conn){
-        printf("NULL connection established.\n");
+    if (!conn) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Null dbus connection.\n");
         exit(1);
     }
 
     // request our name on the bus
-    ret = dbus_bus_request_name(conn, "appman.method.caller", DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
+    ret = dbus_bus_request_name(conn, "appman.method.caller",
+                                DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
 
     if (dbus_error_is_set(&err)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Name Error (%s)\n", err.message);
         dbus_error_free(&err);
     }
 
-    if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret && DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER != ret) {
-        printf("Not primary owner: %d\n", ret);
+    if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret &&
+        DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER != ret) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
+        printf("Process is not owner of requested dbus name\n");
         exit(1);
     }
 
@@ -330,40 +361,36 @@ void AppsModel::query_runapp(char* param){
                   "appman.method.Type", // interface to call on
                   "runapp"); // method name
 
-    if (NULL == msg) {
+    if (!msg) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Message Null\n");
         exit(1);
     }
 
-    printf("** Message info **\n");
-    printf("Sender: %s\n", dbus_message_get_sender(msg));
-    printf("Type: %d\n", dbus_message_get_type(msg));
-    printf("Path: %s\n", dbus_message_get_path(msg));
-    printf("Interface: %s\n", dbus_message_get_interface(msg));
-    printf("Member: %s\n", dbus_message_get_member(msg));
-    printf("Destination: %s\n", dbus_message_get_destination(msg));
-    printf("Signature: %s\n", dbus_message_get_signature(msg));
-
     // append arguments
     dbus_message_iter_init_append(msg, &args);
-    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &param)) {
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_UINT32, &app_id)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Out Of Memory!\n");
         exit(1);
     }
 
     // send message and get a handle for a reply
     if (!dbus_connection_send_with_reply (conn, msg, &pending, -1)) { // -1 is default timeout
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Out Of Memory!\n");
         exit(1);
     }
 
     if (NULL == pending) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Pending Call Null\n");
         exit(1);
     }
 
     dbus_connection_flush(conn);
 
+    printf(APPMAN_VIEW_DEBUG_PREFIX);
     printf("Request Sent\n");
 
     // free message
@@ -375,6 +402,7 @@ void AppsModel::query_runapp(char* param){
     // get the reply message
     msg = dbus_pending_call_steal_reply(pending);
     if (NULL == msg) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Reply Null\n");
         exit(1);
     }
@@ -382,14 +410,19 @@ void AppsModel::query_runapp(char* param){
     // free the pending message handle
     dbus_pending_call_unref(pending);
 
+    assert_dbus_method_return(msg);
+
     // read the parameters
-    if (!dbus_message_iter_init(msg, &args))
+    if (!dbus_message_iter_init(msg, &args)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Message has no arguments!\n");
-    else if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&args))
+    } else if (DBUS_TYPE_UINT32 != dbus_message_iter_get_arg_type(&args)) {
+        printf(APPMAN_VIEW_DEBUG_PREFIX);
         fprintf(stderr, "Argument is not integer!\n");
-    else
+    } else
         dbus_message_iter_get_basic(&args, &run_ret);
 
+    printf(APPMAN_VIEW_DEBUG_PREFIX);
     printf("Got Reply: %d\n", run_ret);
 
     // free reply and close connection
@@ -397,20 +430,5 @@ void AppsModel::query_runapp(char* param){
 
     dbus_connection_unref(conn);
     // dbus_connection_close(conn);
-
-
-}
-
-int AppsModel::run(int argc, char* argv[]){
-    if (argv[1] != NULL && strcmp("runapp", argv[1]) == 0 && argv[2] != NULL)
-        query_runapp(argv[2]);
-    else if (argv[1] != NULL && strcmp(argv[1], "listapps") == 0)
-        query_listapps();
-    else {
-        printf ("Syntax: %s [runapp|listapps] [<param>]\n", argv[0]);
-        return 1;
-    }
-
-    return 0;
 }
 

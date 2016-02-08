@@ -5,7 +5,10 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
+#include <dbus/dbus.h>
+
 #define MAX_NUMBER_APPLICATIONS 50
+#define APPMAN_VIEW_DEBUG_PREFIX "V >> "
 
 typedef struct application {
     unsigned int id;
@@ -27,9 +30,10 @@ public:
    Q_INVOKABLE QVariant get_element_list();
    Q_INVOKABLE void set_element_list(application list[]);
    Q_INVOKABLE void query_listapps();
-   Q_INVOKABLE void query_runapp(char* param);
-   Q_INVOKABLE int run(int argc, char* argv[]);
-   Q_INVOKABLE void run_app(int index);
+   Q_INVOKABLE void query_runapp(int param);
+   Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
+
+
 
    Q_INVOKABLE int get_current_index();
    Q_INVOKABLE void set_current_index(int index);
