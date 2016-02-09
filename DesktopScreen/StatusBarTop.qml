@@ -19,7 +19,7 @@ Rectangle{
         anchors.left: parent.left
         anchors.leftMargin: 20
         text: date.toLocaleTimeString(Qt.locale("en_EN"), "hh:mm") + "  |  " +
-              date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM")
+              date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM yyyy")
         font.pixelSize: 12
         color: "white"
     }
@@ -54,8 +54,8 @@ Rectangle{
         repeat: true
         onTriggered: {
             date = new Date();
-            hourAndDate.text = date.toLocaleTimeString(Qt.locale("en_EN"), "hh:mm") + "  |  " +
-                      date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM")
+            hourAndDate.text = date.toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm") + "  |  " +
+                      date.toLocaleDateString(Qt.locale("tr_TR"), "dd MMM yyyy")
         }
     }
 

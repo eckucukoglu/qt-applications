@@ -10,6 +10,7 @@ ApplicationWindow {
     height: 480
     visible: true
     id: root
+    property bool _isActive: true
 
     Image {
         id: background
@@ -110,7 +111,6 @@ ApplicationWindow {
 
 
         }
-
     }
 
     MessageDialog {
@@ -122,7 +122,5 @@ ApplicationWindow {
             messageDialog.open();
         }
     }
-
-
 
 }

@@ -18,7 +18,7 @@ ApplicationWindow {
 
     property int numberOfPages: AppsModel.get_page_count()
     property int currentIndex: 0
-
+    property bool _isActive: true
 
 
     function getNumberOfPages(){
@@ -77,10 +77,10 @@ ApplicationWindow {
                 desktopGrid = component.createObject(content, {"x":i*root.width, "width": root.width, "height": root.height - statusBar.height - navigationBar.height});
                 if (desktopGrid === null) {
                 // Error Handling
-                   console.log("Error creating object");
+              //     console.log("::main> Error creating object");
                 }
                 else{
-            //        console.log("successfull")
+            //        console.log("::main>successfull")
                 }
             }
          }
@@ -110,7 +110,7 @@ ApplicationWindow {
             }
         }
         onSwipe: {
-            console.log("swipe.")
+            console.log("::main> swipe.")
             switch (direction) {
             case "left":
                 if (currentIndex === numberOfPages - 1) {

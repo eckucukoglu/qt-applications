@@ -71,7 +71,7 @@ Component {
 
       MouseArea{
             anchors.fill: parent
-             propagateComposedEvents: true
+            propagateComposedEvents: true
 
             onPressed: {
                 mouse.accepted = true
@@ -86,9 +86,15 @@ Component {
             }
 
             onClicked: {
+
+
+
                buttonDelegate.GridView.view.currentIndex = index
                // msg.visible = true  //opens an alert box
                 console.log("counter: "+numbersContent.counter)
+
+
+
                 if(index == 9)
                 {
                     infoTextArea.textvalue  = qsTr("Sifrenizi Giriniz..")
@@ -118,6 +124,7 @@ Component {
                         // messageDialog.show(qsTr("Uyarı: Sifre maksimum 10 haneli olmalidir."))
                     }
                 }
+
             }
         }
 

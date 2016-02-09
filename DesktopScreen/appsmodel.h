@@ -31,6 +31,8 @@ public:
    Q_INVOKABLE void set_element_list(application list[]);
    Q_INVOKABLE void query_listapps();
    Q_INVOKABLE void query_runapp(int param);
+   Q_INVOKABLE bool is_active();
+   Q_INVOKABLE void set_is_active(bool _value);
    Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
 
 
@@ -50,7 +52,7 @@ private:
     int page_index;
     int number_of_applications;
     int page_count;
-
+    bool _isActive;
 
 };
 

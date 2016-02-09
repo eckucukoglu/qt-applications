@@ -75,18 +75,29 @@ Component {
 
       MouseArea{
             anchors.fill: parent
-             propagateComposedEvents: true
+            propagateComposedEvents: true
+            enabled: true
 
             onPressed: {
-                mouse.accepted = false
+                //mouse.accepted = false
             }
 
             onClicked: {
-                appDelegate.GridView.view.currentIndex = index
-               // msg.visible = true  //opens an alert box
-                console.log(app_id + " page:" + AppsModel.get_page_index()) //appDelegate.GridView.view.currentIndex
-                AppsModel.query_runapp(app_id)
+              /*  if(index == 0) //active
+                {
+                    root._isActive ^= true
+                    console.log("::appdelegate> clickable: " + root._isActive.toString())
+                }
+              */
+                if(root._isActive)
+                {
+                        appDelegate.GridView.view.currentIndex = index
+                       // msg.visible = true  //opens an alert box
+                        console.log("::appdelegate> "+app_id) //appDelegate.GridView.view.currentIndex
+                        AppsModel.query_runapp(app_id)
+                }
             }
+
         }
 
     }

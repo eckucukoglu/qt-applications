@@ -13,6 +13,7 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
     current_index = 0;
     page_count = 0;
     page_index = 0;
+    _isActive = true;
     query_listapps();
 }
 
@@ -54,6 +55,16 @@ void AppsModel::set_current_index(int index) //Type should be QList with AppElem
 {
     //return elementsList;
    current_index = index;
+}
+bool AppsModel::is_active() //Type should be QList with AppElement type
+{
+    //return elementsList;
+   return _isActive;
+}
+void AppsModel::set_is_active(bool _value) //Type should be QList with AppElement type
+{
+    //return elementsList;
+   _isActive = _value;
 }
 int AppsModel::get_page_index()
 {
@@ -424,6 +435,8 @@ void AppsModel::query_runapp(int app_id) {
 
     printf(APPMAN_VIEW_DEBUG_PREFIX);
     printf("Got Reply: %d\n", run_ret);
+
+
 
     // free reply and close connection
     dbus_message_unref(msg);
