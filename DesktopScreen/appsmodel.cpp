@@ -293,12 +293,12 @@ void AppsModel::query_listapps() {
                 dbus_message_iter_next(&structIter);
 
                 if (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&structIter))
-                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].iconpath));
+                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].color));
 
                 dbus_message_iter_next(&structIter);
 
                 if (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&structIter))
-                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].color));
+                    dbus_message_iter_get_basic(&structIter, &(APPLIST[i].iconpath));
 
                 printf(APPMAN_VIEW_DEBUG_PREFIX);
                 printf("#(%d): %s\n", APPLIST[i].id, APPLIST[i].prettyname);

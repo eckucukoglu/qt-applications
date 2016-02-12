@@ -14,7 +14,7 @@ ListModel{
             {
                 for(m=index; m<(index+_range); m++) //for each page
                 {
-                   listModel.append({"name": appList[m]["prettyname"] ,"borderColor":appList[m]["color"],"portrait":"pics/sober_newspecs/icon/icon_calculator.png", "app_id":appList[m]["id"]})
+                   listModel.append({"name": appList[m]["prettyname"] ,"borderColor":appList[m]["color"],"portrait":appList[m]["iconpath"], "app_id":appList[m]["id"]})
                 }
                 index = index + _range
             }
@@ -22,7 +22,7 @@ ListModel{
             {
                 for(m=index; m<index+18; m++) //for each page
                 {
-                   listModel.append({"name": appList[m]["prettyname"] ,"borderColor":appList[m]["color"],"portrait":"pics/sober_newspecs/icon/icon_calculator.png", "app_id":appList[m]["id"]})
+                   listModel.append({"name": appList[m]["prettyname"] ,"borderColor":appList[m]["color"],"portrait":appList[m]["iconpath"], "app_id":appList[m]["id"]})
                 }
                 index = index + 18
             }

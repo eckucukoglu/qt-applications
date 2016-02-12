@@ -26,6 +26,7 @@ Component {
                 color: "transparent"
 
                 Rectangle{
+                    id: _gradient
                     width: parent.width
                     height: parent.height
                     radius: parent.radius
@@ -78,10 +79,6 @@ Component {
             propagateComposedEvents: true
             enabled: true
 
-            onPressed: {
-                //mouse.accepted = false
-            }
-
             onClicked: {
               /*  if(index == 0) //active
                 {
@@ -89,12 +86,14 @@ Component {
                     console.log("::appdelegate> clickable: " + root._isActive.toString())
                 }
               */
-                if(root._isActive)
+                if(AppsModel.is_active())
                 {
                         appDelegate.GridView.view.currentIndex = index
                        // msg.visible = true  //opens an alert box
                         console.log("::appdelegate> "+app_id) //appDelegate.GridView.view.currentIndex
+                  //      AppsModel.set_is_active(false)
                         AppsModel.query_runapp(app_id)
+
                 }
             }
 

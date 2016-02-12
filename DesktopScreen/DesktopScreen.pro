@@ -27,3 +27,6 @@ HEADERS += \
     appsmodel.h
 
 CONFIG += dbus
+
+DISTFILES += \
+    pics/sober_newspecs/icon/icon_calendar.png

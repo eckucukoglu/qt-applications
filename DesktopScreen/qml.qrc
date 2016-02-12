@@ -13,7 +13,6 @@
         <file>pics/sober_newspecs/icon/icon_assistant.png</file>
         <file>pics/sober_newspecs/icon/icon_bekopos.png</file>
         <file>pics/sober_newspecs/icon/icon_calculator.png</file>
-        <file>pics/sober_newspecs/icon/icon_calender.png</file>
         <file>pics/sober_newspecs/icon/icon_chrome.png</file>
         <file>pics/sober_newspecs/icon/icon_cpu.png</file>
         <file>pics/sober_newspecs/icon/icon_deviceset.png</file>
@@ -31,5 +30,6 @@
         <file>pics/sober_newspecs/bg.png</file>
         <file>GridListModel.qml</file>
         <file>DesktopGrid.qml</file>
+        <file>pics/sober_newspecs/icon/icon_calendar.png</file>
     </qresource>
 </RCC>

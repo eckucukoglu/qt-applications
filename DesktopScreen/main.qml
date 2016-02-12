@@ -18,8 +18,6 @@ ApplicationWindow {
 
     property int numberOfPages: AppsModel.get_page_count()
     property int currentIndex: 0
-    property bool _isActive: true
-
 
     function getNumberOfPages(){
         //here in this function, write the logic for the number of pages
