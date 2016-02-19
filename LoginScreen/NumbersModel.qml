@@ -59,9 +59,9 @@ ListModel {
      //   portrait: "pics/sober_newspecs/icon/icon_clock.png"
     }
     ListElement{
-        name: "IPTAL"
+        name: "CANCEL"
         borderColor: "lightblue"
-        textsize: 14
+        textsize: 13
      //   portrait: "pics/sober_newspecs/icon/icon_clock.png"
     }
     ListElement{
@@ -71,9 +71,9 @@ ListModel {
       //  portrait: "pics/sober_newspecs/icon/icon_clock.png"
     }
     ListElement{
-        name: "TAMAM"
+        name: "OK"
         borderColor: "lightblue"
-        textsize: 14
+        textsize: 13
      //   portrait: "pics/sober_newspecs/icon/icon_clock.png"
     }
 

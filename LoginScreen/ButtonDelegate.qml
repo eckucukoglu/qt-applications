@@ -77,17 +77,11 @@ Component {
                 mouse.accepted = true
                 _gradient.opacity = 1
             }
-            onPressAndHold: {
-                _gradient.opacity = 1
-            }
-
             onReleased: {
                  _gradient.opacity = 0.3
             }
 
             onClicked: {
-
-
 
                buttonDelegate.GridView.view.currentIndex = index
                // msg.visible = true  //opens an alert box
@@ -101,11 +95,12 @@ Component {
                     numbersContent.counter = 0
                     numbersContent.password = qsTr("")
                 }
-                else if(index == 11)
+                else if(index == 11) //OK Button
                 {
-                    messageDialog.show(qsTr("Sifre: ") + numbersContent.password + qsTr("\nShamir:") + numbersContent.isShamir)
+                   // messageDialog.show(qsTr("Sifre: ") + numbersContent.password + qsTr("\nShamir:") + numbersContent.isShamir)
                     loginHelper.set_password(qsTr(numbersContent.password), numbersContent.isShamir)
                     console.log("pwd: " + qsTr(loginHelper.test_method()))
+                    loginHelper.query_access(0)
                 }
                 else
                 {

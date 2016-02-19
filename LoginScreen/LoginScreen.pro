@@ -16,4 +16,8 @@ include(deployment.pri)
 HEADERS += \
     loginhelper.h
 
-INCLUDEPATH = /usr/include/  #added for C libraries
+INCLUDEPATH += /usr/include/dbus-1.0 \
+               /usr/include/
+
+LIBS += -L./usr/include/dbus-1.0 -ldbus-1
+

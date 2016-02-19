@@ -9,7 +9,7 @@ import QtQuick.Controls 1.0
         width: 240
         height: 60
         color: "transparent"
-        property var textvalue: qsTr("Sifrenizi Giriniz..")
+        property var textvalue: qsTr("Enter Password..")
 
         Column {
             width: parent.width
