@@ -36,7 +36,6 @@ public:
    Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
 
 
-
    Q_INVOKABLE int get_current_index();
    Q_INVOKABLE void set_current_index(int index);
    Q_INVOKABLE int get_page_index();

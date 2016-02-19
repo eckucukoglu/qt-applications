@@ -15,6 +15,7 @@ ApplicationWindow {
     height: 480 //600
     visible: true
     id: root
+    objectName:"root"
 
     property int numberOfPages: AppsModel.get_page_count()
     property int currentIndex: 0
@@ -44,6 +45,8 @@ ApplicationWindow {
     }
 
 
+
+
     PropertyAnimation {
         id: slide_anim
         target: content
@@ -57,6 +60,7 @@ ApplicationWindow {
         anchors.fill: parent
         source: "pics/sober_newspecs/bg.png"
         fillMode: Image.PreserveAspectCrop
+        onStatusChanged: if (background.status === Image.Ready) console.log('Loaded')
     }
 
     Item {
@@ -153,11 +157,8 @@ ApplicationWindow {
         }
     }
 
-
     Component.onCompleted: {
         // fillGrids();
-
     }
-
 
 }

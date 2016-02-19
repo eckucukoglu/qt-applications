@@ -9,47 +9,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
+#include <QScreen>
+#include <QDebug>
 
 
 AppsModel appsModel;
-void sighandler(int signum);
+
+//QObject *rootObject;
+//QObject *rootObj;
+
+
+void sighandler(int signum)
+{
+   printf(">>>>>>sigcont: %d\n", signum);
+   //rootObj->setProperty("is_accepted", true);
+
+}
+
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    //register signal
-    signal(SIGCONT, sighandler);
-    signal(SIGTSTP, sighandler);
-    signal(SIGSTOP, sighandler);
-    signal(SIGABRT,sighandler);
-
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("AppsModel", &appsModel);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    return app.exec();
+
+    foreach(QScreen *screen, app.screens()){
+          screen->refreshRateChanged(qreal(100));
+
+          qDebug() << "  Refresh rate:" << screen->refreshRate() << "Hz";
+    }
+
+
+  //  rootObject = engine.rootObjects().first();
+  //  rootObj = rootObject->findChild<QObject*>("root");
+
+    signal(SIGCONT, sighandler);
+
+   return app.exec();
 }
 
-void sighandler(int signum)
-{
-    printf("<<<<<<<<<<< %d\n", signum);
-   if(signum == SIGCONT)
-   {
-        printf("::main>SIGCONT\n");
-        appsModel.set_is_active(true);
-   }
-   else if(signum == SIGSTOP)
-   {
-        printf("::main>SIGSTOP\n");
-        appsModel.set_is_active(false);
-   }
-   else if(signum == SIGTSTP)
-   {
-        printf("::main>SIGTSTP\n");
-        appsModel.set_is_active(false);
-   }
-   else if(signum == SIGABRT)
-   {
-        printf("::main>SIGABRT\n");
-        appsModel.set_is_active(false);
-   }
-}
+
+

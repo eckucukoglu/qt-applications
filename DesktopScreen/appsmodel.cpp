@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <QTimer>
 
 AppsModel::AppsModel(QObject *parent) : QObject(parent)
 {
@@ -15,7 +16,10 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
     page_index = 0;
     _isActive = true;
     query_listapps();
+
 }
+
+
 
 /*
 AppsModel::~AppsModel()
@@ -41,29 +45,26 @@ void AppsModel::set_element_list(application _list[]){
     set_page_count();
 }
 
-QVariant AppsModel::get_element_list() //Type should be QList with AppElement type
+QVariant AppsModel::get_element_list()
 {
    return appList;
 }
 
-int AppsModel::get_current_index() //Type should be QList with AppElement type
+int AppsModel::get_current_index()
 {
-    //return elementsList;
    return current_index;
 }
-void AppsModel::set_current_index(int index) //Type should be QList with AppElement type
+void AppsModel::set_current_index(int index)
 {
-    //return elementsList;
    current_index = index;
 }
-bool AppsModel::is_active() //Type should be QList with AppElement type
+bool AppsModel::is_active()
 {
-    //return elementsList;
    return _isActive;
 }
-void AppsModel::set_is_active(bool _value) //Type should be QList with AppElement type
+void AppsModel::set_is_active(bool _value)
 {
-    //return elementsList;
+
    _isActive = _value;
 }
 int AppsModel::get_page_index()
@@ -444,4 +445,5 @@ void AppsModel::query_runapp(int app_id) {
     dbus_connection_unref(conn);
     // dbus_connection_close(conn);
 }
+
 

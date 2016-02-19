@@ -76,25 +76,19 @@ Component {
 
       MouseArea{
             anchors.fill: parent
-            propagateComposedEvents: true
-            enabled: true
-
-            onClicked: {
-              /*  if(index == 0) //active
-                {
-                    root._isActive ^= true
-                    console.log("::appdelegate> clickable: " + root._isActive.toString())
-                }
-              */
-                if(AppsModel.is_active())
-                {
-                        appDelegate.GridView.view.currentIndex = index
-                       // msg.visible = true  //opens an alert box
-                        console.log("::appdelegate> "+app_id) //appDelegate.GridView.view.currentIndex
-                  //      AppsModel.set_is_active(false)
-                        AppsModel.query_runapp(app_id)
-
-                }
+            //propagateComposedEvents: true
+            //enabled: true
+            onPressed: {
+                mouse.accepted = true
+                _gradient.opacity = 1
+            }
+            onReleased: {
+                 _gradient.opacity = 0.3
+            }
+            onClicked: {      
+               console.log("::QT_appdelegate> "+app_id) //appDelegate.GridView.view.currentIndex
+               appDelegate.GridView.view.currentIndex = index
+               AppsModel.query_runapp(app_id)
             }
 
         }

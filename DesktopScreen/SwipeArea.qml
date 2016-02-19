@@ -2,7 +2,6 @@
 
 import QtQuick 2.0
 
-
 MouseArea {
     property point origin
     property bool ready: false
@@ -16,7 +15,6 @@ MouseArea {
 
         drag.axis = Drag.XAxis
         origin = Qt.point(mouse.x, mouse.y)
-
     }
 
     onPositionChanged: {
