@@ -16,7 +16,6 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
     page_index = 0;
     _isActive = true;
     query_listapps();
-
 }
 
 

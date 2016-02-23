@@ -19,6 +19,9 @@ ApplicationWindow {
 
     property int numberOfPages: AppsModel.get_page_count()
     property int currentIndex: 0
+    property double  t1: 0
+    property double  t2: 0
+
 
     function getNumberOfPages(){
         //here in this function, write the logic for the number of pages
@@ -58,7 +61,7 @@ ApplicationWindow {
     Image {
         id: background
         anchors.fill: parent
-        source: "pics/sober_newspecs/bg.png"
+        source: "pics/sober_newspecs/bg2.jpg"
         fillMode: Image.PreserveAspectCrop
         onStatusChanged: if (background.status === Image.Ready) console.log('Loaded')
     }
@@ -112,7 +115,7 @@ ApplicationWindow {
             }
         }
         onSwipe: {
-            console.log("::main> swipe.")
+            //console.log("::main> swipe.")
             switch (direction) {
             case "left":
                 if (currentIndex === numberOfPages - 1) {
@@ -148,7 +151,7 @@ ApplicationWindow {
         spacing: 10
         height: 14
         Repeater {
-            model: numberOfPages
+            model: AppsModel.get_page_count()
             Rectangle {
                 width: 8; height: 8; radius: 4 //12,12,6
                 color: "#88ffffff" // currentIndex === index ?"#88ffffff" : "#88000000"

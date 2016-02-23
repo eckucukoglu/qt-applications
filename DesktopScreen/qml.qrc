@@ -31,5 +31,6 @@
         <file>GridListModel.qml</file>
         <file>DesktopGrid.qml</file>
         <file>pics/sober_newspecs/icon/icon_calendar.png</file>
+        <file>pics/sober_newspecs/bg2.jpg</file>
     </qresource>
 </RCC>

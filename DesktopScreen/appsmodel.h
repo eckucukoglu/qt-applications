@@ -10,14 +10,13 @@
 #define MAX_NUMBER_APPLICATIONS 50
 #define APPMAN_VIEW_DEBUG_PREFIX "V >> "
 
+
 typedef struct application {
     unsigned int id;
     char* prettyname;
     char* iconpath;
     char* color;
 } application;
-
-
 
 class AppsModel: public QObject
 {
@@ -35,7 +34,6 @@ public:
    Q_INVOKABLE void set_is_active(bool _value);
    Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
 
-
    Q_INVOKABLE int get_current_index();
    Q_INVOKABLE void set_current_index(int index);
    Q_INVOKABLE int get_page_index();
@@ -52,7 +50,6 @@ private:
     int number_of_applications;
     int page_count;
     bool _isActive;
-
 };
 
 #endif // APPSMODEL_H
