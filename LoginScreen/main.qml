@@ -74,10 +74,12 @@ ApplicationWindow {
         color: "transparent"
         Row{
             anchors.leftMargin: 100
-            anchors.topMargin:20
+            anchors.topMargin:30
             anchors.fill: parent
             CheckBox {
+                    id: checkbox
                     checked: false
+                    scale: 1.4
                     style: CheckBoxStyle {
                           label: Text{
                                color: "white"
@@ -87,25 +89,10 @@ ApplicationWindow {
                                x: 15
                           }
 
-                           indicator: Rectangle {
-                                   implicitWidth: 26
-                                   implicitHeight: 26
-                                   radius: 6
-                                   border.color: control.activeFocus ? "darkblue" : "gray"
-                                   border.width: 2
-
-                                   Rectangle {
-                                       visible: control.checked
-                                       color: "green"
-                                       border.color: "#333"
-                                       radius: 1
-                                       anchors.margins: 4
-                                       anchors.fill: parent
-                                   }
-                           }
                      }
                     onClicked: {
                         numbersContent.isShamir = checked
+                        console.log(checked)
                     }
                 }
 

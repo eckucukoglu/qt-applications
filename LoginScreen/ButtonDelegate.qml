@@ -7,10 +7,9 @@ Component {
     id: buttonDelegate
     Rectangle {
         id: buttonDelegateRect
-        width: 60//84 + 6
-        height: 60 //84 + 6px for text area
+        width: 60
+        height: 60
         color: "transparent"
-    //  border.width: 1
         x:0
         Column {
             width: parent.width
@@ -35,8 +34,8 @@ Component {
 
                     RadialGradient {
                         anchors.fill: parent
-                        horizontalRadius: 60//130
-                        verticalRadius: 60//130
+                        horizontalRadius: 60
+                        verticalRadius: 60
                         gradient: Gradient {
                             GradientStop { position: 0.0; color: borderColor }
                             GradientStop { position: 0.5; color: "transparent" }
@@ -47,13 +46,13 @@ Component {
                 Text {
                     id: buttonName
                     text: name
-                    width: parent.width + 6// 16
+                    width: parent.width + 6
                     elide: Text.ElideRight
                     anchors.horizontalCenter: parent.horizontalCenter
                     horizontalAlignment: Text.AlignHCenter
                     anchors.verticalCenter:  parent.verticalCenter
                     verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: textsize//14
+                    font.pixelSize: textsize
                     font.family: "Helvetica"
                     color: "white"
                 }
@@ -89,9 +88,9 @@ Component {
 
 
 
-                if(index == 9)
+                if(index == 9) //Cancel Button
                 {
-                    infoTextArea.textvalue  = qsTr("Sifrenizi Giriniz..")
+                    infoTextArea.textvalue  = qsTr("Enter Password")
                     numbersContent.counter = 0
                     numbersContent.password = qsTr("")
                 }
@@ -102,19 +101,19 @@ Component {
                     console.log("pwd: " + qsTr(loginHelper.test_method()))
                     loginHelper.query_access(0)
                 }
-                else
+                else // DIGIT
                 {
                     if(numbersContent.counter == 0)
                     {
                         infoTextArea.textvalue = qsTr("")
                     }
-                    if(numbersContent.counter < 10)
+                    if(numbersContent.counter < 10) //pwd must be less than 10 digits
                     {
                         infoTextArea.textvalue = qsTr(infoTextArea.textvalue) + qsTr("*")
                         numbersContent.counter++
                         numbersContent.password = numbersContent.password + qsTr(name)
                     }
-                    else
+                    else // warning
                     {
                         // messageDialog.show(qsTr("Uyarı: Sifre maksimum 10 haneli olmalidir."))
                     }
