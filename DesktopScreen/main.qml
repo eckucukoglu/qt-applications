@@ -21,35 +21,23 @@ ApplicationWindow {
     property int currentIndex: 0
     property double  t1: 0
     property double  t2: 0
+    property string backgroundImg: "pics/sober_newspecs/bg2.jpg"
 
 
-    function getNumberOfPages(){
-        //here in this function, write the logic for the number of pages
-        //that will be displayed in the main screen of sober.
-        // then you can replace the property above to assign numberOfPages value by this fnc
-
-        /*** tugba ***/
-        // total # of apps / (6 * 3)
-  //      console.log("num of pages" + parseInt(listModel.pageCount))
-  //      return parseInt(listModel.pageCount)
-    }
-
+    BusyIndicator {
+           id: busyIndication
+           anchors.centerIn: parent
+           z:1
+        }
     onCurrentIndexChanged: {
         slide_anim.to = - root.width * currentIndex
         slide_anim.start()
         slide_anim.alwaysRunToEnd = true
         AppsModel.set_page_index(currentIndex)
     }
-
     onActiveChanged: {
-        //fill grids
-       // print("applist: "+ AppsModel.get_applist())
-       // AppsModel.get_element_list()
+
     }
-
-
-
-
     PropertyAnimation {
         id: slide_anim
         target: content
@@ -71,23 +59,26 @@ ApplicationWindow {
         anchors.top: statusBar.bottom
         anchors.bottom: navigationBar.top   
         width: root.width * 3
-        Component.onCompleted: {
-          //  print("Row is completed")
-            var desktopGrid;
+        function createGrid(){
             var component;
             var i;
-            for(i=0;i<3;i++)
+            var desktopGrid
+            for(i=0;i<3;i++) //TODO: WHY 3? numofapps / 18 or get page count
             {
                 component= Qt.createComponent("DesktopGrid.qml");
                 desktopGrid = component.createObject(content, {"x":i*root.width, "width": root.width, "height": root.height - statusBar.height - navigationBar.height});
                 if (desktopGrid === null) {
                 // Error Handling
-              //     console.log("::main> Error creating object");
+                // console.log("::main> Error creating object");
                 }
                 else{
-            //        console.log("::main>successfull")
+                // console.log("::main>successfull")
                 }
             }
+        }
+
+        Component.onCompleted: {
+           createGrid()
          }
     }
 
@@ -162,6 +153,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         // fillGrids();
+        busyIndication.visible=false
     }
 
 }

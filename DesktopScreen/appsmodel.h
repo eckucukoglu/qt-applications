@@ -6,7 +6,7 @@
 #include <QString>
 #include <QVariant>
 #include <dbus/dbus.h>
-
+#include <signal.h>
 #define MAX_NUMBER_APPLICATIONS 50
 #define APPMAN_VIEW_DEBUG_PREFIX "V >> "
 
@@ -42,6 +42,7 @@ public:
    Q_INVOKABLE int get_applist();
    Q_INVOKABLE void set_page_count();
    Q_INVOKABLE int get_page_count();
+   Q_INVOKABLE void shutdown();
    application APPLIST[MAX_NUMBER_APPLICATIONS];
 
 private: 

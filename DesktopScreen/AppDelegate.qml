@@ -66,32 +66,33 @@ Component {
                 color: "white"
             }
         }
-
       MessageDialog {
                 id: msg
                 title: "Title"
                 text: "index:" + appDelegate.GridView.view.currentIndex
                 onAccepted: visible = false
       }
-
       MouseArea{
             anchors.fill: parent
             //propagateComposedEvents: true
             enabled: true
-
             onClicked: {
                 root.t1 = new Date().valueOf()
-                console.log("t1: "+ root.t1)
                 appDelegate.GridView.view.currentIndex = index
-                console.log("t1-t2: "+ (root.t1 - root.t2))
-                if ((t1-t2) > 500)
+                if ((t1-t2) > 500){
                     AppsModel.query_runapp(app_id)
+                    console.log("appname: " + name)
+                    if(name === "APPSTORE")
+                    {
+                        console.log("refreshing apps..")
+                        AppsModel.query_listapps()
+                        content.createGrid()
+                        //recreate desktop grid
+
+                    }
+                }
                 root.t2 = new Date().valueOf()
-                console.log("t2: "+ root.t2)
-
             }
-
         }
-
     }
 }

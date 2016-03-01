@@ -32,5 +32,10 @@
         <file>DesktopGrid.qml</file>
         <file>pics/sober_newspecs/icon/icon_calendar.png</file>
         <file>pics/sober_newspecs/bg2.jpg</file>
+        <file>pics/lock_icon.png</file>
+        <file>pics/lock.png</file>
+        <file>pics/settings.png</file>
+        <file>pics/settings-icon.png</file>
+        <file>pics/poweroff.png</file>
     </qresource>
 </RCC>

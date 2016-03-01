@@ -1,7 +1,6 @@
 import QtQuick 2.0
 
 ListModel{
-    id: listModel
     property int m;
     function fillListModel(){
             var index=0
@@ -27,6 +26,7 @@ ListModel{
                 index = index + 18
             }
             AppsModel.set_current_index(index)
+
      }
      Component.onCompleted: {
             fillListModel()

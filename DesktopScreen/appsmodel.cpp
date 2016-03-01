@@ -92,7 +92,9 @@ int AppsModel::get_page_count()
 {
     return page_count;
 }
-
+void AppsModel::shutdown(){
+    system("poweroff") ;
+}
 
 void AppsModel::assert_dbus_method_return (DBusMessage* msg) {
     DBusMessageIter args;
