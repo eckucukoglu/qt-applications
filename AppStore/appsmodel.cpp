@@ -3,42 +3,40 @@
 AppsModel::AppsModel(QObject *parent) : QObject(parent)
 {
     //read list, assign to elementsList
-
-     current_index=0;
+     check_internet = false;
+     current_index= 0;
      page_index=0;
-     number_of_applications=20;
      page_count=ceil(double(number_of_applications)/18);
-
-    // TODO: clear this part
-    application _list[number_of_applications];
-    for(int i=0;i<number_of_applications;i++){
-        application temp{
-                i,
-               "BEKOPOS",
-               "developer",
-               "pics/sober_newspecs/icon/icon_bekopos.png",
-               "lightblue"
-        };
-        _list[i] = temp;
-    }
-    set_element_list(_list);
 }
 
-void AppsModel::set_element_list(application _list[]){
+int AppsModel::download(int appid)
+{
+    printf("APPSMODEL: now downloading app: %d\n" , appid);
+    return 0;
+}
+
+void AppsModel::set_element_list(app _list[]){
     QVariantList _list1;
     for(int i=0; i<number_of_applications;i++)
     {
         QVariant _data;
         QVariantMap _map;
-        _map["prettyname"] = QVariant(_list[i].prettyname);
-        _map["devName"] = QVariant(_list[i].devName);
-        _map["iconpath"] = QVariant(_list[i].iconpath);
-        _map["color"] = QVariant(_list[i].color);
         _map["id"] = QVariant(_list[i].id);
+        _map["name"] = QVariant(_list[i].name.c_str());
+        _map["developerName"] = QVariant(_list[i].developerName.c_str());
+        _map["iconName"] = QVariant(_list[i].iconName.c_str());
+        _map["hashValue"] = QVariant(_list[i].hashValue.c_str());
+        _map["binaryPath"] = QVariant(_list[i].binaryPath.c_str());
+        _map["binaryName"] = QVariant(_list[i].binaryName.c_str());
+        _map["packagePath"] = QVariant(_list[i].packagePath.c_str());
+        _map["isDownloaded"] = QVariant(_list[i].isDownloaded);
+        _map["isInstalled"] = QVariant(_list[i].isInstalled);
+        _map["error"] = QVariant(_list[i].error);
+        _map["errorCode"] = QVariant(_list[i].errorCode.c_str());
+        _map["borderColor"] = QVariant(_list[i].borderColor.c_str());
         _data = QVariant(_map);
         _list1.append(_data);
     }
-
     appList = QVariant(_list1);
     set_page_count();
 }

@@ -1,0 +1,414 @@
+#include "HTTPPerform.h"
+
+
+//const string DOWNLOAD_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/";
+const string DOWNLOAD_PATH = "/tmp/";
+
+//const string INSTALL_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpInstall";
+//const string MANIFEST_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpInstall";
+//const string INSTALL_PATH = "/Downloads/tmpInstall";
+const string INSTALL_PATH = "/usr/bin/";
+
+const string MANIFEST_PATH = "/etc/appmand/";
+
+
+void query_updateapps() {
+    DBusMessage* msg;
+    DBusConnection* conn;
+    DBusError err;
+    int ret;
+
+    printf("Calling updateapps method.\n");
+
+    // initialize errors
+    dbus_error_init(&err);
+
+    // connect to the session bus and check for errors
+    conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
+    if (dbus_error_is_set(&err)) {
+        fprintf(stderr, "Connection Error (%s)\n", err.message);
+        dbus_error_free(&err);
+    }
+
+    if (!conn) {
+        printf("Null dbus connection.\n");
+        exit(1);
+    }
+
+    // request our name on the bus
+    ret = dbus_bus_request_name(conn, "appman.method.appstore",
+                                DBUS_NAME_FLAG_REPLACE_EXISTING , &err);
+
+    if (dbus_error_is_set(&err)) {
+        fprintf(stderr, "Name Error (%s)\n", err.message);
+        dbus_error_free(&err);
+    }
+
+    if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret &&
+        DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER != ret) {
+        printf("Process is not owner of requested dbus name\n");
+        exit(1);
+    }
+
+    // create a new method call and check for errors
+    msg = dbus_message_new_method_call("appman.method.server", // target for the method call
+                                    "/appman/method/Object", // object to call on
+                                    "appman.method.Type", // interface to call on
+                                    "updateapps"); // method name
+
+    if (!msg) {
+        fprintf(stderr, "Message Null\n");
+        exit(1);
+    }
+
+    // send message
+    if (!dbus_connection_send(conn, msg, NULL)) {
+        fprintf(stderr, "Out Of Memory!\n");
+        exit(1);
+    }
+
+    dbus_connection_flush(conn);
+
+    // free message
+    dbus_message_unref(msg);
+
+    dbus_connection_unref(conn);
+}
+
+size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+    size_t written;
+    written = fwrite(ptr, size, nmemb, stream);
+    return written;
+}
+
+size_t function_pt(void *contents, size_t size, size_t nmemb, void *stream){
+   ((string*)stream)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
+int createManifestFile(application* application)
+{
+    string manifest_dir = MANIFEST_PATH + "/" + application->name + ".mf";
+    cJSON *root;
+    root = cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(application->id + 100));
+    cJSON_AddItemToObject(root, "path", cJSON_CreateString(application->binaryPath.c_str()));
+    cJSON_AddItemToObject(root, "name", cJSON_CreateString(application->binaryName.c_str()));
+    cJSON_AddItemToObject(root, "group", cJSON_CreateString("group01"));
+    cJSON_AddItemToObject(root, "prettyname", cJSON_CreateString(application->name.c_str()));
+    cJSON_AddItemToObject(root, "icon", cJSON_CreateString(application->iconName.c_str()));
+    cJSON_AddItemToObject(root, "hash", cJSON_CreateString(application->hashValue.c_str()));
+
+    FILE* fp;
+    fp = fopen(manifest_dir.c_str(), "w");
+    if(fp==NULL)
+    {
+        application->error =1;
+        application->errorCode = "Manifest file creation failed";
+        return -1;
+    }
+    else {
+        fprintf(fp,"%s\n",cJSON_Print(root));
+        fclose(fp);
+        return 1;
+    }
+}
+
+int calculateHash(application* app)
+{
+    FILE* fp;
+    fp = fopen(app->binaryPath.c_str(),"rb");
+    fseek(fp,0,SEEK_END);
+    int fileSize = ftell(fp);
+    fseek(fp,0,SEEK_SET);
+
+    unsigned char ibuf[fileSize];
+
+    unsigned char obuf[32];
+    fread(ibuf,fileSize,1,fp);
+
+    SHA256(ibuf,fileSize,obuf);
+    int i;
+    char stringData[65];
+    for (i = 0; i < 32; i++) {
+        sprintf(stringData+(i*2), "%02x", obuf[i]);
+    }
+    app->hashValue = string(stringData);
+    return 0;
+}
+
+
+int getdir (string dir, application* app)
+{
+    DIR *dp;
+    struct dirent *dirp;
+    string ending = ".sign";
+    if((dp  = opendir(dir.c_str())) == NULL) {
+        cout << "Error(" << errno << ") opening " << dir << endl;
+        return errno;
+    }
+
+    while ((dirp = readdir(dp)) != NULL) {
+        if (strcmp(dirp->d_name,".") == 0  || strcmp(dirp -> d_name,"..") == 0 )
+            continue;
+        if (dirp->d_type == DT_DIR){
+            string appPath = dir + dirp->d_name;
+            getdir(appPath,app);
+        }
+        else if (string(dirp->d_name).compare(string(dirp->d_name).length() - ending.length(), ending.length(), ending) == 0)
+            {
+                if( remove( (dir+"/"+dirp->d_name).c_str() ) != 0 )
+                    perror( "Error deleting .sign file" );
+            }
+        else{        /*Set binary path and binary name*/
+            app->binaryPath = dir + "/" +dirp->d_name;
+            app->binaryName =   dirp->d_name;
+        }
+    }
+    closedir(dp);
+    return 0;
+}
+
+HTTPPerform::HTTPPerform(string url){
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+    errorFlag = 0;
+    errorMessage = "";
+    this->baseUrl = url;
+}
+
+HTTPPerform::~HTTPPerform(){
+    curl_easy_cleanup(curl);
+}
+
+int HTTPPerform::getContent(string url, string& content) {
+    string out;
+    CURLcode res;
+    int returnFlag=1;
+    long httpCode;
+    if(curl){
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPGET,1);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, function_pt);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
+        try{
+            res = curl_easy_perform(curl);
+            curl_easy_getinfo(curl,CURLINFO_RESPONSE_CODE,&httpCode);
+        }
+        catch(exception &e){
+            cout << "Exception " << e.what() << endl;
+        }
+
+    /* Check for errors */
+        if (res != CURLE_OK) {
+            content = curl_easy_strerror(res);
+            returnFlag=0;
+        }
+        if(httpCode != 200)
+        {
+
+            returnFlag = 0;
+            content = "HTTP Response " + to_string(httpCode) + " returned!";
+        }
+    }
+    return returnFlag;
+}
+
+int HTTPPerform::download(const string& url, application* app){
+    FILE *fp;
+    stringstream out;
+    CURLcode res;
+    int installed;
+    int returnFlag=0;
+    app->error = 1;
+    app->isDownloaded = 0;
+    app->isInstalled = 0;
+    if (curl){
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        string filePath = DOWNLOAD_PATH +  "tmp.tar.gz";
+        fp = fopen(filePath.c_str(),"w+");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        try {
+            res = curl_easy_perform(curl);
+        }
+        catch(exception &e){
+            cout << "Exception " << e.what() << endl;
+        }
+
+        if(res ==CURLE_OK)
+        {
+            curl_easy_cleanup(curl);
+            fclose(fp);
+            installed = install(filePath, app);
+            if(installed != 0){
+                app->errorCode = "Installation failed\n";
+            }
+            else { // Installation Completed
+                app-> isInstalled = 1;
+                app-> isDownloaded = 1;
+                app-> error = 0;
+                /*TO DO : Call Update function*/
+                string command = "rm -r " +filePath;
+                system(command.c_str());
+                returnFlag = 1;
+            }
+        }
+    }
+    return returnFlag;
+}
+
+int HTTPPerform::install(const string& filePath, application* app){
+    string command = "tar -zxf " + filePath +" -C  " + INSTALL_PATH + " --strip 1";
+    int returnFlag = 0;
+    string dirPath = DOWNLOAD_PATH+"tmpInstall/";
+    int retVal =  system(command.c_str());
+    if (retVal!= 0)
+        returnFlag = -1;
+    int dirVal = getdir(dirPath,app);
+    if (dirVal != 0 )
+        returnFlag = -1;
+    return returnFlag;
+    }
+
+applications* HTTPPerform::perform(ACTION action, int appId){
+    string url;
+    string download_url;
+    string binaryPath;
+    string binaryName;
+    applications* appList = new applications;
+    string retVal;
+    int status;
+    int installationStatus;
+    switch(action){
+        case DOWNLOAD:
+            if(appId == 0){
+                this -> errorFlag = 1;
+                this -> errorMessage = "Index page called with download request";
+            }
+            else {
+                url = this->baseUrl + "application/"+to_string(appId)+"/";
+                status = this->getContent(url,retVal);
+                if (status == 1)
+                {
+                    appList = this->parseString(retVal);
+                    download_url = this->baseUrl + "application/"+to_string(appId)+"/download";
+                    installationStatus = this->download(download_url, appList->apps);
+                    if(installationStatus != 1)
+                        break;
+                    calculateHash(appList->apps);
+                    createManifestFile(appList->apps);
+                }
+                else {
+                    this->errorFlag = 1;
+                    this->errorMessage = retVal;
+                }
+            }
+            break;
+        case SHOW:
+            if(appId == 0)
+                url = this->baseUrl + "applications/";
+            else
+                url = this->baseUrl + "application/"+to_string(appId)+"/";
+            status=this->getContent(url,retVal);
+            if (status == 1)
+                appList = this->parseString(retVal);
+            else
+                this-> errorFlag = 1;
+                this-> errorMessage = retVal;
+            break;
+    }
+    return appList;
+}
+
+applications* HTTPPerform::parseString(string response)
+{
+    cJSON *root;
+    const char* resp = response.c_str();
+    root = cJSON_Parse(resp);
+    int appId;
+    applications* appList = new applications;
+    string fields[3];
+    if (!root) {
+        printf("Error before: [%s]\n",cJSON_GetErrorPtr());
+    }
+    else {
+        cJSON* trial = cJSON_GetObjectItem(root,"applications");
+        const string keys[4] = {"id", "name", "developer", "icon"};
+            if(!trial)
+            {
+                application* app = new application;
+                appList->size = 1;
+                for(int i = 0 ; i<4; i++)
+                {
+                    cJSON* child = cJSON_GetObjectItem(root,keys[i].c_str());
+                    if(child!=NULL){
+                        if(i==0)
+                        {
+                            app->id = child->valueint;
+                        }
+                        else
+                        {
+                            fields[i-1] = child->valuestring;
+                        }
+
+                    }
+                    else
+                        cout << "Child is NULL" << endl;
+
+                    app->name = fields[0];
+                    app->developerName = fields[1];
+                    app->iconName = fields[2];
+                    appList->apps = app;
+                }
+            }
+            else
+            {
+                cJSON* appsArray = cJSON_GetArrayItem(root,0);
+                int arraySize = cJSON_GetArraySize(appsArray);
+                appList->size = arraySize;
+                cJSON *arrayItem;
+                application *apps = new application[arraySize];
+                for(int i =0 ; i < arraySize; i++)
+                {
+                    arrayItem = cJSON_GetArrayItem(appsArray,i);
+                    for(int j = 0 ; j<4; j++)
+                    {
+                        cJSON* child = cJSON_GetObjectItem(arrayItem,keys[j].c_str());
+                        if(child!=NULL){
+                            if(j!=0){
+                                fields[j-1] = child->valuestring;
+                            }
+                            else
+                                apps[i].id = child->valueint;
+                        }
+
+                        else
+                            cout << "Child is NULL" << endl;
+                    }
+                    apps[i].name = fields[0];
+                    apps[i].developerName = fields[1];
+                    apps[i].iconName = fields[2];
+                }
+                appList->apps = apps;
+
+            }
+    }
+    return appList;
+}
+int HTTPPerform::getError(){
+    return this->errorFlag;
+}
+string HTTPPerform::getErrorMessage(){
+    return this->errorMessage;
+}
+
+void HTTPPerform::setUrl(const string& url)
+{
+    this->baseUrl = url;
+}
+string HTTPPerform::getUrl()
+{
+    return this->baseUrl;
+}

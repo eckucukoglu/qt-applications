@@ -3,9 +3,7 @@
         <file>main.qml</file>
         <file>pics/sober_newspecs/bg.png</file>
         <file>pics/sober_newspecs/icon/homeIcon.png</file>
-        <file>pics/sober_newspecs/icon/icon_assistant.png</file>
         <file>pics/sober_newspecs/icon/icon_bekopos.png</file>
-        <file>pics/sober_newspecs/icon/icon_calculator.png</file>
         <file>pics/sober_newspecs/icon/icon_calendar.png</file>
         <file>pics/sober_newspecs/icon/icon_chrome.png</file>
         <file>pics/sober_newspecs/icon/icon_clock.png</file>
@@ -29,5 +27,7 @@
         <file>pics/sober_newspecs/bg2.jpg</file>
         <file>GridListModel.qml</file>
         <file>InstallArea.qml</file>
+        <file>Calculator.png</file>
+        <file>Sci.png</file>
     </qresource>
 </RCC>

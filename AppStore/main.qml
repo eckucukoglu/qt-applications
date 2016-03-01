@@ -2,6 +2,7 @@ import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls.Styles 1.2
 
 ApplicationWindow {
     title: qsTr("Desktop Screen")
@@ -18,6 +19,18 @@ ApplicationWindow {
         slide_anim.alwaysRunToEnd = true
         AppsModel.set_page_index(currentIndex)
     }
+
+    BusyIndicator {
+           id: busyIndication
+           anchors.centerIn: parent
+           Text{
+               anchors.top: parent.bottom
+               anchors.horizontalCenter: parent.horizontalCenter
+               text: "connecting to server.."
+           }
+
+           z:1
+        }
 
     PropertyAnimation {
         id: slide_anim
@@ -56,8 +69,10 @@ ApplicationWindow {
                     // successful
                 }
             }
+            busyIndication.visible=false
          }
     }
+
     StatusBarTop{
         id:statusBar
 
@@ -119,5 +134,18 @@ ApplicationWindow {
         x: (root.width-width)/2
         y: (root.height-height)/2
 
+    }
+    MessageDialog {
+        id: errorMsg
+        width: 600
+        height: 300
+        visible:false
+        title: "Error!"
+        icon: StandardIcon.Warning
+        text: "No Internet Connection is Available"
+        onAccepted: Qt.quit()
+    }
+    Component.onCompleted: {
+        // check if error occured, if so quit app
     }
 }

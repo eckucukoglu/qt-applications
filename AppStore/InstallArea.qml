@@ -118,12 +118,12 @@ Rectangle{
            anchors.top: appIcon.bottom
            anchors.bottom: installBtn.top
            anchors.left: installWin.left
-           anchors.topMargin: 35
-           anchors.bottomMargin: 25
+           anchors.topMargin: 30
+           anchors.bottomMargin: 20
            anchors.leftMargin: 40
            anchors.rightMargin: 40
            width: 420
-           height: 20
+           height: 35
            Text{
                text: appName.text + " app is downloading.."
                anchors.bottom: progressBar.top
@@ -171,6 +171,12 @@ Rectangle{
                }
            onClicked: {
                progressBarField.visible=true
+               errorTxt.visible=false
+               alreadyInsText.visible=false
+               nowInstalledTxt.visible=false
+               console.log("app is : "+ app_id)
+               var ret = AppsModel.download(app_id)
+               //TODO: check ret value, update info area
            }
        }
 
@@ -202,6 +208,9 @@ Rectangle{
                content.enabled=true
                swipeArea.enabled=true
                progressBarField.visible=false
+               errorTxt.visible=false
+               alreadyInsText.visible=false
+               nowInstalledTxt.visible=false
            }
        }
 
@@ -224,7 +233,16 @@ Rectangle{
            text: appName.text + " app has successfully installed."
            anchors.horizontalCenter: parent.horizontalCenter
        }
-
+       Text{
+           id: errorTxt
+           anchors.bottom: okBtn.top
+           anchors.bottomMargin: 20
+           font.bold: true
+           visible: false
+           color: "red"
+           text: "Download Failed!"
+           anchors.horizontalCenter: parent.horizontalCenter
+       }
        Button{
            id: okBtn
            text: "OK"
@@ -253,7 +271,7 @@ Rectangle{
            }
        }
    }
-   onApp_idChanged:{
+      onApp_idChanged:{
         console.log("app id is : "+ app_id)
         if(app_id == 2)
         {
@@ -271,6 +289,13 @@ Rectangle{
             nowInstalledTxt.visible=true
             alreadyInsText.visible=false
         }
+        else if(app_id == 4)
+        {
+            errorTxt.visible=true
+            alreadyInsText.visible=false
+            nowInstalledTxt.visible=false
+            progressBarField.visible=false
+        }
         else
         {
             okBtn.visible=false
@@ -280,5 +305,6 @@ Rectangle{
             nowInstalledTxt.visible=false
         }
    }
+
 }
 
