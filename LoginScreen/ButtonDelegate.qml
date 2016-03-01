@@ -62,9 +62,10 @@ Component {
         }
 
       MessageDialog {
-                id: msg
-                title: "Title"
-                text: "index:" + buttonDelegate.GridView.view.currentIndex
+                id: errorMsg
+                icon: StandardIcon.Warning
+                title: "Error!"
+                text: "Incorrect Password!"
                 onAccepted: visible = false
       }
 
@@ -97,9 +98,17 @@ Component {
                 else if(index == 11) //OK Button
                 {
                    // messageDialog.show(qsTr("Sifre: ") + numbersContent.password + qsTr("\nShamir:") + numbersContent.isShamir)
-                    loginHelper.set_password(qsTr(numbersContent.password), numbersContent.isShamir)
-                    console.log("pwd: " + qsTr(loginHelper.test_method()))
-                    loginHelper.query_access(0)
+                    var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
+                    if(result){
+                        loginHelper.query_access(0)
+                    }
+                    else{
+                        errorMsg.visible=true
+                        infoTextArea.textvalue  = qsTr("Enter Password")
+                        numbersContent.counter = 0
+                        numbersContent.password = qsTr("")
+                    }
+
                 }
                 else // DIGIT
                 {

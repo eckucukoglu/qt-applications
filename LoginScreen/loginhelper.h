@@ -13,12 +13,10 @@ class LoginHelper: public QObject
 public:
    explicit LoginHelper(QObject *parent = 0);
 
-    Q_INVOKABLE void set_password(QString pwd,bool _isShamir);
-    Q_INVOKABLE QString test_method();
+    Q_INVOKABLE bool check_password(QString pwd,bool _isShamir);
     Q_INVOKABLE void query_access(int access_code);
 
 private:
-    char* pwd;
     bool isShamir;
 
 };
