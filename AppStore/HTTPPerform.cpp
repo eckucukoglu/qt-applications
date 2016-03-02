@@ -118,6 +118,14 @@ int calculateHash(application* app)
 {
     FILE* fp;
     fp = fopen(app->binaryPath.c_str(),"rb");
+    if(fp == NULL)
+    {
+        app->error = 1;
+        app->errorCode = "Could not read binary file";
+        return -1;
+
+    }
+
     fseek(fp,0,SEEK_END);
     int fileSize = ftell(fp);
     fseek(fp,0,SEEK_SET);
@@ -134,7 +142,8 @@ int calculateHash(application* app)
         sprintf(stringData+(i*2), "%02x", obuf[i]);
     }
     app->hashValue = string(stringData);
-    return 0;
+    fclose(fp);
+    return 1;
 }
 
 
@@ -249,7 +258,7 @@ int HTTPPerform::download(const string& url, application* app){
                 app-> isInstalled = 1;
                 app-> isDownloaded = 1;
                 app-> error = 0;
-                /*TO DO : Call Update function*/
+                query_updateapps();
                 string command = "rm -r " +filePath;
                 system(command.c_str());
                 returnFlag = 1;
@@ -262,7 +271,7 @@ int HTTPPerform::download(const string& url, application* app){
 int HTTPPerform::install(const string& filePath, application* app){
     string command = "tar -zxf " + filePath +" -C  " + INSTALL_PATH + " --strip 1";
     int returnFlag = 0;
-    string dirPath = DOWNLOAD_PATH+"tmpInstall/";
+    string dirPath = DOWNLOAD_PATH;
     int retVal =  system(command.c_str());
     if (retVal!= 0)
         returnFlag = -1;
@@ -281,11 +290,13 @@ applications* HTTPPerform::perform(ACTION action, int appId){
     string retVal;
     int status;
     int installationStatus;
+    int hashCalculated;
+    int manifestCreated;
     switch(action){
         case DOWNLOAD:
             if(appId == 0){
-                this -> errorFlag = 1;
-                this -> errorMessage = "Index page called with download request";
+                this->errorFlag = 1;
+                this->errorMessage = "Index page called with download request";
             }
             else {
                 url = this->baseUrl + "application/"+to_string(appId)+"/";
@@ -297,8 +308,20 @@ applications* HTTPPerform::perform(ACTION action, int appId){
                     installationStatus = this->download(download_url, appList->apps);
                     if(installationStatus != 1)
                         break;
-                    calculateHash(appList->apps);
-                    createManifestFile(appList->apps);
+                    hashCalculated = calculateHash(appList->apps);
+                    if(hashCalculated == -1) {
+                        this->errorFlag = 1;
+                        this->errorMessage = "Hash value calculation failed";
+                    }
+                    else
+                    {
+                        manifestCreated = createManifestFile(appList->apps);
+                        if(manifestCreated == -1)
+                        {
+                            this->errorFlag = 1;
+                            this->errorMessage = "Manifest file creation failed";
+                        }
+                    }
                 }
                 else {
                     this->errorFlag = 1;

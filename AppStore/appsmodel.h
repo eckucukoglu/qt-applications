@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "HTTPPerform.h"
 using namespace std;
 
 
@@ -53,6 +54,7 @@ public:
     Q_INVOKABLE void set_page_count();
     Q_INVOKABLE int get_page_count();
     Q_INVOKABLE int download(int appid);
+    Q_INVOKABLE void listApps();
     int number_of_applications;
     Q_INVOKABLE bool check_internet;
 
@@ -61,6 +63,8 @@ public:
      int page_index;
      int page_count;
      app APPLIST[MAX_NUMBER_APPLICATIONS];
+     HTTPPerform* performer;
+     applications* _appList;
      Q_INVOKABLE QVariant appList;
 };
 
