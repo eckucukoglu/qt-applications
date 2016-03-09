@@ -80,15 +80,7 @@ Component {
               installArea.icon_path = listModel.get(index).portrait
               installArea.app_id = listModel.get(index).app_id
               installArea.dev_name = listModel.get(index).developerName
-              console.log("++++++++++++++++++++++")
-              console.log("border color:" + listModel.get(index).borderColor)
-              console.log("name:" + listModel.get(index).name)
-              console.log("portrait:" + listModel.get(index).portrait)
-              console.log("app_id:" + listModel.get(index).app_id)
-              console.log("dev_name:" + listModel.get(index).developerName)
-              console.log("binaryPath:" + listModel.get(index).binaryPath)
-              console.log("packagePath:" + listModel.get(index).packagePath)
-              console.log("++++++++++++++++++++++")
+              installArea.alreadyInstalled = listModel.get(index).alreadyInstalled
               installArea.visible = true
               content.enabled=false
               swipeArea.enabled=false

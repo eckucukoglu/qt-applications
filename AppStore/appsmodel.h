@@ -17,9 +17,9 @@
 #include <string.h>
 #include <math.h>
 #include "HTTPPerform.h"
+
+
 using namespace std;
-
-
 typedef struct app {
         int id;
         string name;
@@ -36,6 +36,11 @@ typedef struct app {
         string borderColor;
 }app;
 
+typedef struct installed_app {
+    unsigned int id;
+    char* prettyname;
+    char* icon;
+} installed_app;
 
 
 class AppsModel: public QObject
@@ -55,17 +60,22 @@ public:
     Q_INVOKABLE int get_page_count();
     Q_INVOKABLE int download(int appid);
     Q_INVOKABLE void listApps();
+    Q_INVOKABLE void query_listapps();
+    Q_INVOKABLE int check_if_installed(int app_id);
+    Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
     int number_of_applications;
-    Q_INVOKABLE bool check_internet;
-
+    int number_of_installed_applications;
+    Q_INVOKABLE bool check_connection();
  private:
      int current_index;
      int page_index;
      int page_count;
+     bool check_internet;
      app APPLIST[MAX_NUMBER_APPLICATIONS];
      HTTPPerform* performer;
      applications* _appList;
      Q_INVOKABLE QVariant appList;
+     installed_app INSTALLEDAPPS[MAX_NUMBER_APPLICATIONS];
 };
 
 #endif // APPSMODEL_H

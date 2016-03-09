@@ -54,23 +54,28 @@ ApplicationWindow {
         anchors.top: statusBar.bottom
         anchors.bottom: navigationBar.top
         width: root.width * 3
+        property var desktopGrid
+        property Component component
         Component.onCompleted: {
-            var desktopGrid;
-            var component;
             var i;
             for(i=0;i<3;i++)
             {
                 component= Qt.createComponent("DesktopGrid.qml");
                 desktopGrid = component.createObject(content, {"x":i*root.width, "width": root.width, "height": root.height - statusBar.height - navigationBar.height});
                 if (desktopGrid === null) {
-                    // Error Handling
+                    console.log("error occured on applist grid creation")
                 }
                 else{
-                    // successful
+                    console.log("applist grid created successfully")
                 }
             }
             busyIndication.visible=false
          }
+        onEnabledChanged: {
+          //  AppsModel.query_listapps()
+          //  AppsModel.set_element_list()
+          //  desktopGrid.reload()
+        }
     }
 
     StatusBarTop{
@@ -146,6 +151,12 @@ ApplicationWindow {
         onAccepted: Qt.quit()
     }
     Component.onCompleted: {
-        // check if error occured, if so quit app
+        //TODO : check if error occured, if so quit app
+        if(AppsModel.check_connection()==false)
+        {
+            console.log("internet2: "+AppsModel.check_connection())
+            errorMsg.visible=true
+            AppsModel.query_listapps()
+        }
     }
 }

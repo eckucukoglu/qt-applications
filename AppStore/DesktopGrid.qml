@@ -25,4 +25,8 @@ Rectangle {
 
        }
     }
+    function reload()
+    {
+        listModel.fillListModel();
+    }
 }

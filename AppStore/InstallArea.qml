@@ -16,7 +16,7 @@ Rectangle{
   property string icon_path
   property string color
   property int app_id
-  property bool is_installed:true
+  property int alreadyInstalled
 
   Rectangle
   {
@@ -175,9 +175,24 @@ Rectangle{
                alreadyInsText.visible=false
                nowInstalledTxt.visible=false
                console.log("app is : "+ app_id)
+               //TODO: check if app is already downloaded
+               // call dbus listapps, search appids
                var ret = AppsModel.download(app_id)
-               //TODO: check ret value, update info area
-           }
+               console.log("ret value: "+ ret)
+               if(ret === 0)
+               {
+                   progressBarField.visible=false
+                   nowInstalledTxt.visible=true
+                   installBtn.visible=false
+                   cancelBtn.visible=false
+                   okBtn.visible=true
+               }
+               if(ret === 1)
+               {
+                   progressBarField.visible=false
+                   errorTxt.visible=true
+               }
+            }
        }
 
 
@@ -207,10 +222,6 @@ Rectangle{
                installArea.visible=false
                content.enabled=true
                swipeArea.enabled=true
-               progressBarField.visible=false
-               errorTxt.visible=false
-               alreadyInsText.visible=false
-               nowInstalledTxt.visible=false
            }
        }
 
@@ -268,43 +279,52 @@ Rectangle{
                installArea.visible=false
                content.enabled=true
                swipeArea.enabled=true
-           }
+          }
        }
    }
-      onApp_idChanged:{
-        console.log("app id is : "+ app_id)
-        if(app_id == 2)
-        {
-            okBtn.visible=true
-            cancelBtn.visible=false
-            installBtn.visible=false
-            alreadyInsText.visible=true
-            nowInstalledTxt.visible=false
-        }
-        else if(app_id == 3)
-        {
-            okBtn.visible=true
-            cancelBtn.visible=false
-            installBtn.visible=false
-            nowInstalledTxt.visible=true
-            alreadyInsText.visible=false
-        }
-        else if(app_id == 4)
-        {
-            errorTxt.visible=true
-            alreadyInsText.visible=false
-            nowInstalledTxt.visible=false
-            progressBarField.visible=false
-        }
-        else
-        {
-            okBtn.visible=false
-            cancelBtn.visible=true
-            installBtn.visible=true
-            alreadyInsText.visible=false
-            nowInstalledTxt.visible=false
-        }
-   }
+  onVisibleChanged:{
+       console.log("app id is : "+ app_id)
+       console.log("installed: "+ alreadyInstalled)
+       if(alreadyInstalled === 0) //app is not already installed
+       {
+           okBtn.visible=false
+           cancelBtn.visible=true
+           installBtn.visible=true
+           alreadyInsText.visible=false
+           errorTxt.visible=false
+           nowInstalledTxt.visible=false
+       }
+       else if(alreadyInstalled === 1) //app is already installed
+       {
+           okBtn.visible=true
+           cancelBtn.visible=false
+           installBtn.visible=false
+           alreadyInsText.visible=true
+           nowInstalledTxt.visible=false
+           errorTxt.visible=false
+       }
+  }
+  Component.onCompleted: {
+      console.log("installed: "+ alreadyInstalled)
+      if(alreadyInstalled === 0) //app is not installed
+      {
+          okBtn.visible=false
+          cancelBtn.visible=true
+          installBtn.visible=true
+          alreadyInsText.visible=false
+          errorTxt.visible=false
+          nowInstalledTxt.visible=false
+      }
+      else if(alreadyInstalled === 1) //app is already installed
+      {
+          okBtn.visible=true
+          cancelBtn.visible=false
+          installBtn.visible=false
+          alreadyInsText.visible=true
+          nowInstalledTxt.visible=false
+          errorTxt.visible=false
+      }
+  }
 
 }
 
