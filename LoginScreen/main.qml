@@ -4,6 +4,7 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls.Styles 1.2
 
+
 ApplicationWindow {
     title: qsTr("LoginScreen")
     width: 800
@@ -11,6 +12,16 @@ ApplicationWindow {
     visible: true
     id: root
     property bool _isActive: true
+    property date date
+
+    Rectangle{
+        anchors.top: parent.top
+        width: parent.width
+        height: 18
+        color: "black"
+        opacity: 0.3
+        z:1
+    }
 
     Image {
         id: background
@@ -26,6 +37,29 @@ ApplicationWindow {
         anchors.bottomMargin: 400
         anchors.leftMargin: 280
         anchors.rightMargin: 280
+    }
+
+
+    Text{
+        id: hourAndDate
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.leftMargin: 20
+        text: date.toLocaleTimeString(Qt.locale("en_EN"), "hh:mm:ss") + "  |  " +
+              date.toLocaleDateString(Qt.locale("en_EN"), "dd MMM yyyy")
+        font.pixelSize: 12
+        color: "white"
+    }
+
+    Timer{
+        interval: 100
+        running: true
+        repeat: true
+        onTriggered: {
+            date = new Date();
+            hourAndDate.text = date.toLocaleTimeString(Qt.locale("tr_TR"), "hh:mm:ss") + "  |  " +
+                      date.toLocaleDateString(Qt.locale("tr_TR"), "dd MMM yyyy")
+        }
     }
 
     Item{

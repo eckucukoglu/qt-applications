@@ -97,18 +97,16 @@ Component {
                 }
                 else if(index == 11) //OK Button
                 {
-                   // messageDialog.show(qsTr("Sifre: ") + numbersContent.password + qsTr("\nShamir:") + numbersContent.isShamir)
                     var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
                     if(result){
                         loginHelper.query_access(0)
                     }
                     else{
                         errorMsg.visible=true
-                        infoTextArea.textvalue  = qsTr("Enter Password")
-                        numbersContent.counter = 0
-                        numbersContent.password = qsTr("")
                     }
-
+                    infoTextArea.textvalue  = qsTr("Enter Password")
+                    numbersContent.counter = 0
+                    numbersContent.password = qsTr("")
                 }
                 else // DIGIT
                 {
