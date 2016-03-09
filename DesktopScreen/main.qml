@@ -23,7 +23,6 @@ ApplicationWindow {
     property double  t2: 0
     property string backgroundImg: "pics/sober_newspecs/bg2.jpg"
 
-
     BusyIndicator {
            id: busyIndication
            anchors.centerIn: parent
@@ -59,28 +58,33 @@ ApplicationWindow {
         anchors.top: statusBar.bottom
         anchors.bottom: navigationBar.top   
         width: root.width * 3
+        property Component component
+        property var desktopGrid
         function createGrid(){
-            var component;
             var i;
-            var desktopGrid
-            for(i=0;i<3;i++) //TODO: WHY 3? numofapps / 18 or get page count
+            for(i=0;i<AppsModel.get_page_count();i++) //TODO: WHY 3? numofapps / 18 or get page count
             {
                 component= Qt.createComponent("DesktopGrid.qml");
                 desktopGrid = component.createObject(content, {"x":i*root.width, "width": root.width, "height": root.height - statusBar.height - navigationBar.height});
                 if (desktopGrid === null) {
-                // Error Handling
-                // console.log("::main> Error creating object");
+                    console.log("error occured on applist grid creation")
+                    Qt.quit() //reload
                 }
                 else{
-                // console.log("::main>successfull")
+                    console.log("applist grid created successfully")
                 }
             }
+        }
+        function reload()
+        {
+               desktopGrid.reload();
         }
 
         Component.onCompleted: {
            createGrid()
          }
-    }
+        }
+
 
     //StatusBar
     StatusBarTop{

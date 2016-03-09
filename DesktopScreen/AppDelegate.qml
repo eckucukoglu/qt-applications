@@ -72,23 +72,57 @@ Component {
                 text: "index:" + appDelegate.GridView.view.currentIndex
                 onAccepted: visible = false
       }
+      MessageDialog {
+                id: error_msg
+                title: "Error"
+                visible:false
+                icon: StandardIcon.Warning
+                text: ""
+                onAccepted: visible = false
+      }
       MouseArea{
             anchors.fill: parent
             //propagateComposedEvents: true
             enabled: true
             onClicked: {
                 root.t1 = new Date().valueOf()
+                var ret = -1
                 appDelegate.GridView.view.currentIndex = index
                 if ((t1-t2) > 500){
-                    AppsModel.query_runapp(app_id)
-                    console.log("appname: " + name)
-                    if(name === "APPSTORE")
+                    ret = AppsModel.query_runapp(app_id)
+                    if(ret === -1)
                     {
-                        console.log("refreshing apps..")
-                        AppsModel.query_listapps()
-                        content.createGrid()
-                        //recreate desktop grid
+                        error_msg.setText("Reached permitted number of live apps.")
+                        error_msg.visible=true
+                    }
+                    else if(ret === -2)
+                    {
+                        error_msg.setText("App id:"+app_id+" is not valid!")
+                        error_msg.visible=true
+                    }
+                    else if(ret === -3)
+                    {
+                        error_msg.setText("Invalid hash value")
+                        error_msg.visible=true
+                    }
+                    else if(ret === 0)//successful
+                    {
+                        console.log("appname: " + name)
 
+                         //TODO : recreate desktop grid
+                        if(name === "APPSTORE")
+                        {
+                            content.reload()
+                           // console.log("refreshing apps..")
+                            //Qt.quit() //works
+                            //TODO : recreate desktop grid
+
+                        }
+                    }
+                    else
+                    {
+                        error_msg.setText("Unknown error occured.")
+                        error_msg.visible=true
                     }
                 }
                 root.t2 = new Date().valueOf()

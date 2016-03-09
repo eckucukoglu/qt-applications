@@ -7,16 +7,16 @@
 #include <QVariant>
 #include <dbus/dbus.h>
 #include <signal.h>
-#define MAX_NUMBER_APPLICATIONS 50
 #define APPMAN_VIEW_DEBUG_PREFIX "V >> "
-
-
+#define DEBUG_PREFIX "tester: "
+#define MAX_NUMBER_APPLICATIONS 50
+using namespace std;
 typedef struct application {
     unsigned int id;
     char* prettyname;
-    char* iconpath;
-    char* color;
+    char* icon;
 } application;
+
 
 class AppsModel: public QObject
 {
@@ -29,7 +29,7 @@ public:
    Q_INVOKABLE QVariant get_element_list();
    Q_INVOKABLE void set_element_list(application list[]);
    Q_INVOKABLE void query_listapps();
-   Q_INVOKABLE void query_runapp(int param);
+   Q_INVOKABLE int query_runapp(int param);
    Q_INVOKABLE bool is_active();
    Q_INVOKABLE void set_is_active(bool _value);
    Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
@@ -43,6 +43,7 @@ public:
    Q_INVOKABLE void set_page_count();
    Q_INVOKABLE int get_page_count();
    Q_INVOKABLE void shutdown();
+   Q_INVOKABLE void query_lockscreen();
    application APPLIST[MAX_NUMBER_APPLICATIONS];
 
 private: 

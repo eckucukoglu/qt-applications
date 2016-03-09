@@ -29,4 +29,6 @@ HEADERS += \
 CONFIG += dbus
 
 DISTFILES += \
-    pics/sober_newspecs/icon/icon_calendar.png
+    pics/sober_newspecs/icon/icon_calendar.png \
+    Calculator.png \
+    Sci.png

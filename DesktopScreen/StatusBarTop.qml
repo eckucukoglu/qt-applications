@@ -46,22 +46,11 @@ Rectangle{
         anchors.rightMargin: 20
         spacing: 8
         Image{
-            source: "pics/blueetooth.png"
-            scale: 0.7
-        }
-
-        Image{
             id: energyIcon
             source: "pics/energy39.png"
             scale: 0.9
         }
-        Text{
-            id: energyTxt
-            anchors.verticalCenter: parent.verticalCenter
-            text: "62%"
-            color: "white"
-            font.pixelSize: 12
-        }
+
         Image{
             source: "pics/settings-icon.png"
             scale: 0.7
@@ -107,7 +96,7 @@ Rectangle{
             anchors.verticalCenter: parent.verticalCenter
             opacity: 0.4
             x: 42
-            color: "darkgray"
+            color: "black"
             height: parent.height-10
         }
 
@@ -133,7 +122,7 @@ Rectangle{
                  font.bold: true
                  font.pixelSize: 18
                  font.family: "helvetica"
-                 color: "darkgray"
+                 color: "black"
              }
              RadialGradient {
                  id: gradientLock
@@ -151,15 +140,14 @@ Rectangle{
                  propagateComposedEvents: false
                  onPressed: {
                      gradientLock.visible=true
-                     lockTxt.color="#050505"
                  }
                  onReleased: {
                      gradientLock.visible=false
-                     lockTxt.color = "#A2A3A3"
                  }
                  onClicked: {
                        settingsMenu.visible=false
                        console.log(">>TODO: lock the screen")
+                       AppsModel.query_lockscreen()
                  }
              }
         }
@@ -193,7 +181,7 @@ Rectangle{
                  font.bold: true
                  font.pixelSize: 18
                  font.family: "helvetica"
-                 color: "darkgray"
+                 color: "black"
              }
              RadialGradient {
                  id: gradientPwrOff
@@ -225,11 +213,9 @@ Rectangle{
                  anchors.fill: parent
                  propagateComposedEvents: false
                  onPressed: {
-                        powerOffTxt.color="#050505"
                         gradientPwrOff.visible=true
                  }
                  onReleased: {
-                         powerOffTxt.color="#A2A3A3"
                          gradientPwrOff.visible=false
                  }
                  onClicked: {
@@ -268,7 +254,7 @@ Rectangle{
                  font.bold: true
                  font.pixelSize: 18
                  font.family: "helvetica"
-                 color: "darkgray"
+                 color: "black"
              }
              RadialGradient {
                  id: gradientSttngs
@@ -285,11 +271,9 @@ Rectangle{
                  anchors.fill: parent
                  propagateComposedEvents: false
                  onPressed: {
-                        settingsTxt.color="#050505"
                         gradientSttngs.visible=true
                  }
                  onReleased: {
-                         settingsTxt.color="#A2A3A3"
                          gradientSttngs.visible=false
                  }
                  onClicked: {

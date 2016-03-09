@@ -27,6 +27,10 @@ Rectangle {
       delegate: AppDelegate{
 
        }
-    }
+   }
+   function reload()
+   {
+       listModel.reload();
+   }
 }
 
