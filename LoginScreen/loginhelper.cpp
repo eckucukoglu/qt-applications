@@ -1,7 +1,9 @@
 #include "loginhelper.h"
-
+using namespace std;
 LoginHelper::LoginHelper(QObject *parent) : QObject(parent)
 {
+    set_tryCount(0);
+
 }
 
 bool LoginHelper::check_password(QString password, bool _isShamir){
@@ -112,3 +114,22 @@ void LoginHelper::query_access(int access_code) {
 }
 
 
+void LoginHelper::set_tryCount(int tryCount)
+{
+        char data[10];
+        ofstream outfile;
+        outfile.open("trycount.out");
+        sprintf(data,"%d", tryCount);
+        outfile << data << endl;
+        outfile.close();
+}
+int LoginHelper::get_tryCount()
+{
+    char data[10];
+    ifstream infile;
+    infile.open("trycount.out");
+    infile >> data;
+    int ret=0;
+    sscanf(data, "%d", &ret);
+    return ret;
+}

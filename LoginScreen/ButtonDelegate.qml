@@ -61,13 +61,7 @@ Component {
 
         }
 
-      MessageDialog {
-                id: errorMsg
-                icon: StandardIcon.Warning
-                title: "Error!"
-                text: "Incorrect Password!"
-                onAccepted: visible = false
-      }
+
 
       MouseArea{
             anchors.fill: parent
@@ -86,9 +80,6 @@ Component {
                buttonDelegate.GridView.view.currentIndex = index
                // msg.visible = true  //opens an alert box
                 console.log("counter: "+numbersContent.counter)
-
-
-
                 if(index == 9) //Cancel Button
                 {
                     infoTextArea.textvalue  = qsTr("Enter Password")
@@ -99,10 +90,35 @@ Component {
                 {
                     var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
                     if(result){
+
+                        numbersContent.trialRemaining=3
+                        loginHelper.set_tryCount(0)
+                        numbersContent.ftime = 0
+                        numbersContent.stime = 5
+                        waitTime=0
                         loginHelper.query_access(0)
+
                     }
                     else{
-                        errorMsg.visible=true
+                        numbersContent.trialRemaining = 3- (loginHelper.get_tryCount()%3)
+                        console.log("remaining: "+numbersContent.trialRemaining)
+                        console.log("count: "+loginHelper.get_tryCount())
+                        if( loginHelper.get_tryCount()!=0 && (loginHelper.get_tryCount()%3) === 0)
+                        {
+                               numbersContent.enabled=false
+                               chckBoxArea.enabled=false
+                               numbersContent.trialRemaining=3
+                               numbersContent.ftime = numbersContent.stime
+                               numbersContent.stime = numbersContent.stime + numbersContent.ftime
+                               waitTime=numbersContent.stime
+                               deviceLockArea.visible=true
+                        }
+                        else{
+                              numbersContent.enabled=false
+                              chckBoxArea.enabled=false
+                              errorMsg.visible=true
+                        }
+                        loginHelper.set_tryCount(loginHelper.get_tryCount() + 1)
                     }
                     infoTextArea.textvalue  = qsTr("Enter Password")
                     numbersContent.counter = 0

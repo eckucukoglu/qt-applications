@@ -17,7 +17,7 @@ HEADERS += \
     loginhelper.h
 
 INCLUDEPATH += /usr/include/dbus-1.0 \
-               /usr/include/
+               /usr/include/  /usr/include/c++/4.8
 
 LIBS += -L./usr/include/dbus-1.0 -ldbus-1
 
