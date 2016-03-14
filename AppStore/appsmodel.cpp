@@ -7,10 +7,12 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
      check_internet = false;
      number_of_installed_applications=0;
      number_of_applications=0;
+     error=1;
      current_index= 0;
      page_index=0;
      performer = new HTTPPerform("http://10.155.10.213:8000/");
      query_listapps(); //from device
+     printf("apps listed from query\n");
      listApps(); //from server
      page_count=ceil(double(number_of_applications)/18);
 }
@@ -23,16 +25,16 @@ int AppsModel::download(int appid)
             if (_appList == NULL)
             {
                 cout << "Applist is NULL" << endl;
+                error=1;
             }
             else{
                 if (performer->getError() == 1){
                     cout << "Error occured during HTTP request :" << performer->getErrorMessage() << endl;
+                    error=1;
                 }
                 else if (_appList->apps != NULL)
                 {
-                    string colours[] = {"#FC0505", "#89F0F0", "#F0E224", "#1AC44D"};
                     //TODO: clear this part. you dont have to get app
-                    app _list[_appList->size];
                     for(int i=0;i< _appList->size; i++) //works for 1 app
                         {
                             cout << "Application "<< to_string(i) << endl;
@@ -40,38 +42,24 @@ int AppsModel::download(int appid)
                             cout << "\t" << "name: " << (_appList->apps[i].name)<<endl;
                             cout << "\t" << "developer name: " << (_appList->apps[i].developerName)<<endl;
                             cout << "\t" << "icon: " << (_appList->apps[i].iconName)<<endl;
-                            app temp{
-                                   _appList->apps[i].id,
-                                   _appList->apps[i].name,
-                                   _appList->apps[i].developerName,
-                                   _appList->apps[i].iconName,
-                                   _appList->apps[i].hashValue,
-                                   _appList->apps[i].binaryPath,
-                                   _appList->apps[i].binaryName,
-                                   _appList->apps[i].packagePath,
-                                   _appList->apps[i].isDownloaded,
-                                   _appList->apps[i].isInstalled,
-                                   _appList->apps[i].error,
-                                   _appList->apps[i].errorCode,
-                                   colours[i%4]
-                            };
-                            //TODO: do sth with temp
                         }
                         check_internet=true;
+                        printf("ins: %d\ndown: %d\n", _appList->apps->isInstalled, _appList->apps->isDownloaded);
                         if(_appList->apps->isInstalled == 1 && _appList->apps->isDownloaded)
                         {
-                            //TODO: update info area
+                            error=0;
                             printf("download is successful!\n");
                         }
                         else
                         {
-                            //TODO: update info area
+                            error=1;
                             printf("an error occured while downloading\n");
                         }
                 }
                 else
                 {
                     //TODO: update info area
+                    error=1;
                     cout << "Error occured: " << _appList->apps->errorCode << endl;
                 }
             }
@@ -84,8 +72,13 @@ int AppsModel::download(int appid)
         return _ret;
 }
 
+int AppsModel::check_error(){
+    return error;
+}
+
 void AppsModel::listApps(){
     try {
+            printf("check\n");
             _appList = performer->perform(SHOW,0);
             if (_appList == NULL)
             {
@@ -97,9 +90,11 @@ void AppsModel::listApps(){
                 }
                 else if (_appList->apps != NULL)
                 {
+                    printf("check1\n");
                     string colours[] = {"#FC0505", "#89F0F0", "#F0E224", "#1AC44D"};
                     number_of_applications = _appList->size;
                     app _list[_appList->size];
+                    printf("check2\n");
                     for(int i=0;i< _appList->size; i++)
                         {
                             cout << "Application "<< to_string(i) << endl;
@@ -332,7 +327,7 @@ int AppsModel::check_if_installed(int app_id)
      int ret=0;
      for(int i=0;i<number_of_installed_applications;i++)
      {
-         if(INSTALLEDAPPS[i].id == (app_id+100))
+         if(INSTALLEDAPPS[i].id ==app_id)
          {
              ret=1;
              break;
@@ -362,7 +357,7 @@ void AppsModel::set_element_list(app _list[]){
         _map["error"] = QVariant(_list[i].error);
         _map["errorCode"] = QVariant(_list[i].errorCode.c_str());
         _map["borderColor"] = QVariant(_list[i].borderColor.c_str());
-        _map["alreadyInstalled"] =QVariant(_isInstalled); // TODO : check this
+        _map["alreadyInstalled"] =QVariant(_isInstalled);
         _data = QVariant(_map);
         _list1.append(_data);
     }

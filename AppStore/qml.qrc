@@ -29,5 +29,6 @@
         <file>InstallArea.qml</file>
         <file>Calculator.png</file>
         <file>Sci.png</file>
+        <file>clock.png</file>
     </qresource>
 </RCC>

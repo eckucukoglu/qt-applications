@@ -58,7 +58,7 @@ ApplicationWindow {
         property Component component
         Component.onCompleted: {
             var i;
-            for(i=0;i<3;i++)
+            for(i=0;i<AppsModel.get_page_count();i++)
             {
                 component= Qt.createComponent("DesktopGrid.qml");
                 desktopGrid = component.createObject(content, {"x":i*root.width, "width": root.width, "height": root.height - statusBar.height - navigationBar.height});
@@ -72,6 +72,7 @@ ApplicationWindow {
             busyIndication.visible=false
          }
         onEnabledChanged: {
+
           //  AppsModel.query_listapps()
           //  AppsModel.set_element_list()
           //  desktopGrid.reload()
@@ -147,12 +148,11 @@ ApplicationWindow {
         visible:false
         title: "Error!"
         icon: StandardIcon.Warning
-        text: "No Internet Connection is Available"
+        text: "Internet Connection is Unavailable"
         onAccepted: Qt.quit()
     }
     Component.onCompleted: {
-        //TODO : check if error occured, if so quit app
-        if(AppsModel.check_connection()==false)
+        if(AppsModel.check_connection()===false)
         {
             console.log("internet2: "+AppsModel.check_connection())
             errorMsg.visible=true

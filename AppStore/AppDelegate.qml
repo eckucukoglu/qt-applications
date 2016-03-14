@@ -7,6 +7,7 @@ Component {
     id: appDelegate
     Rectangle {
         id: appDelegateRect
+        enabled: true
         width: 90
         height: 90
         color: "transparent"
@@ -75,16 +76,22 @@ Component {
             onClicked: {
               appDelegateRect.forceActiveFocus();
               appDelegate.GridView.view.currentIndex = index
+              installArea.index = index;
               installArea.border_color = listModel.get(index).borderColor
               installArea.app_name_str = listModel.get(index).name
               installArea.icon_path = listModel.get(index).portrait
               installArea.app_id = listModel.get(index).app_id
               installArea.dev_name = listModel.get(index).developerName
-              installArea.alreadyInstalled = listModel.get(index).alreadyInstalled
-              installArea.visible = true
+              installArea.already_installed = listModel.get(index).already_installed
               content.enabled=false
               swipeArea.enabled=false
-              console.log("::appdelegate> "+app_id + " - index: "+ index)
+              installArea.visible = true
+            }
+        }
+        onEnabledChanged: {
+            if(installArea.retValue === 1)
+            {
+                listModel.get(index).already_installed = "true"
             }
         }
     }

@@ -16,7 +16,8 @@ Rectangle{
   property string icon_path
   property string color
   property int app_id
-  property int alreadyInstalled
+  property int already_installed
+  property int retValue:0
 
   Rectangle
   {
@@ -174,27 +175,25 @@ Rectangle{
                errorTxt.visible=false
                alreadyInsText.visible=false
                nowInstalledTxt.visible=false
-               console.log("app is : "+ app_id)
-               //TODO: check if app is already downloaded
-               // call dbus listapps, search appids
-               var ret = AppsModel.download(app_id)
-               console.log("ret value: "+ ret)
-               if(ret === 0)
+               AppsModel.download(app_id)
+               if(AppsModel.check_error() === 0) //download is successful
                {
                    progressBarField.visible=false
                    nowInstalledTxt.visible=true
                    installBtn.visible=false
                    cancelBtn.visible=false
                    okBtn.visible=true
+                   retValue=1
+
                }
-               if(ret === 1)
+               if(AppsModel.check_error() === 1) //error on download
                {
                    progressBarField.visible=false
                    errorTxt.visible=true
+                   retValue=0
                }
             }
        }
-
 
        Button{
            id: cancelBtn
@@ -222,6 +221,7 @@ Rectangle{
                installArea.visible=false
                content.enabled=true
                swipeArea.enabled=true
+
            }
        }
 
@@ -284,8 +284,8 @@ Rectangle{
    }
   onVisibleChanged:{
        console.log("app id is : "+ app_id)
-       console.log("installed: "+ alreadyInstalled)
-       if(alreadyInstalled === 0) //app is not already installed
+       console.log("installed: "+ already_installed)
+       if(already_installed === 0) //app is not already installed
        {
            okBtn.visible=false
            cancelBtn.visible=true
@@ -294,7 +294,7 @@ Rectangle{
            errorTxt.visible=false
            nowInstalledTxt.visible=false
        }
-       else if(alreadyInstalled === 1) //app is already installed
+       else if(already_installed === 1) //app is already installed
        {
            okBtn.visible=true
            cancelBtn.visible=false
@@ -305,8 +305,8 @@ Rectangle{
        }
   }
   Component.onCompleted: {
-      console.log("installed: "+ alreadyInstalled)
-      if(alreadyInstalled === 0) //app is not installed
+      console.log("installed: "+ already_installed)
+      if(already_installed === "false") //app is not installed
       {
           okBtn.visible=false
           cancelBtn.visible=true
@@ -315,7 +315,7 @@ Rectangle{
           errorTxt.visible=false
           nowInstalledTxt.visible=false
       }
-      else if(alreadyInstalled === 1) //app is already installed
+      else if(already_installed === "true") //app is already installed
       {
           okBtn.visible=true
           cancelBtn.visible=false

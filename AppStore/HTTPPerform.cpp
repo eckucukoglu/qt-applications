@@ -6,8 +6,8 @@ const string MOVE_PATH = "/usr/bin/"; // binary path final destination
 void clearDirectories()
 {
     string rmcommand = "rm -rf ";
-    system((rmcommand + INSTALL_PATH).c_str()); // clear tmpInstall
-    system((rmcommand + DOWNLOAD_PATH).c_str()); //clear tmpDownload
+    system((rmcommand + INSTALL_PATH+"*").c_str()); // clear tmpInstall
+    system((rmcommand + DOWNLOAD_PATH+"*").c_str()); //clear tmpDownload
 }
 
 void query_updateapps() {

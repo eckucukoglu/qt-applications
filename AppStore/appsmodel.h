@@ -61,6 +61,7 @@ public:
     Q_INVOKABLE int download(int appid);
     Q_INVOKABLE void listApps();
     Q_INVOKABLE void query_listapps();
+    Q_INVOKABLE int check_error();
     Q_INVOKABLE int check_if_installed(int app_id);
     Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
     int number_of_applications;
@@ -70,6 +71,7 @@ public:
      int current_index;
      int page_index;
      int page_count;
+     int error;
      bool check_internet;
      app APPLIST[MAX_NUMBER_APPLICATIONS];
      HTTPPerform* performer;

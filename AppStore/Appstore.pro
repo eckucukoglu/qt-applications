@@ -23,7 +23,8 @@ INCLUDEPATH += /usr/include/dbus-1.0 \
                /usr/include/x86_64-linux-gnu \
                /home/arcelik/MMIS_ARGE/filesystems/5/usr/include \
                /usr/include/x86_64-linux-gnu \
-               /usr/lib/x86_64-linux-gnu/dbus-1.0/include
+               /usr/lib/x86_64-linux-gnu/dbus-1.0/include \
+               /home/arcelik/MMIS_ARGE/toolchain/gcc-linaro-arm-linux-gnueabihf-4.9-2014.09_linux/arm-linux-gnueabihf/include/c++/4.9.2
 
 LIBS += -L/usr/include/dbus-1.0 -L/home/arcelik/MMIS_ARGE/filesystems/5/lib -ldbus-1 -lcurl -lcrypto -lssl -lpthread
 
