@@ -2,15 +2,15 @@ import QtQuick 2.0
 
 Rectangle {
     id: rowItem
-    width: 0 //root.width
-    height:0 // root.height - statusBar.height - navigationBar.height
+    width: 0
+    height:0
     color: "transparent"
     property int page:0
     GridView{
-       anchors.leftMargin: 36 // 42-6 for text
+       anchors.leftMargin: 36
        anchors.rightMargin: 8
        anchors.topMargin: 23
-       anchors.bottomMargin: 17 //23-6px for text area
+       anchors.bottomMargin: 17
        anchors.fill: parent
        cellHeight: 130
        cellWidth: 126

@@ -34,7 +34,7 @@ Rectangle{
         icon: StandardIcon.Warning
         text: "You are logging out. Do you want to continue?"
         standardButtons: StandardButton.Yes |  StandardButton.No
-        onYes: console.log("yes") //open lock screen
+        onYes: console.log("yes")
         onNo: console.log("no")
     }
 
@@ -73,10 +73,6 @@ Rectangle{
     }
 
 
-
-
-
-
    Rectangle{
         id: settingsMenu
         visible: false
@@ -85,6 +81,7 @@ Rectangle{
         width: 180
         height: 120
         radius: 6
+
         Image{
             source: root.backgroundImg
             anchors.fill: parent
@@ -110,15 +107,16 @@ Rectangle{
                 source: "pics/lock.png"
                 scale: 0.18
                 anchors.right: lockTxt.left
-                anchors.rightMargin: -18
+                anchors.rightMargin: -28
                 anchors.verticalCenter: parent.verticalCenter
 
              }
              Text{
                  id: lockTxt
                  text: "Lock"
+                 anchors.right: parent.right
                  anchors.verticalCenter: parent.verticalCenter
-                 anchors.horizontalCenter: parent.horizontalCenter
+                 anchors.rightMargin: 80
                  font.bold: true
                  font.pixelSize: 18
                  font.family: "helvetica"
@@ -138,15 +136,10 @@ Rectangle{
              MouseArea{
                  anchors.fill: parent
                  propagateComposedEvents: false
-                 onPressed: {
-                     gradientLock.visible=true
-                 }
-                 onReleased: {
-                     gradientLock.visible=false
-                 }
                  onClicked: {
                        settingsMenu.visible=false
-                       console.log(">>TODO: lock the screen")
+                       AppsModel._securityResetDiscEncryption()
+                       console.log("check")
                        AppsModel.query_lockscreen()
                  }
              }
@@ -169,15 +162,16 @@ Rectangle{
                 scale: 0.4
                 anchors.right: powerOffTxt.left
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: -10
+                anchors.rightMargin: 2
                 opacity: 0.8
 
              }
              Text{
                  id: powerOffTxt
                  text: "Power Off"
+                 anchors.right: parent.right
                  anchors.verticalCenter: parent.verticalCenter
-                 anchors.horizontalCenter: parent.horizontalCenter
+                 anchors.rightMargin: 40
                  font.bold: true
                  font.pixelSize: 18
                  font.family: "helvetica"
@@ -209,21 +203,17 @@ Rectangle{
                      powerOffMsg.visible=false
                  }
              }
+
              MouseArea{
                  anchors.fill: parent
                  propagateComposedEvents: false
-                 onPressed: {
-                        gradientPwrOff.visible=true
-                 }
-                 onReleased: {
-                         gradientPwrOff.visible=false
-                 }
                  onClicked: {
                        settingsMenu.visible=false
                        powerOffMsg.visible=true
                  }
              }
         }
+
         Rectangle{
             anchors.top: powerOffBtn.bottom
             width: parent.width - 10
@@ -233,57 +223,50 @@ Rectangle{
         }
 
         Rectangle{
-             id: settingsBtn
+             id: deleteBtn
              anchors.top: powerOffBtn.bottom
              width: parent.width
              color: "transparent"
              height: 40
              Image{
-                source: "pics/settings.png"
-                anchors.right: settingsTxt.left
+                source: "pics/delete.png"
+                scale: 0.4
+                anchors.right: deleteTxt.left
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: 16
-                opacity: 0.7
+                anchors.rightMargin: -10
+                opacity: 0.8
 
              }
+             Image{
+                source: "pics/sober_newspecs/icon/icon_remove.png"
+                scale: 0.4
+                anchors.right: deleteTxt.left
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: 2
+                opacity: 0.8
+             }
              Text{
-                 id: settingsTxt
-                 text: "Settings"
+                 id: deleteTxt
+                 text: "Delete Apps"
+                 anchors.right: parent.right
                  anchors.verticalCenter: parent.verticalCenter
-                 anchors.horizontalCenter: parent.horizontalCenter
+                 anchors.rightMargin: 20
                  font.bold: true
                  font.pixelSize: 18
                  font.family: "helvetica"
                  color: "black"
              }
-             RadialGradient {
-                 id: gradientSttngs
-                 visible: false
-                 anchors.fill: parent
-                 horizontalRadius: parent.width -10
-                 verticalRadius: 84
-                 gradient: Gradient {
-                     GradientStop { position: 0.0; color: "#E6EBED" }
-                     GradientStop { position: 0.5; color: "transparent" }
-                 }
-             }
              MouseArea{
                  anchors.fill: parent
                  propagateComposedEvents: false
-                 onPressed: {
-                        gradientSttngs.visible=true
-                 }
-                 onReleased: {
-                         gradientSttngs.visible=false
-                 }
                  onClicked: {
                        settingsMenu.visible=false
-                       console.log(">>TODO: Settings")
+                       root.isDeleteMode = true
                  }
              }
         }
-   }
 
+    }
     Timer{
         interval: 100
         running: true
@@ -294,7 +277,6 @@ Rectangle{
                       date.toLocaleDateString(Qt.locale("tr_TR"), "dd MMM yyyy")
         }
     }
-
 
     Component.onCompleted: {
         date = new Date();

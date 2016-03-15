@@ -38,5 +38,9 @@
         <file>pics/settings-icon.png</file>
         <file>pics/poweroff.png</file>
         <file>pics/battery-icon.png</file>
+        <file>Calculator.png</file>
+        <file>Sci.png</file>
+        <file>clock.png</file>
+        <file>pics/sober_newspecs/icon/icon_remove.png</file>
     </qresource>
 </RCC>

@@ -7,6 +7,7 @@
 #include <QVariant>
 #include <dbus/dbus.h>
 #include <signal.h>
+#include <security.h>
 #define APPMAN_VIEW_DEBUG_PREFIX "V >> "
 #define DEBUG_PREFIX "tester: "
 #define MAX_NUMBER_APPLICATIONS 50
@@ -44,6 +45,9 @@ public:
    Q_INVOKABLE int get_page_count();
    Q_INVOKABLE void shutdown();
    Q_INVOKABLE void query_lockscreen();
+   Q_INVOKABLE void _securityResetDiscEncryption();
+   Q_INVOKABLE bool deleteApp(int app_id);
+
    application APPLIST[MAX_NUMBER_APPLICATIONS];
 
 private: 

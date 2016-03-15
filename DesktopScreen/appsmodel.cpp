@@ -468,6 +468,7 @@ void query_access(int access_code) {
 /**
  * Call updateapps method on a remote object.
  */
+/*
 void query_updateapps() {
     DBusMessage* msg;
     DBusConnection* conn;
@@ -526,7 +527,10 @@ void query_updateapps() {
     dbus_message_unref(msg);
     dbus_connection_unref(conn);
 }
-
+*/
+void AppsModel::_securityResetDiscEncryption(){
+    securityResetDiscEncryption();
+}
 
 void AppsModel::query_lockscreen() {
     DBusMessage* msg;
@@ -587,4 +591,11 @@ void AppsModel::query_lockscreen() {
     dbus_connection_unref(conn);
 }
 
+bool AppsModel::deleteApp(int app_id)
+{
+     bool ret=true;
+     printf("main:: deleting app with ID: %d\n", app_id);
+
+     return ret;
+}
 

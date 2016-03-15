@@ -22,6 +22,7 @@ ApplicationWindow {
     property double  t1: 0
     property double  t2: 0
     property string backgroundImg: "pics/sober_newspecs/bg2.jpg"
+    property bool isDeleteMode: false
 
     BusyIndicator {
            id: busyIndication
@@ -62,7 +63,7 @@ ApplicationWindow {
         property var desktopGrid
         function createGrid(){
             var i;
-            for(i=0;i<AppsModel.get_page_count();i++) //TODO: WHY 3? numofapps / 18 or get page count
+            for(i=0;i<AppsModel.get_page_count();i++)
             {
                 component= Qt.createComponent("DesktopGrid.qml");
                 desktopGrid = component.createObject(content, {"x":i*root.width, "width": root.width, "height": root.height - statusBar.height - navigationBar.height});

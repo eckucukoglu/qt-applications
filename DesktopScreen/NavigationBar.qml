@@ -1,5 +1,5 @@
 import QtQuick 2.0
-
+import QtQuick.Dialogs 1.2
 
 Item{
     width: parent.width
@@ -12,4 +12,55 @@ Item{
         color: "black"
         opacity: 0.2
     }
+
+    MessageDialog{
+        id: savedMsg
+        visible: false
+        text: "Changes Saved!"
+        onAccepted: savedMsg.visible=false
+    }
+
+    MessageDialog {
+        id: deleteAppMsg
+        visible: false
+        title: "Warning!"
+        icon: StandardIcon.Warning
+        text: "Deleting Application Mode is OFF!"
+        onAccepted: deleteAppMsg.visible=false
+    }
+
+    Rectangle{
+            id: deleteExitBtn
+            visible: root.isDeleteMode
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 60
+            height: parent.height - 4
+            color: "transparent"
+            border.width: 1
+            border.color: "white"
+            radius: 10
+            Rectangle{
+                anchors.fill: parent
+                color: "white"
+                opacity: 0.2
+            }
+
+            Text{
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                text: "EXIT"
+                color: "white"
+                font.bold: true
+                font.family: "Helvetica"
+
+            }
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                     deleteAppMsg.visible=true
+                     root.isDeleteMode=false
+                }
+            }
+
+        }
 }
