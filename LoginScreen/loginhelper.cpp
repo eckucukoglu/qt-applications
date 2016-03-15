@@ -1,8 +1,7 @@
 #include "loginhelper.h"
-using namespace std;
+#include "security.h"
 LoginHelper::LoginHelper(QObject *parent) : QObject(parent)
 {
-    set_tryCount(0);
 
 }
 
@@ -10,25 +9,31 @@ bool LoginHelper::check_password(QString password, bool _isShamir){
     char* pwd = new char[password.length() + 1];
     strcpy(pwd, password.toStdString().c_str());
     isShamir = _isShamir;
-    printf("password is: %s\n", pwd);
-
+    int result = 1;
     if(isShamir)
     {
-        printf("with shamir\n");
+        result = securityCheckPassword(pwd, WITH_SHAMIR);
+        printf("=>WITH SHAMIR...\n");
 
     }
     else
     {
-        printf("without shamir\n");
+        result = securityCheckPassword(pwd, WITHOUT_SHAMIR);
+        printf("=>WITHOUT SHAMIR...\n");
     }
 
-    if(!strcmp(pwd, "1")){
-        printf("correct password\n");
+    if (result == 0){
+        printf("=> RESULT : Password is OK...\n");
         return true;
     }
+    else
+    {
+        printf("=> RESULT : Password is NOT OK...\n");
+        //securityResetDiscEncryption();
+    }
+
     return false;
 }
-
 
 
 void LoginHelper::query_access(int access_code) {
@@ -118,16 +123,16 @@ void LoginHelper::set_tryCount(int tryCount)
 {
         char data[10];
         ofstream outfile;
-        outfile.open("trycount.out");
+        outfile.open("/root/trycount.out");
         sprintf(data,"%d", tryCount);
         outfile << data << endl;
         outfile.close();
-}
+ }
 int LoginHelper::get_tryCount()
 {
     char data[10];
     ifstream infile;
-    infile.open("trycount.out");
+    infile.open("/root/trycount.out");
     infile >> data;
     int ret=0;
     sscanf(data, "%d", &ret);

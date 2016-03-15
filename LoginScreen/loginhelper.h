@@ -12,7 +12,7 @@
 
 
 #define APPMAN_VIEW_DEBUG_PREFIX "L >> "
-
+using namespace std;
 class LoginHelper: public QObject
 {
     Q_OBJECT

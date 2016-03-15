@@ -88,18 +88,22 @@ Component {
                 }
                 else if(index == 11) //OK Button
                 {
+                    busyIndication.visible=true
                     var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
+                    console.log("returned check")
                     if(result){
-
                         numbersContent.trialRemaining=3
                         loginHelper.set_tryCount(0)
                         numbersContent.ftime = 0
                         numbersContent.stime = 5
                         waitTime=0
+                        console.log("loading desktop")
                         loginHelper.query_access(0)
+                        console.log("loaded desktop")
+                        busyIndication.visible=false
 
                     }
-                    else{
+                   else{
                         numbersContent.trialRemaining = 3- (loginHelper.get_tryCount()%3)
                         console.log("remaining: "+numbersContent.trialRemaining)
                         console.log("count: "+loginHelper.get_tryCount())
@@ -120,9 +124,11 @@ Component {
                         }
                         loginHelper.set_tryCount(loginHelper.get_tryCount() + 1)
                     }
+
                     infoTextArea.textvalue  = qsTr("Enter Password")
                     numbersContent.counter = 0
                     numbersContent.password = qsTr("")
+
                 }
                 else // DIGIT
                 {

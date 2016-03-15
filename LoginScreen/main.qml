@@ -266,6 +266,18 @@ ApplicationWindow {
 
         }
     }
+    BusyIndicator {
+           id: busyIndication
+           anchors.centerIn: parent
+           visible:false
+           Text{
+               anchors.top: parent.bottom
+               anchors.horizontalCenter: parent.horizontalCenter
+               text: "loading desktop.."
+           }
+
+           z:1
+        }
 
     MessageDialog {
         id: messageDialog
