@@ -2,7 +2,7 @@
 const string DOWNLOAD_PATH = "/root/AppStore/tmp/Downloads/"; // temporary download path
 const string INSTALL_PATH = "/root/AppStore/tmp/Install/"; // temporary install path
 const string MANIFEST_PATH = "/etc/appmand/";
-const string MOVE_PATH = "/usr/bin/"; // binary path final destination
+const string MOVE_PATH = "/mnt/EncryptedDisk/"; // binary path final destination
 void clearDirectories()
 {
     string rmcommand = "rm -rf ";
@@ -310,6 +310,47 @@ int HTTPPerform::install(const string& filePath, application* app){
     return returnFlag;
     }
 
+int HTTPPerform::sendMessage(string url, string msgToSend, string& content) {      
+	CURLcode res;  
+	int returnFlag=1;
+	long httpCode;  
+	
+	url += msgToSend;
+
+	//cout << "Url to Send: "<< url << endl;
+
+   	 if(curl){
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());       	
+	    curl_easy_setopt(curl, CURLOPT_HTTPGET,1);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, function_pt);	
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
+		
+		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);
+		
+		try{    	
+			res = curl_easy_perform(curl);
+			curl_easy_getinfo(curl,CURLINFO_RESPONSE_CODE,&httpCode);		
+        }
+		catch(exception &e){    		
+		    cout << "Exception " << e.what() << endl;
+	    }
+    
+    		/* Check for errors */
+		if (res != CURLE_OK) { 
+		    content = curl_easy_strerror(res); 
+		    returnFlag=0;           
+	    	}
+	    	if(httpCode != 200)
+	    	{
+
+	    		returnFlag = 0;   		 
+	    		content = "HTTP Response " + to_string(httpCode) + " returned!";
+	    	}    	   	
+    	}
+  
+    return returnFlag;
+}
+
 applications* HTTPPerform::perform(ACTION action, int appId){
     string url;
     string download_url;
@@ -378,6 +419,69 @@ applications* HTTPPerform::perform(ACTION action, int appId){
     return appList;
 }
 
+void HTTPPerform::perform(ACTION action, string &response){
+	string msgToSend ="";
+	string clientSerial = "";
+	int status;
+	string share ="";
+	switch(action){
+		case GETSHARE:
+			clientSerial = "4214BBBK0963"; //get proper client id in order to send server			
+			msgToSend = "?serial="+ clientSerial  +"&command=get";
+			status=this->sendMessage(this->baseUrl, msgToSend, response);					
+			if (status == 1)
+			{				
+				//cout<< "Server RESPONSE : " << response << endl;
+				this->parseShamirShare(response,share);
+				cout<< "Server SHARE : " << share << endl;
+				response = share;
+			}
+			else
+			{
+				this-> errorFlag = 1;
+				this-> errorMessage = response;
+			}
+		
+			break;
+		case SENDSHARE:
+			clientSerial = "4214BBBK0963"; //get proper client id in order to send server
+			string shareToSend = "3-8f30490c2e033e97b8e2fa8964e664a91938ae2020e8480fe2396d02e4e276b6";			
+			msgToSend = "?serial="+ clientSerial  +"&command=update&share=" + shareToSend;
+			status=this->sendMessage(this->baseUrl, msgToSend, response);					
+			if (status == 1)
+				//appList = this->parseString(retVal);
+				
+				cout<< "Server RESPONSE : " << response << endl;
+			else{
+				this-> errorFlag = 1;
+				this-> errorMessage = response;
+			}
+		
+			break;
+	}
+	return;
+}
+
+
+int HTTPPerform::parseShamirShare(string strJsonToParse,string &share)
+{
+	cJSON *root;
+	const char* resp = strJsonToParse.c_str();	
+	root = cJSON_Parse(resp);
+
+	const string keys[4] = {"share", "message", "isUpdated", "error"};
+	
+	if (!root) {
+        	printf("ERROR!!! JSON parse error. JSON to parse is : [%s] \n Error is [%s]\n",strJsonToParse.c_str(), cJSON_GetErrorPtr());
+		share="";
+		return -1;
+	}
+
+	cJSON* child = cJSON_GetObjectItem(root,keys[0].c_str());
+	share = child->valuestring;
+
+	return 0;
+}
 applications* HTTPPerform::parseString(string response)
 {
     cJSON *root;

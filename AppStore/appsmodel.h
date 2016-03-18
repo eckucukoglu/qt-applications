@@ -67,6 +67,7 @@ public:
     int number_of_applications;
     int number_of_installed_applications;
     Q_INVOKABLE bool check_connection();
+
  private:
      int current_index;
      int page_index;

@@ -13,6 +13,7 @@ ApplicationWindow {
     property int numberOfPages: AppsModel.get_page_count()
     property int currentIndex: AppsModel.get_current_index()
 
+
     onCurrentIndexChanged: {
         slide_anim.to = - root.width * currentIndex
         slide_anim.start()

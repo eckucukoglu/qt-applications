@@ -19,7 +19,9 @@ using namespace std;
 enum ACTION{
     INDEX,
     SHOW,
-    DOWNLOAD
+    DOWNLOAD,
+	GETSHARE,
+	SENDSHARE
 };
 struct application {
         int id;
@@ -46,6 +48,7 @@ public:
     HTTPPerform(string);
     ~HTTPPerform();
     applications* perform(ACTION, int);
+    void perform(ACTION action, string &response);
     int getError();
     string getUrl();
     string getErrorMessage();
@@ -54,10 +57,12 @@ private:
     string errorMessage;
     string baseUrl;
     applications* parseString(string);
-    void* curl;
-    int errorFlag;
-    void setUrl(const string&);
-    int install(const string&, application*);
-    int download(const string&, application*);
-    int getContent(string,string&);
+    int parseShamirShare(string strJsonToParse,string &share);
+	void* curl;	
+	int errorFlag;	
+	void setUrl(const string&);
+	int install(const string&, application*);
+	int download(const string&, application*);
+	int getContent(string,string&);	
+	int sendMessage(string url, string msgToSend, string& content);
 };

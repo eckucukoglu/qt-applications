@@ -16,8 +16,9 @@ Rectangle{
   property string icon_path
   property string color
   property int app_id
-  property int already_installed
+  property int already_installed:0
   property int retValue:0
+  property int index
 
   Rectangle
   {
@@ -183,14 +184,11 @@ Rectangle{
                    installBtn.visible=false
                    cancelBtn.visible=false
                    okBtn.visible=true
-                   retValue=1
-
                }
                if(AppsModel.check_error() === 1) //error on download
                {
                    progressBarField.visible=false
                    errorTxt.visible=true
-                   retValue=0
                }
             }
        }
@@ -283,6 +281,7 @@ Rectangle{
        }
    }
   onVisibleChanged:{
+       already_installed = AppsModel.check_if_installed(app_id)
        console.log("app id is : "+ app_id)
        console.log("installed: "+ already_installed)
        if(already_installed === 0) //app is not already installed
@@ -305,8 +304,10 @@ Rectangle{
        }
   }
   Component.onCompleted: {
+      already_installed =AppsModel.check_if_installed()
+      console.log("app id is : "+ app_id)
       console.log("installed: "+ already_installed)
-      if(already_installed === "false") //app is not installed
+      if(already_installed === 0) //app is not installed
       {
           okBtn.visible=false
           cancelBtn.visible=true
@@ -315,7 +316,7 @@ Rectangle{
           errorTxt.visible=false
           nowInstalledTxt.visible=false
       }
-      else if(already_installed === "true") //app is already installed
+      else if(already_installed === 1) //app is already installed
       {
           okBtn.visible=true
           cancelBtn.visible=false

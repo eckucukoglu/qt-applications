@@ -10,7 +10,7 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
      error=1;
      current_index= 0;
      page_index=0;
-     performer = new HTTPPerform("http://10.155.10.213:8000/");
+     performer = new HTTPPerform("http://10.155.10.199:8001/");
      query_listapps(); //from device
      printf("apps listed from query\n");
      listApps(); //from server
@@ -47,8 +47,15 @@ int AppsModel::download(int appid)
                         printf("ins: %d\ndown: %d\n", _appList->apps->isInstalled, _appList->apps->isDownloaded);
                         if(_appList->apps->isInstalled == 1 && _appList->apps->isDownloaded)
                         {
+                            installed_app temp{
+                                appid,
+                                "",
+                                ""
+                            };
+                            INSTALLEDAPPS[number_of_installed_applications] = temp;
+                            number_of_installed_applications++;
+                            printf("download is successful! - appid: %d\n", appid);
                             error=0;
-                            printf("download is successful!\n");
                         }
                         else
                         {
@@ -58,7 +65,6 @@ int AppsModel::download(int appid)
                 }
                 else
                 {
-                    //TODO: update info area
                     error=1;
                     cout << "Error occured: " << _appList->apps->errorCode << endl;
                 }
@@ -66,7 +72,7 @@ int AppsModel::download(int appid)
         }
         catch(exception &e)
         {
-            //TODO: update info area
+            error=1;
             cout << "Exception!:" << e.what() << endl;
         }
         return _ret;
