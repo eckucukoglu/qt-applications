@@ -125,16 +125,19 @@ Component {
                 onYes: {
                     deleteMsg.visible=false
                     //TODO: refresh manifest files and usr/bin
-                    console.log("removed: "+app_id + " name: "+name + " app_index: "+index)
                     var ret = AppsModel.deleteApp(app_id)
-                    if(ret === true)
+                    if(ret)
                     {
+                        console.log("removed: "+app_id + " name: "+name + " app_index: "+index)
                         listModel.remove(index, 1)
+
                     }
-                    else{
-                          error_msg.text = "An error occured on deleting " + name
-                          error_msg.visible = true
+                    else
+                    {
+                        error_msg.text = "Error while deleting " + name + " application"
                     }
+
+
                 }
                 onNo: {
                     deleteMsg.visible=false
@@ -151,7 +154,7 @@ Component {
                     var ret = -1
                     appDelegate.GridView.view.currentIndex = index
                     if ((t1-t2) > 500){
-                        ret = AppsModel.query_runapp(app_id)
+                        ret = AppsModel.query_startapp(app_id)
                         if(ret === -1)
                         {
                             error_msg.setText("Reached permitted number of live apps.")

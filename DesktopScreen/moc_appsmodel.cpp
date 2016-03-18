@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_AppsModel_t {
-    QByteArrayData data[26];
-    char stringdata0[339];
+    QByteArrayData data[32];
+    char stringdata0[423];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,37 +36,45 @@ QT_MOC_LITERAL(3, 28, 16), // "set_element_list"
 QT_MOC_LITERAL(4, 45, 13), // "application[]"
 QT_MOC_LITERAL(5, 59, 4), // "list"
 QT_MOC_LITERAL(6, 64, 14), // "query_listapps"
-QT_MOC_LITERAL(7, 79, 12), // "query_runapp"
-QT_MOC_LITERAL(8, 92, 5), // "param"
-QT_MOC_LITERAL(9, 98, 9), // "is_active"
-QT_MOC_LITERAL(10, 108, 13), // "set_is_active"
-QT_MOC_LITERAL(11, 122, 6), // "_value"
-QT_MOC_LITERAL(12, 129, 25), // "assert_dbus_method_return"
-QT_MOC_LITERAL(13, 155, 12), // "DBusMessage*"
-QT_MOC_LITERAL(14, 168, 3), // "msg"
-QT_MOC_LITERAL(15, 172, 17), // "get_current_index"
-QT_MOC_LITERAL(16, 190, 17), // "set_current_index"
-QT_MOC_LITERAL(17, 208, 5), // "index"
-QT_MOC_LITERAL(18, 214, 14), // "get_page_index"
-QT_MOC_LITERAL(19, 229, 14), // "set_page_index"
-QT_MOC_LITERAL(20, 244, 26), // "get_number_of_applications"
-QT_MOC_LITERAL(21, 271, 11), // "get_applist"
-QT_MOC_LITERAL(22, 283, 14), // "set_page_count"
-QT_MOC_LITERAL(23, 298, 14), // "get_page_count"
-QT_MOC_LITERAL(24, 313, 8), // "shutdown"
-QT_MOC_LITERAL(25, 322, 16) // "query_lockscreen"
+QT_MOC_LITERAL(7, 79, 14), // "query_startapp"
+QT_MOC_LITERAL(8, 94, 6), // "app_id"
+QT_MOC_LITERAL(9, 101, 9), // "is_active"
+QT_MOC_LITERAL(10, 111, 13), // "set_is_active"
+QT_MOC_LITERAL(11, 125, 6), // "_value"
+QT_MOC_LITERAL(12, 132, 25), // "assert_dbus_method_return"
+QT_MOC_LITERAL(13, 158, 12), // "DBusMessage*"
+QT_MOC_LITERAL(14, 171, 3), // "msg"
+QT_MOC_LITERAL(15, 175, 17), // "get_current_index"
+QT_MOC_LITERAL(16, 193, 17), // "set_current_index"
+QT_MOC_LITERAL(17, 211, 5), // "index"
+QT_MOC_LITERAL(18, 217, 14), // "get_page_index"
+QT_MOC_LITERAL(19, 232, 14), // "set_page_index"
+QT_MOC_LITERAL(20, 247, 26), // "get_number_of_applications"
+QT_MOC_LITERAL(21, 274, 11), // "get_applist"
+QT_MOC_LITERAL(22, 286, 14), // "set_page_count"
+QT_MOC_LITERAL(23, 301, 14), // "get_page_count"
+QT_MOC_LITERAL(24, 316, 8), // "shutdown"
+QT_MOC_LITERAL(25, 325, 16), // "query_lockscreen"
+QT_MOC_LITERAL(26, 342, 28), // "_securityResetDiscEncryption"
+QT_MOC_LITERAL(27, 371, 9), // "deleteApp"
+QT_MOC_LITERAL(28, 381, 19), // "query_uninstallapps"
+QT_MOC_LITERAL(29, 401, 5), // "uint*"
+QT_MOC_LITERAL(30, 407, 7), // "app_ids"
+QT_MOC_LITERAL(31, 415, 7) // "appsize"
 
     },
     "AppsModel\0get_element_list\0\0"
     "set_element_list\0application[]\0list\0"
-    "query_listapps\0query_runapp\0param\0"
+    "query_listapps\0query_startapp\0app_id\0"
     "is_active\0set_is_active\0_value\0"
     "assert_dbus_method_return\0DBusMessage*\0"
     "msg\0get_current_index\0set_current_index\0"
     "index\0get_page_index\0set_page_index\0"
     "get_number_of_applications\0get_applist\0"
     "set_page_count\0get_page_count\0shutdown\0"
-    "query_lockscreen"
+    "query_lockscreen\0_securityResetDiscEncryption\0"
+    "deleteApp\0query_uninstallapps\0uint*\0"
+    "app_ids\0appsize"
 };
 #undef QT_MOC_LITERAL
 
@@ -76,7 +84,7 @@ static const uint qt_meta_data_AppsModel[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      20,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -84,23 +92,26 @@ static const uint qt_meta_data_AppsModel[] = {
        0,       // signalCount
 
  // methods: name, argc, parameters, tag, flags
-       1,    0,   99,    2, 0x02 /* Public */,
-       3,    1,  100,    2, 0x02 /* Public */,
-       6,    0,  103,    2, 0x02 /* Public */,
-       7,    1,  104,    2, 0x02 /* Public */,
-       9,    0,  107,    2, 0x02 /* Public */,
-      10,    1,  108,    2, 0x02 /* Public */,
-      12,    1,  111,    2, 0x02 /* Public */,
-      15,    0,  114,    2, 0x02 /* Public */,
-      16,    1,  115,    2, 0x02 /* Public */,
-      18,    0,  118,    2, 0x02 /* Public */,
-      19,    1,  119,    2, 0x02 /* Public */,
-      20,    0,  122,    2, 0x02 /* Public */,
-      21,    0,  123,    2, 0x02 /* Public */,
-      22,    0,  124,    2, 0x02 /* Public */,
-      23,    0,  125,    2, 0x02 /* Public */,
-      24,    0,  126,    2, 0x02 /* Public */,
-      25,    0,  127,    2, 0x02 /* Public */,
+       1,    0,  114,    2, 0x02 /* Public */,
+       3,    1,  115,    2, 0x02 /* Public */,
+       6,    0,  118,    2, 0x02 /* Public */,
+       7,    1,  119,    2, 0x02 /* Public */,
+       9,    0,  122,    2, 0x02 /* Public */,
+      10,    1,  123,    2, 0x02 /* Public */,
+      12,    1,  126,    2, 0x02 /* Public */,
+      15,    0,  129,    2, 0x02 /* Public */,
+      16,    1,  130,    2, 0x02 /* Public */,
+      18,    0,  133,    2, 0x02 /* Public */,
+      19,    1,  134,    2, 0x02 /* Public */,
+      20,    0,  137,    2, 0x02 /* Public */,
+      21,    0,  138,    2, 0x02 /* Public */,
+      22,    0,  139,    2, 0x02 /* Public */,
+      23,    0,  140,    2, 0x02 /* Public */,
+      24,    0,  141,    2, 0x02 /* Public */,
+      25,    0,  142,    2, 0x02 /* Public */,
+      26,    0,  143,    2, 0x02 /* Public */,
+      27,    1,  144,    2, 0x02 /* Public */,
+      28,    2,  147,    2, 0x02 /* Public */,
 
  // methods: parameters
     QMetaType::QVariant,
@@ -120,6 +131,9 @@ static const uint qt_meta_data_AppsModel[] = {
     QMetaType::Int,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Bool, QMetaType::Int,    8,
+    QMetaType::Int, 0x80000000 | 29, QMetaType::Int,   30,   31,
 
        0        // eod
 };
@@ -134,7 +148,7 @@ void AppsModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< QVariant*>(_a[0]) = _r; }  break;
         case 1: _t->set_element_list((*reinterpret_cast< application(*)[]>(_a[1]))); break;
         case 2: _t->query_listapps(); break;
-        case 3: { int _r = _t->query_runapp((*reinterpret_cast< int(*)>(_a[1])));
+        case 3: { int _r = _t->query_startapp((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 4: { bool _r = _t->is_active();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
@@ -155,6 +169,11 @@ void AppsModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 15: _t->shutdown(); break;
         case 16: _t->query_lockscreen(); break;
+        case 17: _t->_securityResetDiscEncryption(); break;
+        case 18: { bool _r = _t->deleteApp((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 19: { int _r = _t->query_uninstallapps((*reinterpret_cast< uint*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -185,13 +204,13 @@ int AppsModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 20)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 20;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 20)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 17;
+        _id -= 20;
     }
     return _id;
 }

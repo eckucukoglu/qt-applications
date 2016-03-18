@@ -30,7 +30,7 @@ public:
    Q_INVOKABLE QVariant get_element_list();
    Q_INVOKABLE void set_element_list(application list[]);
    Q_INVOKABLE void query_listapps();
-   Q_INVOKABLE int query_runapp(int param);
+   Q_INVOKABLE int query_startapp(int app_id);
    Q_INVOKABLE bool is_active();
    Q_INVOKABLE void set_is_active(bool _value);
    Q_INVOKABLE void assert_dbus_method_return (DBusMessage* msg);
@@ -47,6 +47,7 @@ public:
    Q_INVOKABLE void query_lockscreen();
    Q_INVOKABLE void _securityResetDiscEncryption();
    Q_INVOKABLE bool deleteApp(int app_id);
+   Q_INVOKABLE int query_uninstallapps(unsigned int* app_ids, int appsize);
 
    application APPLIST[MAX_NUMBER_APPLICATIONS];
 
