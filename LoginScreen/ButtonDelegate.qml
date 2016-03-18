@@ -42,7 +42,6 @@ Component {
                         }
                     }
                 }
-
                 Text {
                     id: buttonName
                     text: name
@@ -57,10 +56,7 @@ Component {
                     color: "white"
                 }
             }
-
-
         }
-
 
 
       MouseArea{
@@ -74,9 +70,7 @@ Component {
             onReleased: {
                  _gradient.opacity = 0.3
             }
-
             onClicked: {
-
                buttonDelegate.GridView.view.currentIndex = index
                // msg.visible = true  //opens an alert box
                 console.log("counter: "+numbersContent.counter)
@@ -88,8 +82,9 @@ Component {
                 }
                 else if(index == 11) //OK Button
                 {
-                    busyIndication.visible=true
-                    var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
+                    //TODO : remove comment
+                   // var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
+                    var result=true
                     console.log("returned check")
                     if(result){
                         numbersContent.trialRemaining=3
@@ -98,9 +93,8 @@ Component {
                         numbersContent.stime = 5
                         waitTime=0
                         console.log("loading desktop")
-                        loginHelper.query_access(0)
+                        loginHelper.query_login(0)
                         console.log("loaded desktop")
-                        busyIndication.visible=false
 
                     }
                    else{
@@ -128,9 +122,8 @@ Component {
                     infoTextArea.textvalue  = qsTr("Enter Password")
                     numbersContent.counter = 0
                     numbersContent.password = qsTr("")
-
                 }
-                else // DIGIT
+                else //DIGIT
                 {
                     if(numbersContent.counter == 0)
                     {
@@ -147,13 +140,8 @@ Component {
                         // messageDialog.show(qsTr("Uyarı: Sifre maksimum 10 haneli olmalidir."))
                     }
                 }
-
             }
         }
-
     }
-
-
-
 }
 

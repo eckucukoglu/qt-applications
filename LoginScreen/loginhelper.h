@@ -20,7 +20,7 @@ public:
    explicit LoginHelper(QObject *parent = 0);
 
     Q_INVOKABLE bool check_password(QString pwd,bool _isShamir);
-    Q_INVOKABLE void query_access(int access_code);
+    Q_INVOKABLE void query_login(int access_code);
     Q_INVOKABLE void set_tryCount(int tryCount);
     Q_INVOKABLE int get_tryCount();
 
