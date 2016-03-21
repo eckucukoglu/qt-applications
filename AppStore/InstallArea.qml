@@ -176,6 +176,7 @@ Rectangle{
                errorTxt.visible=false
                alreadyInsText.visible=false
                nowInstalledTxt.visible=false
+               console.log("downloading: "+ app_id)
                AppsModel.download(app_id)
                if(AppsModel.check_error() === 0) //download is successful
                {
@@ -304,7 +305,7 @@ Rectangle{
        }
   }
   Component.onCompleted: {
-      already_installed =AppsModel.check_if_installed()
+      already_installed =AppsModel.check_if_installed(app_id)
       console.log("app id is : "+ app_id)
       console.log("installed: "+ already_installed)
       if(already_installed === 0) //app is not installed

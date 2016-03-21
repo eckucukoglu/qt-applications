@@ -409,11 +409,13 @@ applications* HTTPPerform::perform(ACTION action, int appId){
             else
                 url = this->baseUrl + "application/"+to_string(appId)+"/";
             status=this->getContent(url,retVal);
+
             if (status == 1)
                 appList = this->parseString(retVal);
-            else
+            else{
                 this-> errorFlag = 1;
                 this-> errorMessage = retVal;
+            }
             break;
     }
     return appList;

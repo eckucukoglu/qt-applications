@@ -157,7 +157,6 @@ ApplicationWindow {
         {
             console.log("internet2: "+AppsModel.check_connection())
             errorMsg.visible=true
-            AppsModel.query_listapps()
         }
     }
 }

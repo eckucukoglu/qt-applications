@@ -10,7 +10,7 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
      error=1;
      current_index= 0;
      page_index=0;
-     performer = new HTTPPerform("http://10.155.10.199:8001/");
+     performer = new HTTPPerform("http://10.155.10.186:8000/");
      query_listapps(); //from device
      printf("apps listed from query\n");
      listApps(); //from server
@@ -42,6 +42,7 @@ int AppsModel::download(int appid)
                             cout << "\t" << "name: " << (_appList->apps[i].name)<<endl;
                             cout << "\t" << "developer name: " << (_appList->apps[i].developerName)<<endl;
                             cout << "\t" << "icon: " << (_appList->apps[i].iconName)<<endl;
+                            cout << "\t" << "binary name: "<< (_appList->apps[i].binaryName)<<endl;
                         }
                         check_internet=true;
                         printf("ins: %d\ndown: %d\n", _appList->apps->isInstalled, _appList->apps->isDownloaded);
@@ -84,23 +85,22 @@ int AppsModel::check_error(){
 
 void AppsModel::listApps(){
     try {
-            printf("check\n");
             _appList = performer->perform(SHOW,0);
+            printf("listApps: returned perform\n");
             if (_appList == NULL)
             {
                 cout << "Applist is NULL" << endl;
             }
             else{
                 if (performer->getError() == 1){
-                    cout << "Error occured during HTTP request :" << performer->getErrorMessage() << endl;                   
+                    cout << "Error occured during HTTP request :" << performer->getErrorMessage() << endl;
+                    cout << "check 1\n" << endl;
                 }
                 else if (_appList->apps != NULL)
                 {
-                    printf("check1\n");
                     string colours[] = {"#FC0505", "#89F0F0", "#F0E224", "#1AC44D"};
                     number_of_applications = _appList->size;
                     app _list[_appList->size];
-                    printf("check2\n");
                     for(int i=0;i< _appList->size; i++)
                         {
                             cout << "Application "<< to_string(i) << endl;
@@ -108,6 +108,7 @@ void AppsModel::listApps(){
                             cout << "\t" << "name: " << (_appList->apps[i].name)<<endl;
                             cout << "\t" << "developer name: " << (_appList->apps[i].developerName)<<endl;
                             cout << "\t" << "icon: " << (_appList->apps[i].iconName)<<endl;
+                            cout << "\t" << "binaryname: " << (_appList->apps[i].binaryName)<<endl;
                             app temp{
                                    _appList->apps[i].id,
                                    _appList->apps[i].name,
@@ -333,7 +334,7 @@ int AppsModel::check_if_installed(int app_id)
      int ret=0;
      for(int i=0;i<number_of_installed_applications;i++)
      {
-         if(INSTALLEDAPPS[i].id ==app_id)
+         if(INSTALLEDAPPS[i].id == (app_id+100))
          {
              ret=1;
              break;
