@@ -50,7 +50,7 @@ ApplicationWindow {
        anchors.verticalCenter: parent.verticalCenter
        width: 300
        height: 40
-       text: "Allocate " + size + " KB"
+       text: "Allocate size " + size
        onClicked: {
            var ret = helper.allocate()
            if(ret)
@@ -91,6 +91,7 @@ ApplicationWindow {
            if(ret)
            {
                infoTxt.text = "Memory freed."
+               size=helper.get_size()
            }
            else
            {

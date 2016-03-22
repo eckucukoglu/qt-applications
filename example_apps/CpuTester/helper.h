@@ -1,11 +1,17 @@
 #ifndef HELPER_H
 #define HELPER_H
+#include <QObject>
+#include <stdio.h>
+#include <stdlib.h>
 
-
-class helper
+class Helper: public QObject
 {
+    Q_OBJECT
 public:
-    helper();
-};
+   explicit Helper(QObject *parent = 0);
 
+   Q_INVOKABLE void calculate();
+
+
+};
 #endif // HELPER_H

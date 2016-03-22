@@ -7,9 +7,11 @@ Helper::Helper(QObject *parent) : QObject(parent)
 }
 
 bool Helper::allocate(){
-   free_buffer();
-
-   buffer = (char *)malloc (size*1024);
+    printf("size: %d\n",size);
+    if(!buffer)
+        buffer = (char *)malloc(size*1024);
+    else
+        buffer = (char *)realloc(buffer, size*1024);
 
    if(!buffer)
        return false;
@@ -32,6 +34,5 @@ bool Helper::free_buffer()
         size = 100;
         return true;
     }
-
     return false;
 }
