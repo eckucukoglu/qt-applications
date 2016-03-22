@@ -23,6 +23,8 @@ ApplicationWindow {
     property double  t2: 0
     property string backgroundImg: "pics/sober_newspecs/bg2.jpg"
     property bool isDeleteMode: false
+    property double clicktime1:0
+    property double clicktime2:0
 
     BusyIndicator {
            id: busyIndication

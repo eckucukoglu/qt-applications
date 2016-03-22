@@ -5,6 +5,7 @@ import QtQuick 2.0
 MouseArea {
     property point origin
     property bool ready: false
+    z:-1
     signal move(int x, int y)
     signal swipe(string direction)
     propagateComposedEvents: true
@@ -64,7 +65,6 @@ MouseArea {
         if(swiped){
             propagateComposedEvents = false;
             mouse.accepted = true;
-
         }
 
     }

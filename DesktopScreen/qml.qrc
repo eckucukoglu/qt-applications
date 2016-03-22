@@ -42,5 +42,7 @@
         <file>Sci.png</file>
         <file>clock.png</file>
         <file>pics/sober_newspecs/icon/icon_remove.png</file>
+        <file>pics/sober_newspecs/icon/icon-battery.png</file>
+        <file>pics/sober_newspecs/icon/icon-settings.png</file>
     </qresource>
 </RCC>

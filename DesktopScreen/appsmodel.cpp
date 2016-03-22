@@ -722,20 +722,19 @@ int AppsModel::query_uninstallapps(unsigned int* app_ids, int size) {
 
     dbus_message_unref(msg);
     dbus_connection_unref(conn);
-
-    return removed_app_ids[0] ;
+    return removed_app_ids[0];
 }
 
 
 
 bool AppsModel::deleteApp(int app_id)
 {
-     printf("main:: deleting app with ID: %d\n", app_id);
+     printf("Desktopscreen: deleting app with ID: %d\n", app_id);
      unsigned int app[1];
      app[0] = (unsigned int)app_id;
      int appsize = 1;
      int deletedapp = query_uninstallapps(app, appsize);
-     printf("main:: deleted app with ID: %d\n", deletedapp);
+     printf("Desktopscreen: deleted app with ID: %d\n", deletedapp);
      if(deletedapp == app_id)
          return true;
      return false;

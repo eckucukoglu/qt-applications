@@ -47,12 +47,12 @@ Rectangle{
         spacing: 8
         Image{
             id: energyIcon
-            source: "pics/energy39.png"
+            source: "pics/sober_newspecs/icon/icon-battery.png"
             scale: 0.9
         }
 
         Image{
-            source: "pics/settings-icon.png"
+            source: "pics/sober_newspecs/icon/icon-settings.png"
             scale: 0.7
             Rectangle{
                 anchors.top: root.top
@@ -63,7 +63,6 @@ Rectangle{
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
-                        //msgLogout.visible=true
                         settingsMenu.visible ^=true
                     }
                 }
@@ -195,6 +194,7 @@ Rectangle{
                  text: "Do you want to Power Off"
                  standardButtons: StandardButton.Yes | StandardButton.No
                  onYes: {
+                     AppsModel._securityResetDiscEncryption()
                      AppsModel.shutdown()
                  }
 

@@ -130,11 +130,12 @@ Component {
                     {
                         console.log("removed: "+app_id + " name: "+name + " app_index: "+index)
                         listModel.remove(index, 1)
-
+                        AppsModel.set_current_index((AppsModel.get_current_index()-1))
                     }
                     else
                     {
                         error_msg.text = "Error while deleting " + name + " application"
+                        error_msg.visible = true
                     }
 
 
@@ -147,57 +148,67 @@ Component {
             anchors.fill: parent
             //propagateComposedEvents: true
             enabled: true
-            onClicked: {
-                if(root.isDeleteMode === false)
-                {
-                    root.t1 = new Date().valueOf()
-                    var ret = -1
-                    appDelegate.GridView.view.currentIndex = index
-                    if ((t1-t2) > 500){
-                        ret = AppsModel.query_startapp(app_id)
-                        if(ret === -1)
-                        {
-                            error_msg.setText("Reached permitted number of live apps.")
-                            error_msg.visible=true
-                        }
-                        else if(ret === -2)
-                        {
-                            error_msg.setText("App id:"+app_id+" is not valid!")
-                            error_msg.visible=true
-                        }
-                        else if(ret === -3)
-                        {
-                            error_msg.setText("Invalid hash value")
-                            error_msg.visible=true
-                        }
-                        else if(ret === 0)//successful
-                        {
-                            console.log("appname: " + name)
-                             if(name === "APPSTORE")
+            z:1
+            onPressed: {
+                mouse.accepted = true
+                console.log("pressed");
+                root.clicktime1 = new Date().valueOf()
+            }
+            onReleased: {
+                console.log("released");
+                root.clicktime2 = new Date().valueOf()
+                if((root.clicktime2-root.clicktime1) > 200){
+                    if(root.isDeleteMode === false)
+                    {
+                        root.t1 = new Date().valueOf()
+                        var ret = -1
+                        appDelegate.GridView.view.currentIndex = index
+                        if ((t1-t2) > 500){
+                            ret = AppsModel.query_startapp(app_id)
+                            if(ret === -1)
                             {
-                                content.reload()
+                                error_msg.setText("Reached permitted number of live apps.")
+                                error_msg.visible=true
                             }
+                            else if(ret === -2)
+                            {
+                                error_msg.setText("App id:"+app_id+" is not valid!")
+                                error_msg.visible=true
+                            }
+                            else if(ret === -3)
+                            {
+                                error_msg.setText("Invalid hash value")
+                                error_msg.visible=true
+                            }
+                            else if(ret === 0)//successful
+                            {
+                                console.log("appname: " + name)
+                                 if(name === "APPSTORE")
+                                {
+                                    content.reload()
+                                }
+                            }
+                            else
+                            {
+                                error_msg.setText("Unknown error occured.")
+                                error_msg.visible=true
+                            }
+                        }
+                        root.t2 = new Date().valueOf()
+                    }
+                    else //delete mode
+                    {
+                        if(name === "APPSTORE")
+                        {
+
                         }
                         else
                         {
-                            error_msg.setText("Unknown error occured.")
-                            error_msg.visible=true
+                          deleteMsg.visible=true
                         }
                     }
-                    root.t2 = new Date().valueOf()
-                }
-                else //delete mode
-                {
-                    if(name === "APPSTORE")
-                    {
-
-                    }
-                    else
-                    {
-                      deleteMsg.visible=true
-                    }
-                }
+              }
             }
-        }
+      }
     }
 }
