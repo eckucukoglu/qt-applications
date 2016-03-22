@@ -75,7 +75,7 @@ int securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
         {
             share="";
             try {
-                url = "http://10.155.10.213:808" + to_string(i) + "/server/";
+                url = SHAMIR_SERVER_PATH + to_string(i) + SHAMIR_SERVER_PATH_EXTENSION;
                 performer  = new HTTPPerform(url);
                 performer->perform(GETSHARE,share);
 

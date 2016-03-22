@@ -16,6 +16,8 @@ typedef enum{
 #define SALTLEN 32
 #define SHAMIR_NUMB_OF_SHARE 3
 #define SHAMIR_NUMB_OF_THRESHOLD 2
+#define SHAMIR_SERVER_PATH "http://10.155.10.213:808" //servers will be in 8080,8081,8082 port
+#define SHAMIR_SERVER_PATH_EXTENSION "/server/"
 
 #define DISC_ENC_ECHO_STR "echo "
 #define DISC_ENC_PIPE_STR " | "
@@ -25,6 +27,7 @@ typedef enum{
 #define DISC_ENC_RESETCRYPT_PATH " /usr/bin/removeCrypt.sh "
 #define DISC_ENC_DEV_PATH " /dev/mmcblk0p3 "
 #define DISC_ENC_SALT_FILE_PATH "/usr/bin/salt.txt"
+
 
 int securityGetHashValue(const char *pwd, const unsigned char pwdlen, const void *salt, const unsigned char saltlen, void *hash, const unsigned char hashlen);
 

@@ -82,43 +82,59 @@ Component {
                 }
                 else if(index == 11) //OK Button
                 {
-                    //TODO : remove comment
-                   // var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
-                    var result=true
-                    console.log("returned check")
-                    if(result){
-                        numbersContent.trialRemaining=3
-                        loginHelper.set_tryCount(0)
-                        numbersContent.ftime = 0
-                        numbersContent.stime = 5
-                        waitTime=0
-                        console.log("loading desktop")
-                        loginHelper.query_login(0)
-                        console.log("loaded desktop")
+                    if(initMode === false)
+                    {
+                        var result = loginHelper.check_password(qsTr(numbersContent.password), numbersContent.isShamir)
+                        if(result){
+                            numbersContent.trialRemaining=5
+                            loginHelper.set_tryCount(0)
+                            numbersContent.stime = 10
+                            waitTime=10
+                            console.log("loading desktop")
+                            loginHelper.query_login(0)
+                            console.log("loaded desktop")
 
+                        }
+                       else{
+                            numbersContent.trialRemaining = 5 - (loginHelper.get_tryCount()%5)
+                            console.log("remaining: "+numbersContent.trialRemaining)
+                            console.log("count: "+loginHelper.get_tryCount())
+                            if( loginHelper.get_tryCount()!= 0 && (loginHelper.get_tryCount()%5) === 0)
+                            {
+                                   numbersContent.enabled=false
+                                   chckBoxArea.enabled=false
+                                   numbersContent.trialRemaining=5
+                                   numbersContent.stime = numbersContent.stime + 10
+                                   deviceLockArea.visible=true
+                            }
+                            else{
+                                  numbersContent.enabled=false
+                                  chckBoxArea.enabled=false
+                                  errorMsg.visible=true
+                            }
+                            loginHelper.set_tryCount(loginHelper.get_tryCount() + 1)
+                        }
                     }
-                   else{
-                        numbersContent.trialRemaining = 3- (loginHelper.get_tryCount()%3)
-                        console.log("remaining: "+numbersContent.trialRemaining)
-                        console.log("count: "+loginHelper.get_tryCount())
-                        if( loginHelper.get_tryCount()!=0 && (loginHelper.get_tryCount()%3) === 0)
+                    else{ //initialize mode
+                        loginHelper.resetDisc();
+                        var res =loginHelper.initDisc(qsTr(numbersContent.password), numbersContent.isShamir)
+                        console.log("return: "+ res)
+                        if(res)
                         {
-                               numbersContent.enabled=false
-                               chckBoxArea.enabled=false
-                               numbersContent.trialRemaining=3
-                               numbersContent.ftime = numbersContent.stime
-                               numbersContent.stime = numbersContent.stime + numbersContent.ftime
-                               waitTime=numbersContent.stime
-                               deviceLockArea.visible=true
+                            initMode=false
+                            console.log("init mode: "+initMode)
+                            infoTextArea.textvalue  = qsTr("Enter Password")
+                            numbersContent.counter = 0
+                            numbersContent.password = qsTr("")
+                            console.log("loading desktop")
+                            loginHelper.query_login(0)
+                            console.log("loaded desktop")
+
                         }
                         else{
-                              numbersContent.enabled=false
-                              chckBoxArea.enabled=false
-                              errorMsg.visible=true
-                        }
-                        loginHelper.set_tryCount(loginHelper.get_tryCount() + 1)
+                            messageDialog.text = "initialize failed!"
+                         }
                     }
-
                     infoTextArea.textvalue  = qsTr("Enter Password")
                     numbersContent.counter = 0
                     numbersContent.password = qsTr("")

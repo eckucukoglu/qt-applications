@@ -105,6 +105,37 @@ void LoginHelper::query_login(int access_code) {
     dbus_connection_unref(conn);
 }
 
+void LoginHelper::resetDisc()
+{
+       securityResetDiscEncryption();
+}
+
+bool LoginHelper::initDisc(QString password, bool _isShamir){
+    char* pwd = new char[password.length() + 1];
+    strcpy(pwd, password.toStdString().c_str());
+    isShamir = _isShamir;
+    int result = 1;
+    if(isShamir)
+    {
+        result = securityInitDiscEncryption(pwd, WITH_SHAMIR);
+        printf("=>WITH SHAMIR...\n");
+
+    }
+    else
+    {
+        result = securityInitDiscEncryption(pwd, WITHOUT_SHAMIR);
+        printf("=>WITHOUT SHAMIR...\n");
+    }
+
+    if (result == 0){
+        printf("=> RESULT : Initialize is OK...\n");
+        return true;
+    }
+    else{
+        printf("=> RESULT : Initialize is NOT OK...\n");
+    }
+    return false;
+}
 
 void LoginHelper::set_tryCount(int tryCount)
 {

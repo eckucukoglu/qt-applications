@@ -14,7 +14,9 @@ ApplicationWindow {
     id: root
     property bool _isActive: true
     property date date
-    property int waitTime : 0
+    property int waitTime : 10
+    property bool initMode:false
+
     Rectangle{
         anchors.top: parent.top
         width: parent.width
@@ -35,11 +37,12 @@ ApplicationWindow {
           radius: width * 0.5
           z:1
 
-          Rectangle{
+          Image {
+              id: background4
               anchors.fill: parent
-              color:"steelblue"
-              radius: parent.radius
-              opacity: 0.2
+              source: "pics/sober_newspecs/bg.png"
+              fillMode: Image.PreserveAspectCrop
+              opacity: 0.7
           }
 
           Image{
@@ -200,8 +203,7 @@ ApplicationWindow {
         property int counter: 0
         property int trialRemaining: 3
         property var password: ""
-        property int ftime: 0
-        property int stime: 1 //5
+        property int stime: 0
         property bool isShamir: false
         Rectangle {
               width: 300
@@ -250,7 +252,7 @@ ApplicationWindow {
                     style: CheckBoxStyle {
                           label: Text{
                                color: "white"
-                               text:  "unlock with hash"
+                               text:  "shamir"
                                font.family: "Helvetica"
                                scale: 1
 
@@ -281,11 +283,23 @@ ApplicationWindow {
 
     MessageDialog {
         id: messageDialog
+        visible:false
         title: qsTr("")
+        text: ""
+        onAccepted: messageDialog.visible=false
+    }
 
-        function show(caption) {
-            messageDialog.text = caption;
-            messageDialog.open();
+    Button{
+        id: initBtn
+        text: "initialize disc "
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: 20
+        anchors.bottomMargin: 20
+        onClicked: {
+            initMode=true
+            messageDialog.text= "initialize mode is on, please enter password"
+            messageDialog.visible=true
         }
     }
 
