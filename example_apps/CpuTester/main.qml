@@ -71,33 +71,6 @@ ApplicationWindow {
            }
    }
 
-   Button{
-       id: btn2
-       anchors.horizontalCenter: parent.horizontalCenter
-       anchors.top: btn.bottom
-       anchors.topMargin: 40
-       width: 300
-       height: 40
-       text: "stop"
-       onClicked: {
-           helper.stop()
-           infoTxt.text = "calculated!"
-       }
-       style: ButtonStyle {
-               background: Rectangle {
-                   implicitWidth: 100
-                   implicitHeight: 25
-                   border.width: control.activeFocus ? 2 : 1
-                   border.color: "black"
-                   radius: 4
-                   gradient: Gradient {
-                       GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
-                       GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
-                   }
-               }
-           }
-   }
-
    Item{
        width: 800
        height:36
