@@ -12,7 +12,6 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
      page_index=0;
      performer = new HTTPPerform("http://10.155.10.186:8000/");
      query_listapps(); //from device
-     printf("apps listed from query\n");
      listApps(); //from server
      page_count=ceil(double(number_of_applications)/18);
 }
@@ -45,11 +44,10 @@ int AppsModel::download(int appid)
                             cout << "\t" << "binary name: "<< (_appList->apps[i].binaryName)<<endl;
                         }
                         check_internet=true;
-                        printf("ins: %d\ndown: %d\n", _appList->apps->isInstalled, _appList->apps->isDownloaded);
                         if(_appList->apps->isInstalled == 1 && _appList->apps->isDownloaded)
                         {
                             installed_app temp{
-                                appid,
+                                appid+100,
                                 "",
                                 ""
                             };
@@ -86,7 +84,6 @@ int AppsModel::check_error(){
 void AppsModel::listApps(){
     try {
             _appList = performer->perform(SHOW,0);
-            printf("listApps: returned perform\n");
             if (_appList == NULL)
             {
                 cout << "Applist is NULL" << endl;
@@ -350,7 +347,7 @@ void AppsModel::set_element_list(app _list[]){
         QVariant _data;
         QVariantMap _map;
         int _isInstalled=check_if_installed(_list[i].id);
-        printf("main: is installed? :%d\n", _isInstalled);
+        printf("Desktopscreen: app: %d is installed :%d\n",_list[i].id, _isInstalled);
         _map["id"] = QVariant(_list[i].id);
         _map["name"] = QVariant(_list[i].name.c_str());
         _map["developerName"] = QVariant(_list[i].developerName.c_str());

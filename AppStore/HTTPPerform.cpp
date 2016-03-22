@@ -2,7 +2,8 @@
 const string DOWNLOAD_PATH = "/root/AppStore/tmp/Downloads/"; // temporary download path
 const string INSTALL_PATH = "/root/AppStore/tmp/Install/"; // temporary install path
 const string MANIFEST_PATH = "/etc/appmand/";
-const string MOVE_PATH = "/mnt/EncryptedDisk/"; // binary path final destination
+const string MOVE_PATH = "/data/bin/";// binary path final destination
+
 void clearDirectories()
 {
     string rmcommand = "rm -rf ";
@@ -86,7 +87,7 @@ size_t function_pt(void *contents, size_t size, size_t nmemb, void *stream){
 
 int createManifestFile(application* application)
 {
-    string manifest_dir = MANIFEST_PATH + application->name + ".mf";
+    string manifest_dir = MANIFEST_PATH + to_string(application->id+100) + ".mf";
     cJSON *root;
     root = cJSON_CreateObject();
     cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(application->id + 100));
