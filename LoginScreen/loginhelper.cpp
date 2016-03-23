@@ -127,32 +127,100 @@ bool LoginHelper::initDisc(QString password, bool _isShamir){
         printf("=>WITHOUT SHAMIR...\n");
     }
 
-    if (result == 0){
+    if (result == SECURITY_RETURN_OK){
         printf("=> RESULT : Initialize is OK...\n");
-        return true;
+        return result;
     }
     else{
         printf("=> RESULT : Initialize is NOT OK...\n");
     }
-    return false;
+    return result;
 }
 
-void LoginHelper::set_tryCount(int tryCount)
+int LoginHelper::set_tryCount(int tryCount)
 {
         char data[10];
         ofstream outfile;
-        outfile.open("/root/trycount.out");
-        sprintf(data,"%d", tryCount);
-        outfile << data << endl;
-        outfile.close();
+        outfile.open("/root/settings/trycount.out");
+        if(outfile.is_open())
+        {
+            sprintf(data,"%d", tryCount);
+            outfile << data << endl;
+            outfile.close();
+        }
+        else{
+           return (int)LOGINHELPER_RET_ERROR;
+        }
  }
 int LoginHelper::get_tryCount()
 {
     char data[10];
     ifstream infile;
     infile.open("/root/trycount.out");
-    infile >> data;
-    int ret=0;
-    sscanf(data, "%d", &ret);
-    return ret;
+    if(infile.is_open())
+    {
+        infile >> data;
+        int ret=0;
+        sscanf(data, "%d", &ret);
+        return ret;
+    }
+    else{
+        return (int)LOGINHELPER_RET_ERROR;
+    }
+}
+
+int LoginHelper::set_initMode(int initMode, bool isShamir){
+
+    char data[10];
+    ofstream outfile;
+    outfile.open("/root/settings/initMode");
+    if(outfile.is_open())
+    {
+        sprintf(data,"%d", initMode);
+        outfile << data << isShamir <<endl;
+        outfile.close();
+    }
+    else
+    {
+        return (int)LOGINHELPER_RET_ERROR;
+    }
+    return (int)LOGINHELPER_RET_OK;
+}
+
+int LoginHelper::get_initMode(){
+    char data[2];
+    ifstream infile;
+    infile.open("/root/settings/initMode");
+    if(infile.is_open())
+    {
+        infile >> data;
+        int ret=0;
+        char initMode[1];
+        initMode[0] = data[0];
+        sscanf(initMode, "%d", &ret);
+        return ret;
+    }
+    else
+    {
+        return (int)LOGINHELPER_RET_ERROR;
+    }
+}
+
+int LoginHelper::get_isShamir(){
+    char data[2];
+    ifstream infile;
+    infile.open("/root/settings/initMode");
+    if(infile.is_open())
+    {
+        infile >> data;
+        int ret=0;
+        char initMode[1];
+        initMode[0] = data[1];
+        sscanf(initMode, "%d", &ret);
+        return ret;
+    }
+    else
+    {
+        return (int)LOGINHELPER_RET_ERROR;
+    }
 }

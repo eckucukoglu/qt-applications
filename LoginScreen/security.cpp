@@ -25,7 +25,7 @@ void securityGetCommandLineOutput(const char* cmd,char* salt)
     return;
 }
 
-int securityDiscOperation(const unsigned char *hash, const char* discPath,DISCOPERATION_TYPE discOp)
+SECURITY_RETURN_TYPE securityDiscOperation(const unsigned char *hash, const char* discPath,DISCOPERATION_TYPE discOp)
 {
     char cmd[100];
     strcpy(cmd,DISC_ENC_ECHO_STR);
@@ -45,17 +45,17 @@ int securityDiscOperation(const unsigned char *hash, const char* discPath,DISCOP
 
     //printf("Disk Operation Status = %s\n",i==0?"OK":"NOK");
 
-    return i;
+    return (i==0?SECURITY_RETURN_OK:ERR_SECURITY_RETURN_NOK);
 }
 
-int securityGetHashValue(const char *pwd, const unsigned char pwdlen, const void *salt, const unsigned char saltlen, void *hash, const unsigned char hashlen)
+void securityGetHashValue(const char *pwd, const unsigned char pwdlen, const void *salt, const unsigned char saltlen, void *hash, const unsigned char hashlen)
 {
     argon2i_hash_raw(t_cost, m_cost, parallelism, pwd, pwdlen, salt, saltlen, hash, hashlen);
     //for( int i=0; i<hashlen; ++i ) printf( "%02x", hash[i] ); printf( "\n" );
-    return 0;
+    return;
 }
 
-int securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
+SECURITY_RETURN_TYPE securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
 {
     //get salt value from shamir or from local disk
     memset( salt, 0x00, SALTLEN +1 );
@@ -105,7 +105,8 @@ int securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
         if (shareCount < SHAMIR_NUMB_OF_THRESHOLD)
         {
             cout << "Server Connection Error!!! Share threshold value could not be reached !!!" << endl;
-            return -1;
+            cout << "Number of succesfully server connections : " << shareCount << endl;
+            return ERR_SECURITY_SHAMIR_NUMB_OF_THRESHOLD_NOT_REACHED;
         }
 
         command = "printf \"" + command + "\" | ./ssss-combine -t " + to_string(SHAMIR_NUMB_OF_THRESHOLD);
@@ -119,27 +120,36 @@ int securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
 
         fp = fopen(DISC_ENC_SALT_FILE_PATH, "rt");
         if (!fp)
-            printf("Salt Error!!! Salt file does not exist -%s- !!! Default Salt will be used...\n",DISC_ENC_SALT_FILE_PATH);
+        {
+            printf("Salt Error!!! Salt file does not exist in path -%s- \n",DISC_ENC_SALT_FILE_PATH);
+            return ERR_SECURITY_DISC_ENC_SALT_FILE_NOT_EXIST;
+        }
         else
         {
             //printf(	"localSalt lenght:%d sizeof :%d \n",strlen(localSalt), sizeof(localSalt));
             if (fgets(salt, SALTLEN + 1 , fp) == NULL)
+            {
                 printf("Salt Error!!! Salt value error!!! Salt Lenght:%d \n",(int)strlen(salt));
+                printf("Expected Salt Lenght:%d \n",SALTLEN);
+                return ERR_SECURITY_DISC_ENC_SALT_LENGTH_ERROR;
+            }
             salt[SALTLEN] = '\0';
-
         }
-
     }
     printf("\nSalt that will be used : %s \n",salt );
-    return 0;
+    return SECURITY_RETURN_OK;
 }
 
-int securityCheckPassword(const char *pwd, SHAMIR_TYPE shamirOption)
+SECURITY_RETURN_TYPE securityCheckPassword(const char *pwd, SHAMIR_TYPE shamirOption)
 {
     unsigned char hash[HASHLEN + 1];
     char salt[SALTLEN+1];
+    SECURITY_RETURN_TYPE retType = ERR_SECURITY_RETURN_NOK;
 
-    securityGetSaltValue(salt, shamirOption);
+    retType = securityGetSaltValue(salt, shamirOption);
+
+    if (retType != SECURITY_RETURN_OK)
+        return retType;
     securityGetHashValue(pwd, strlen(pwd), (unsigned char*)salt, SALTLEN, hash, HASHLEN );
     hash[HASHLEN] = '\0';
 
@@ -149,13 +159,17 @@ int securityCheckPassword(const char *pwd, SHAMIR_TYPE shamirOption)
     return securityDiscOperation(hash,DISC_ENC_DEV_PATH,DECRYPTION);
 }
 
-int securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE shamirOption)
+SECURITY_RETURN_TYPE securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE shamirOption)
 {
 
     unsigned char hash[HASHLEN + 1];
     char salt[SALTLEN+1];
+    SECURITY_RETURN_TYPE retType = ERR_SECURITY_RETURN_NOK;
 
-    securityGetSaltValue(salt, shamirOption);
+    retType = securityGetSaltValue(salt, shamirOption);
+
+    if (retType != SECURITY_RETURN_OK)
+        return retType;
     securityGetHashValue(pwd, strlen(pwd), (unsigned char*)salt, SALTLEN, hash, HASHLEN );
     hash[HASHLEN] = '\0';
 
@@ -166,7 +180,7 @@ int securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE shamirOption)
 
 }
 
-int securityResetDiscEncryption()
+SECURITY_RETURN_TYPE securityResetDiscEncryption()
 {
     char cmd[50];
 
@@ -177,7 +191,7 @@ int securityResetDiscEncryption()
     int i =system(cmd);
    // printf("Disk Operation Status = %s\n",i==0?"OK":"NOK");
 
-    return i;
+    return (i==0?SECURITY_RETURN_OK:ERR_SECURITY_RETURN_NOK);
 }
 
 /*

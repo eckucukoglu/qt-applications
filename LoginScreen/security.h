@@ -12,6 +12,17 @@ typedef enum{
     WITH_SHAMIR
 }SHAMIR_TYPE;
 
+typedef enum
+{
+    SECURITY_RETURN_OK = 0,
+    ERR_SECURITY_RETURN_NOK = 1,
+    ERR_SECURITY_SHAMIR_NUMB_OF_THRESHOLD_NOT_REACHED =2,
+    ERR_SECURITY_SHAMIR_SERVER_NOT_REACHABLE = 3,
+    ERR_SECURITY_DISC_ENC_SALT_FILE_NOT_EXIST =4,
+    ERR_SECURITY_DISC_ENC_SALT_LENGTH_ERROR =5,
+    ERR_HTTP_REQUEST_ERROR = 6
+}SECURITY_RETURN_TYPE;
+
 #define HASHLEN 32
 #define SALTLEN 32
 #define SHAMIR_NUMB_OF_SHARE 3
@@ -29,13 +40,13 @@ typedef enum{
 #define DISC_ENC_SALT_FILE_PATH "/usr/bin/salt.txt"
 
 
-int securityGetHashValue(const char *pwd, const unsigned char pwdlen, const void *salt, const unsigned char saltlen, void *hash, const unsigned char hashlen);
+void securityGetHashValue(const char *pwd, const unsigned char pwdlen, const void *salt, const unsigned char saltlen, void *hash, const unsigned char hashlen);
 
-int securityCheckPassword(const char *pwd, SHAMIR_TYPE shamirOption);
+SECURITY_RETURN_TYPE securityCheckPassword(const char *pwd, SHAMIR_TYPE shamirOption);
 
-int securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE shamirOption);
+SECURITY_RETURN_TYPE securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE shamirOption);
 
-int securityResetDiscEncryption();
+SECURITY_RETURN_TYPE securityResetDiscEncryption();
 
 
 #if defined(__cplusplus)

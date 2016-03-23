@@ -93,7 +93,6 @@ Component {
                             console.log("loading desktop")
                             loginHelper.query_login(0)
                             console.log("loaded desktop")
-
                         }
                        else{
                             numbersContent.trialRemaining = 5 - (loginHelper.get_tryCount()%5)
@@ -115,15 +114,31 @@ Component {
                             loginHelper.set_tryCount(loginHelper.get_tryCount() + 1)
                         }
                     }
-                    else{ //initialize mode
-                        loginHelper.resetDisc();
+                    else{ //initialize mode              
+
+                        //TODO: additions to security.cpp->SECURITY_RETURN_TYPE enum has to be added here
+
+                        var SECURITY_RETURN_TYPE = {
+                            SECURITY_RETURN_OK : 0,
+                            ERR_SECURITY_RETURN_NOK : 1,
+                            ERR_SECURITY_SHAMIR_NUMB_OF_THRESHOLD_NOT_REACHED : 2,
+                            ERR_SECURITY_SHAMIR_SERVER_NOT_REACHABLE : 3,
+                            ERR_SECURITY_DISC_ENC_SALT_FILE_NOT_EXIST : 4,
+                            ERR_SECURITY_DISC_ENC_SALT_LENGTH_ERROR : 5,
+                            ERR_HTTP_REQUEST_ERROR : 6
+                        };
+                        //move to js
+
                         var res =loginHelper.initDisc(qsTr(numbersContent.password), numbersContent.isShamir)
                         console.log("return: "+ res)
-                        if(res)
+
+                        if(res === SECURITY_RETURN_TYPE.SECURITY_RETURN_OK)
                         {
+                            //set initmode 0
+                            //set shamir 0 ->hide shamir
                             initMode=false
                             console.log("init mode: "+initMode)
-                            infoTextArea.textvalue  = qsTr("Enter Password")
+                            infoTextArea.textvalue  = qsTr("Enter Password..")
                             numbersContent.counter = 0
                             numbersContent.password = qsTr("")
                             console.log("loading desktop")
@@ -131,9 +146,34 @@ Component {
                             console.log("loaded desktop")
 
                         }
-                        else{
+                        else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_RETURN_NOK)
+                        {
+
+                        }
+                        else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_SHAMIR_NUMB_OF_THRESHOLD_NOT_REACHED)
+                        {
+
+                        }
+                        else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_SHAMIR_SERVER_NOT_REACHABLE)
+                        {
+
+                        }
+                        else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_DISC_ENC_SALT_FILE_NOT_EXIST)
+                        {
+
+                        }
+                        else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_DISC_ENC_SALT_LENGTH_ERROR)
+                        {
+
+                        }
+                        else if(res === SECURITY_RETURN_TYPE.ERR_HTTP_REQUEST_ERROR)
+                        {
+
+                        }
+                        else
+                        {
                             messageDialog.text = "initialize failed!"
-                         }
+                        }
                     }
                     infoTextArea.textvalue  = qsTr("Enter Password")
                     numbersContent.counter = 0

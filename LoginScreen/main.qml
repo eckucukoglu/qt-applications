@@ -15,7 +15,9 @@ ApplicationWindow {
     property bool _isActive: true
     property date date
     property int waitTime : 10
-    property bool initMode:false
+    property int initMode:0
+    property int isShamir: 0
+
 
     Rectangle{
         anchors.top: parent.top
@@ -303,4 +305,23 @@ ApplicationWindow {
         }
     }
 
+
+    Component.onCompleted: {
+        loginHelper.resetDisc();
+     //   loginHelper.set_initMode(1, false);
+     //   console.log("initMode: "+ loginHelper.get_initMode());
+      //  console.log("isShamir: "+loginHelper.get_isShamir());
+        initMode = loginHelper.get_initMode()
+        if(initMode==-1)
+        {
+            messageDialog.text= "Init Mode cannot be read"
+            messageDialog.visible=true
+            initMode = 0
+            //TODO: show init mode text
+            //show shamir, hide shamir
+        }
+        else{
+
+        }
+    }
 }

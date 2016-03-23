@@ -10,6 +10,10 @@
 #include <iostream>
 
 
+typedef enum{
+    LOGINHELPER_RET_ERROR = -1,
+    LOGINHELPER_RET_OK = 0,
+}LOGINHELPER_ERR_TYPE;
 
 #define APPMAN_VIEW_DEBUG_PREFIX "L >> "
 using namespace std;
@@ -21,10 +25,13 @@ public:
 
     Q_INVOKABLE bool check_password(QString pwd,bool _isShamir);
     Q_INVOKABLE void query_login(int access_code);
-    Q_INVOKABLE void set_tryCount(int tryCount);
+    Q_INVOKABLE int set_tryCount(int tryCount);
     Q_INVOKABLE int get_tryCount();
     Q_INVOKABLE bool initDisc(QString password, bool _isShamir);
     Q_INVOKABLE void resetDisc();
+    Q_INVOKABLE int set_initMode(int initMode, bool isShamir);
+    Q_INVOKABLE int get_initMode();
+    Q_INVOKABLE int get_isShamir();
 
 private:
     bool isShamir;
