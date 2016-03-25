@@ -7,7 +7,7 @@ LoginHelper::LoginHelper(QObject *parent) : QObject(parent)
 
 }
 
-bool LoginHelper::check_password(QString password, bool _isShamir){
+int LoginHelper::check_password(QString password, bool _isShamir){
     char* pwd = new char[password.length() + 1];
     strcpy(pwd, password.toStdString().c_str());
     isShamir = _isShamir;
@@ -24,17 +24,15 @@ bool LoginHelper::check_password(QString password, bool _isShamir){
         printf("=>WITHOUT SHAMIR...\n");
     }
 
-    if (result == 0){
+    if (result == SECURITY_RETURN_OK){
         printf("=> RESULT : Password is OK...\n");
-        return true;
     }
     else
     {
         printf("=> RESULT : Password is NOT OK...\n");
-        //securityResetDiscEncryption();
     }
 
-    return false;
+    return result;
 }
 
 
@@ -110,7 +108,7 @@ void LoginHelper::resetDisc()
        securityResetDiscEncryption();
 }
 
-bool LoginHelper::initDisc(QString password, bool _isShamir){
+int LoginHelper::initDisc(QString password, bool _isShamir){
     char* pwd = new char[password.length() + 1];
     strcpy(pwd, password.toStdString().c_str());
     isShamir = _isShamir;
@@ -129,22 +127,21 @@ bool LoginHelper::initDisc(QString password, bool _isShamir){
 
     if (result == SECURITY_RETURN_OK){
         printf("=> RESULT : Initialize is OK...\n");
-        return result;
     }
     else{
         printf("=> RESULT : Initialize is NOT OK...\n");
     }
-    return result;
+    return (int)result;
 }
 
-int LoginHelper::set_tryCount(int tryCount)
+int LoginHelper::set_attemptCount(int attemptCount)
 {
         char data[10];
         ofstream outfile;
-        outfile.open("/root/settings/trycount.out");
+        outfile.open("/root/settings/attemptCount");
         if(outfile.is_open())
         {
-            sprintf(data,"%d", tryCount);
+            sprintf(data,"%d", attemptCount);
             outfile << data << endl;
             outfile.close();
         }
@@ -152,11 +149,11 @@ int LoginHelper::set_tryCount(int tryCount)
            return (int)LOGINHELPER_RET_ERROR;
         }
  }
-int LoginHelper::get_tryCount()
+int LoginHelper::get_attemptCount()
 {
     char data[10];
     ifstream infile;
-    infile.open("/root/trycount.out");
+    infile.open("/root/settings/attemptCount");
     if(infile.is_open())
     {
         infile >> data;

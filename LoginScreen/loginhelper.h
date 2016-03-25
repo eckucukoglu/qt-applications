@@ -23,11 +23,11 @@ class LoginHelper: public QObject
 public:
    explicit LoginHelper(QObject *parent = 0);
 
-    Q_INVOKABLE bool check_password(QString pwd,bool _isShamir);
+    Q_INVOKABLE int check_password(QString pwd,bool _isShamir);
     Q_INVOKABLE void query_login(int access_code);
-    Q_INVOKABLE int set_tryCount(int tryCount);
-    Q_INVOKABLE int get_tryCount();
-    Q_INVOKABLE bool initDisc(QString password, bool _isShamir);
+    Q_INVOKABLE int set_attemptCount(int attemptCount);
+    Q_INVOKABLE int get_attemptCount();
+    Q_INVOKABLE int initDisc(QString password, bool _isShamir);
     Q_INVOKABLE void resetDisc();
     Q_INVOKABLE int set_initMode(int initMode, bool isShamir);
     Q_INVOKABLE int get_initMode();

@@ -7,5 +7,6 @@
         <file>pics/img7.jpg</file>
         <file>InfoTextArea.qml</file>
         <file>pics/sober_newspecs/icon/error.png</file>
+        <file>functions.js</file>
     </qresource>
 </RCC>

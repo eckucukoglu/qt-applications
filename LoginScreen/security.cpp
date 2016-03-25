@@ -102,14 +102,18 @@ SECURITY_RETURN_TYPE securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
 
         }
 
-        if (shareCount < SHAMIR_NUMB_OF_THRESHOLD)
+        if(shareCount == 0){
+            cout << "Server Connection Error!!! Server connection unavailable!!!" << endl;
+            return ERR_HTTP_REQUEST_ERROR;
+        }
+        else if (shareCount < SHAMIR_NUMB_OF_THRESHOLD)
         {
             cout << "Server Connection Error!!! Share threshold value could not be reached !!!" << endl;
             cout << "Number of succesfully server connections : " << shareCount << endl;
             return ERR_SECURITY_SHAMIR_NUMB_OF_THRESHOLD_NOT_REACHED;
         }
 
-        command = "printf \"" + command + "\" | ./ssss-combine -t " + to_string(SHAMIR_NUMB_OF_THRESHOLD);
+        command = "printf \"" + command + "\" | "+ DISC_ENC_SHAMIR_BINARY_PATH + " -t " + to_string(SHAMIR_NUMB_OF_THRESHOLD);
         securityGetCommandLineOutput(command.c_str(),salt);
 
     }

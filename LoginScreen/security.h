@@ -38,6 +38,7 @@ typedef enum
 #define DISC_ENC_RESETCRYPT_PATH " /usr/bin/removeCrypt.sh "
 #define DISC_ENC_DEV_PATH " /dev/mmcblk0p3 "
 #define DISC_ENC_SALT_FILE_PATH "/usr/bin/salt.txt"
+#define DISC_ENC_SHAMIR_BINARY_PATH "/usr/bin/ssss-combine"
 
 
 void securityGetHashValue(const char *pwd, const unsigned char pwdlen, const void *salt, const unsigned char saltlen, void *hash, const unsigned char hashlen);

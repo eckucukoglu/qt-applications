@@ -4,7 +4,7 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls.Styles 1.2
 import QtGraphicalEffects 1.0
-
+import "functions.js" as FUNCTIONS
 
 ApplicationWindow {
     title: qsTr("LoginScreen")
@@ -16,6 +16,7 @@ ApplicationWindow {
     property date date
     property int waitTime : 10
     property int initMode:0
+    property int ftime: 0
     property int isShamir: 0
 
 
@@ -142,14 +143,17 @@ ApplicationWindow {
             font.pixelSize: 20
         }
         Timer {
+                id: lockTimer
                 interval: 1000;
-                running: true;
+                running: false;
                 repeat: true
                 onTriggered: {
                     waitTime = waitTime-1
                     if(waitTime === 0)
                     {
                            deviceLockArea.visible=false
+                           running = false
+                           waitTime = ftime + 10
                            numbersContent.enabled=true
                            chckBoxArea.enabled=true
                     }
@@ -205,7 +209,6 @@ ApplicationWindow {
         property int counter: 0
         property int trialRemaining: 3
         property var password: ""
-        property int stime: 0
         property bool isShamir: false
         Rectangle {
               width: 300
@@ -236,6 +239,7 @@ ApplicationWindow {
         id: chckBoxArea
         width: 300
         height:60
+        visible: true
       //  border.width: 2
         anchors.leftMargin: 250
         anchors.rightMargin: 250
@@ -291,37 +295,14 @@ ApplicationWindow {
         onAccepted: messageDialog.visible=false
     }
 
-    Button{
-        id: initBtn
-        text: "initialize disc "
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.leftMargin: 20
-        anchors.bottomMargin: 20
-        onClicked: {
-            initMode=true
-            messageDialog.text= "initialize mode is on, please enter password"
-            messageDialog.visible=true
-        }
-    }
-
 
     Component.onCompleted: {
         loginHelper.resetDisc();
-     //   loginHelper.set_initMode(1, false);
-     //   console.log("initMode: "+ loginHelper.get_initMode());
-      //  console.log("isShamir: "+loginHelper.get_isShamir());
-        initMode = loginHelper.get_initMode()
-        if(initMode==-1)
+        initMode = FUNCTIONS.isInitMode()
+        numbersContent.isShamir = loginHelper.get_isShamir()
+        if(initMode === 1)
         {
-            messageDialog.text= "Init Mode cannot be read"
-            messageDialog.visible=true
-            initMode = 0
-            //TODO: show init mode text
-            //show shamir, hide shamir
-        }
-        else{
-
+            infoTextArea.textvalue = "Initialize Mode"
         }
     }
 }
