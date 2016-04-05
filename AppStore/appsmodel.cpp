@@ -10,7 +10,7 @@ AppsModel::AppsModel(QObject *parent) : QObject(parent)
      error=1;
      current_index= 0;
      page_index=0;
-     performer = new HTTPPerform("http://10.155.10.186:8000/");
+     performer = new HTTPPerform("https://10.155.10.213:443/soberstore");
      query_listapps(); //from device
      listApps(); //from server
      page_count=ceil(double(number_of_applications)/18);

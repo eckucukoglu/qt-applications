@@ -33,7 +33,7 @@ Rectangle{
         id: appName
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "APPSTORE"
+        text: "SOBERSTORE"
         font.pixelSize: 14
         font.bold: true
         color: "white"
