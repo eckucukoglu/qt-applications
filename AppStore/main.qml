@@ -136,11 +136,21 @@ ApplicationWindow {
             }
         }
     }
-    InstallArea{
-        id: installArea
-        x: (root.width-width)/2
-        y: (root.height-height)/2
 
+    Rectangle{
+        id: backgroundBlack
+        visible: false
+        anchors.fill: parent
+        color: "#3b393e"
+        opacity: 0.9
+        z:1
+    }
+
+    InstallArea{
+         id: installArea
+         x: (root.width-width)/2
+         y: (root.height-height)/2
+         z: 2
     }
     MessageDialog {
         id: errorMsg

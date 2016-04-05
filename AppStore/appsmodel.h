@@ -17,7 +17,7 @@
 #include <string.h>
 #include <math.h>
 #include "HTTPPerform.h"
-
+#include <ctime>
 
 using namespace std;
 typedef struct app {
@@ -33,6 +33,8 @@ typedef struct app {
         int isInstalled;
         int error;
         string errorCode;
+        double version;
+        int date;
         string borderColor;
 }app;
 

@@ -42,6 +42,7 @@ int AppsModel::download(int appid)
                             cout << "\t" << "developer name: " << (_appList->apps[i].developerName)<<endl;
                             cout << "\t" << "icon: " << (_appList->apps[i].iconName)<<endl;
                             cout << "\t" << "binary name: "<< (_appList->apps[i].binaryName)<<endl;
+                            cout << "\t" << "version: " << (_appList->apps[i].version) << endl;
                         }
                         check_internet=true;
                         if(_appList->apps->isInstalled == 1 && _appList->apps->isDownloaded)
@@ -106,6 +107,8 @@ void AppsModel::listApps(){
                             cout << "\t" << "developer name: " << (_appList->apps[i].developerName)<<endl;
                             cout << "\t" << "icon: " << (_appList->apps[i].iconName)<<endl;
                             cout << "\t" << "binaryname: " << (_appList->apps[i].binaryName)<<endl;
+                            cout << "\t" << "version:" << (_appList->apps[i].version) << endl;
+
                             app temp{
                                    _appList->apps[i].id,
                                    _appList->apps[i].name,
@@ -119,6 +122,8 @@ void AppsModel::listApps(){
                                    _appList->apps[i].isInstalled,
                                    _appList->apps[i].error,
                                    _appList->apps[i].errorCode,
+                                   _appList->apps[i].version,
+                                   _appList->apps[i].date,
                                    colours[i%4]
                             };
                             _list[i] = temp;
@@ -340,6 +345,29 @@ int AppsModel::check_if_installed(int app_id)
      return ret;
 }
 
+string format_version(double version){
+    std::ostringstream versionDouble;
+    versionDouble << version;
+    std::string versionStr = versionDouble.str();
+    return versionStr;
+}
+
+string format_date(int date){
+    struct tm * timeinfo;
+
+    /* Conversion to time_t as localtime() expects a time_t* */
+    time_t epoch_time_as_time_t = date;
+
+    /* Call to localtime() now operates on time_t */
+    timeinfo = localtime(&epoch_time_as_time_t);
+
+    char buffer[32];
+    // Format: Mo, 15.06.2009 20:20:00
+    std::strftime(buffer, 32, "%d.%m.%Y", timeinfo);
+    std::string dateStr(buffer);
+    return dateStr;
+}
+
 void AppsModel::set_element_list(app _list[]){
     QVariantList _list1;
     for(int i=0; i<number_of_applications;i++)
@@ -362,12 +390,17 @@ void AppsModel::set_element_list(app _list[]){
         _map["errorCode"] = QVariant(_list[i].errorCode.c_str());
         _map["borderColor"] = QVariant(_list[i].borderColor.c_str());
         _map["alreadyInstalled"] =QVariant(_isInstalled);
+        _map["version"] = QVariant(format_version(_list[i].version).c_str());
+        _map["date"] = QVariant(format_date(_list[i].date).c_str());
+
         _data = QVariant(_map);
         _list1.append(_data);
     }
     appList = QVariant(_list1);
     set_page_count();
 }
+
+
 
 QVariant AppsModel::get_element_list()
 {

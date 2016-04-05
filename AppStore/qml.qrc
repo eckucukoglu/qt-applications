@@ -38,5 +38,6 @@
         <file>mail.png</file>
         <file>CpuAndMemoryMonitor.png</file>
         <file>Calender.png</file>
+        <file>CustomButton.qml</file>
     </qresource>
 </RCC>

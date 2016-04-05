@@ -73,6 +73,14 @@ Component {
             anchors.fill: parent
             propagateComposedEvents: true
             enabled: true
+            z:1
+            onPressed: {
+                _gradient.opacity = 1
+            }
+            onReleased: {
+                _gradient.opacity = 0.45
+            }
+
             onClicked: {
               appDelegateRect.forceActiveFocus();
               appDelegate.GridView.view.currentIndex = index
@@ -83,6 +91,8 @@ Component {
               installArea.app_id = listModel.get(index).app_id
               installArea.dev_name = listModel.get(index).developerName
               installArea.already_installed = listModel.get(index).already_installed
+              installArea.date = listModel.get(index).date
+              installArea.version = listModel.get(index).version
               content.enabled=false
               swipeArea.enabled=false
               installArea.visible = true

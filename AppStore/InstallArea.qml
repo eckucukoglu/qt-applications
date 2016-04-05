@@ -19,20 +19,18 @@ Rectangle{
   property int already_installed:0
   property int retValue:0
   property int index
+  property string date
+  property string version
 
   Rectangle
   {
        anchors.fill: parent
-       border.width: 2
-       border.color: "lightsteelblue"
+       border.width: 0.5
+       border.color: border_color
+       color: "#3b393e"
        id: installWin
        radius: parent.radius
        width: parent.width
-       Image{
-           anchors.fill: parent
-           source: 'pics/sober_newspecs/bg2.jpg'
-           opacity: 0.4
-       }
        Rectangle{
            id: appIcon
            x:20
@@ -76,6 +74,7 @@ Rectangle{
        }
        Text{
            id: appName
+           color: "white"
            anchors.horizontalCenter: parent.horizontalCenter
            anchors.top: parent.top
            anchors.topMargin: 20
@@ -84,36 +83,32 @@ Rectangle{
        }
        Text{
            id: devName
+           color: "white"
            anchors.topMargin: 20
            anchors.top: appName.bottom
            anchors.left: appIcon.right
            anchors.leftMargin: 30
-           text: dev_name
+           text: "Developer: " + dev_name
        }
        Text{
-           id: appInfo1
+           id: versionInfo
+           color: "white"
            anchors.topMargin: 20
            anchors.top: appName.bottom
            anchors.right: installWin.right
            anchors.rightMargin: 30
-           text: "Info1: appid: " + app_id
+           text: "Version: " + version
        }
        Text{
-           id: appInfo2
+           id: dateInfo
+           color: "white"
            anchors.topMargin: 10
            anchors.top: devName.bottom
            anchors.left: appIcon.right
            anchors.leftMargin: 30
-           text: "Info2: SomeInfo2"
+           text: "Created Date: " + date
        }
-       Text{
-           id: appInfo3
-           anchors.topMargin: 10
-           anchors.top: appInfo1.bottom
-           anchors.right: installWin.right
-           anchors.rightMargin: 30
-           text: "Info3: SomeInfo3"
-       }
+
        Rectangle{
            id: progressBarField
            visible: false
@@ -149,7 +144,7 @@ Rectangle{
            }
        }
 
-       Button{
+       CustomButton{
            id: installBtn
            text: "DOWNLOAD"
            visible: true
@@ -158,19 +153,6 @@ Rectangle{
            anchors.leftMargin: installWin.width/2 - width
            anchors.bottomMargin: 30
            width: 100
-           style: ButtonStyle {
-                   background: Rectangle {
-                       implicitWidth: 100
-                       implicitHeight: 25
-                       border.width: control.activeFocus ? 2 : 1
-                       border.color: "#888"
-                       radius: 4
-                       gradient: Gradient {
-                           GradientStop { position: 0 ; color: control.pressed ? "steelblue" : "lightsteelblue" }
-                           GradientStop { position: 1 ; color: control.pressed ? "steelblue" : "lightsteelblue" }
-                       }
-                   }
-               }
            onClicked: {
                progressBarField.visible=true
                errorTxt.visible=false
@@ -194,7 +176,7 @@ Rectangle{
             }
        }
 
-       Button{
+       CustomButton{
            id: cancelBtn
            text: "CANCEL"
            visible:true
@@ -203,19 +185,6 @@ Rectangle{
            anchors.leftMargin: 30
            anchors.bottom: parent.bottom
            anchors.bottomMargin: 30
-           style: ButtonStyle {
-                   background: Rectangle {
-                       implicitWidth: 100
-                       implicitHeight: 25
-                       border.width: control.activeFocus ? 2 : 1
-                       border.color: "#888"
-                       radius: 4
-                       gradient: Gradient {
-                           GradientStop { position: 0 ; color: control.pressed ? "steelblue" : "lightsteelblue" }
-                           GradientStop { position: 1 ; color: control.pressed ? "steelblue" : "lightsteelblue" }
-                       }
-                   }
-               }
            onClicked: {
                installArea.visible=false
                content.enabled=true
@@ -228,6 +197,7 @@ Rectangle{
            id: alreadyInsText
            anchors.bottom: okBtn.top
            anchors.bottomMargin: 20
+           color: "white"
            font.bold: true
            visible: false
            text: appName.text + " app is already installed."
@@ -239,6 +209,7 @@ Rectangle{
            anchors.bottom: okBtn.top
            anchors.bottomMargin: 20
            font.bold: true
+           color: "white"
            visible: false
            text: appName.text + " app has successfully installed."
            anchors.horizontalCenter: parent.horizontalCenter
@@ -253,27 +224,15 @@ Rectangle{
            text: "Download Failed!"
            anchors.horizontalCenter: parent.horizontalCenter
        }
-       Button{
+       CustomButton{
            id: okBtn
            text: "OK"
            visible: false
-           anchors.horizontalCenter: parent.horizontalCenter
-           anchors.bottomMargin: 30
+           anchors.left: installBtn.right
+           anchors.leftMargin: 30
            anchors.bottom: parent.bottom
+           anchors.bottomMargin: 30
            width: 100
-           style: ButtonStyle {
-                   background: Rectangle {
-                       implicitWidth: 100
-                       implicitHeight: 25
-                       border.width: control.activeFocus ? 2 : 1
-                       border.color: "#888"
-                       radius: 4
-                       gradient: Gradient {
-                           GradientStop { position: 0 ; color: control.pressed ? "steelblue" : "lightsteelblue" }
-                           GradientStop { position: 1 ; color: control.pressed ? "steelblue" : "lightsteelblue" }
-                       }
-                   }
-               }
            onClicked: {
                installArea.visible=false
                content.enabled=true
@@ -282,6 +241,7 @@ Rectangle{
        }
    }
   onVisibleChanged:{
+       backgroundBlack.visible = visible
        already_installed = AppsModel.check_if_installed(app_id)
        console.log("app id is : "+ app_id)
        console.log("installed: "+ already_installed)
@@ -327,6 +287,5 @@ Rectangle{
           errorTxt.visible=false
       }
   }
-
 }
 

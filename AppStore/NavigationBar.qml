@@ -10,6 +10,7 @@ Item{
             id: home_icon
             source: "pics/sober_newspecs/icon/homeIcon.png"
             x: (parent.width/2)-16
+            scale: 0.7
             z:1
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter

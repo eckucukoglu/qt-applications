@@ -13,7 +13,7 @@ ListModel{
         {
             for(m=index; m<(index+_range); m++) //for each page
             {
-                listModel.append({"app_id": appList[m]["id"] ,"name": appList[m]["name"], "developerName":appList[m]["developerName"],"borderColor":appList[m]["borderColor"],"portrait":appList[m]["iconName"], "hashValue":appList[m]["hashValue"], "binaryPath":appList[m]["binaryPath"], "packagePath":appList[m]["packagePath"], "isDownloaded":appList[m]["isDownloaded"], "isInstalled":appList[m]["isInstalled"], "error":appList[m]["error"], "errorCode":appList[m]["errorCode"], "already_installed":appList[m]["alreadyInstalled"]})
+                listModel.append({"app_id": appList[m]["id"] ,"name": appList[m]["name"], "developerName":appList[m]["developerName"],"borderColor":appList[m]["borderColor"],"portrait":appList[m]["iconName"], "hashValue":appList[m]["hashValue"], "binaryPath":appList[m]["binaryPath"], "packagePath":appList[m]["packagePath"], "isDownloaded":appList[m]["isDownloaded"], "isInstalled":appList[m]["isInstalled"], "error":appList[m]["error"], "errorCode":appList[m]["errorCode"], "already_installed":appList[m]["alreadyInstalled"], "version": appList[m]["version"], "date": appList[m]["date"]})
             }
             index = index + _range
         }
@@ -21,7 +21,7 @@ ListModel{
         {
             for(m=index; m<index+18; m++) //for each page
             {
-                listModel.append({"app_id": appList[m]["id"] ,"name": appList[m]["name"], "developerName":appList[m]["developerName"],"borderColor":appList[m]["borderColor"],"portrait":appList[m]["iconName"], "hashValue":appList[m]["hashValue"], "binaryPath":appList[m]["binaryPath"], "packagePath":appList[m]["packagePath"], "isDownloaded":appList[m]["isDownloaded"], "isInstalled":appList[m]["isInstalled"], "error":appList[m]["error"], "errorCode":appList[m]["errorCode"], "already_installed":appList[m]["alreadyInstalled"]})
+                listModel.append({"app_id": appList[m]["id"] ,"name": appList[m]["name"], "developerName":appList[m]["developerName"],"borderColor":appList[m]["borderColor"],"portrait":appList[m]["iconName"], "hashValue":appList[m]["hashValue"], "binaryPath":appList[m]["binaryPath"], "packagePath":appList[m]["packagePath"], "isDownloaded":appList[m]["isDownloaded"], "isInstalled":appList[m]["isInstalled"], "error":appList[m]["error"], "errorCode":appList[m]["errorCode"], "already_installed":appList[m]["alreadyInstalled"], "version": appList[m]["version"], "date": appList[m]["date"]})
             }
             index = index + 18
         }
