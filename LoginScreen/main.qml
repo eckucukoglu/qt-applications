@@ -17,7 +17,7 @@ ApplicationWindow {
     property int waitTime : 10
     property int initMode:0
     property int ftime: 0
-    property int isShamir: 0
+    property int isShamir: numbersContent.isShamir
 
 
     Rectangle{
@@ -35,33 +35,18 @@ ApplicationWindow {
           anchors.centerIn:parent
           width: 360
           height: 180
-          border.width: 4
-          border.color: "steelblue"
+          border.width: 0.5
+          border.color: "#0b988b"
+          color: "#3b393e"
           radius: width * 0.5
-          z:1
-
-          Image {
-              id: background4
-              anchors.fill: parent
-              source: "pics/sober_newspecs/bg.png"
-              fillMode: Image.PreserveAspectCrop
-              opacity: 0.7
-          }
-
-          Image{
-              anchors.top: parent.top
-              anchors.left: parent.left
-              source: "pics/sober_newspecs/icon/error.png"
-              scale: 0.4
-
-          }
+          z:2
           Text{
               id: textcontent
-              x: parent.width/4 + 30
+              anchors.horizontalCenter: parent.horizontalCenter
               y: parent.height/4 - 20
               text: "Incorrect Password!"
               font.family: "Helvetica"
-              color: "black"
+              color: "white"
               font.pixelSize: 22
           }
           Text{
@@ -70,36 +55,36 @@ ApplicationWindow {
               y: parent.height/4 + 20
               text: "Remaining: " + numbersContent.trialRemaining
               font.family: "Helvetica"
-              color: "black"
+              color: "white"
               font.pixelSize: 20
           }
-          Button{
+
+          CustomButton{
               id: btnOk
               anchors.horizontalCenter: parent.horizontalCenter
               anchors.top: parent.top
               anchors.topMargin: 120
+              width: 100
               text: "okay"
-              style: ButtonStyle {
-                      label: Text {
-                              renderType: Text.NativeRendering
-                              verticalAlignment: Text.AlignVCenter
-                              horizontalAlignment: Text.AlignHCenter
-                              font.family: "Helvetica"
-                              font.pointSize: 14
-                              font.bold: true
-                              color: "black"
-                              text: control.text
-                            }
-                  }
               onClicked: {
                  errorMsg.visible=false
                  chckBoxArea.enabled=true
                  numbersContent.enabled=true
               }
           }
-
+          onVisibleChanged: {
+              backgroundBlack.visible = visible
+          }
     }
 
+    Rectangle{
+        id: backgroundBlack
+        visible: false
+        anchors.fill: parent
+        color: "#3b393e"
+        opacity: 0.7
+        z:1
+    }
 
     Rectangle{
         id: deviceLockArea
@@ -107,39 +92,27 @@ ApplicationWindow {
         anchors.centerIn:parent
         width: 320
         height: 140
-        Image {
-            id: background3
-            anchors.fill: parent
-            source: "pics/sober_newspecs/bg.png"
-            fillMode: Image.PreserveAspectCrop
-            opacity: 0.7
-        }
-        border.width: 4
-        border.color: "darkred"
+        border.width: 0.5
+        border.color: "#0b988b"
+        color: "#3b393e"
         radius: 7
-        z:1
-        Image{
-            anchors.top: parent.top
-            anchors.left: parent.left
-            source: "pics/sober_newspecs/icon/error.png"
-            scale: 0.4
+        z:2
 
-        }
         Text{
-            x: parent.width/4 + 30
+            anchors.horizontalCenter: parent.horizontalCenter
             y: parent.height/4
             text: "Device is Locked!"
             font.family: "Helvetica"
-            color: "black"
+            color: "white"
             font.pixelSize: 22
         }
         Text{
             id: txtWaitTime
-            x: parent.width/4 + 30
+            anchors.horizontalCenter: parent.horizontalCenter
             y: parent.height/4 + 30
             text: "wait "+ waitTime +" seconds.."
             font.family: "Helvetica"
-            color: "black"
+            color: "white"
             font.pixelSize: 20
         }
         Timer {
@@ -159,7 +132,11 @@ ApplicationWindow {
                     }
                 }
             }
+        onVisibleChanged: {
+            backgroundBlack.visible = visible
+        }
     }
+
     Image {
         id: background
         anchors.fill: parent
@@ -239,7 +216,7 @@ ApplicationWindow {
         id: chckBoxArea
         width: 300
         height:60
-        visible: true
+        visible: false
       //  border.width: 2
         anchors.leftMargin: 250
         anchors.rightMargin: 250
@@ -300,9 +277,10 @@ ApplicationWindow {
         loginHelper.resetDisc();
         initMode = FUNCTIONS.isInitMode()
         numbersContent.isShamir = loginHelper.get_isShamir()
-        if(initMode === 1)
+        if(initMode === 0)
         {
             infoTextArea.textvalue = "Initialize Mode"
+            chckBoxArea.visible = true
         }
     }
 }

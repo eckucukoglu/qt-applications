@@ -83,14 +83,15 @@ Component {
 
                     initMode = FUNCTIONS.isInitMode()
                     console.log("initmode: "+initMode)
-                    if(initMode === 0) //not initialize mode
+                    if(initMode === 1) //not initialize mode
                     {
                         FUNCTIONS.checkPassword()
+                        FUNCTIONS.clearInfoArea()
                     }
                     else{ //initialize mode
                         FUNCTIONS.func_initMode()
                     }
-                    FUNCTIONS.clearInfoArea()
+
                 }
                 else //DIGIT
                 {

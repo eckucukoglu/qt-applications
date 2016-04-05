@@ -32,9 +32,11 @@ struct application {
         string binaryPath;
         string binaryName;
         string packagePath;
+        string cgroup;
         int isDownloaded;
         int isInstalled;
         int error;
+        int size;
         string errorCode;
 };
 struct applications {

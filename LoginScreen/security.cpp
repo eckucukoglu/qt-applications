@@ -1,14 +1,10 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "security.h"
-#include "HTTPPerform.h"
 
 unsigned int t_cost = (1<<3);   // 3-pass computation
 unsigned int m_cost = (1<<12);  // 2^12 4 mebibytes memory usage
 unsigned int parallelism = 1;   // number of threads and lanes
 
+initConf INITCONFIG;
 
 typedef enum
 {
@@ -25,25 +21,32 @@ void securityGetCommandLineOutput(const char* cmd,char* salt)
     return;
 }
 
-SECURITY_RETURN_TYPE securityDiscOperation(const unsigned char *hash, const char* discPath,DISCOPERATION_TYPE discOp)
+SECURITY_RETURN_TYPE securityDiscOperation(const char *hash, const char* discPath,DISCOPERATION_TYPE discOp)
 {
-    char cmd[100];
+    char cmd[300];
+    // echo
     strcpy(cmd,DISC_ENC_ECHO_STR);
-    strcat(cmd,"\'\'\'"); strcat(cmd,(char*)hash); strcat(cmd,"\'\'\'");
+    strcat(cmd,"\'\'\'");
+    strcat(cmd,(char*)hash);
+    strcat(cmd,"\'\'\'");
     strcat(cmd,DISC_ENC_PIPE_STR);
     strcat(cmd,DISC_ENC_ROOT_STR);
-    if (discOp == DECRYPTION) strcat(cmd,DISC_ENC_ADDCRYPT_PATH);
-    else strcat(cmd,DISC_ENC_INITCRYPT_PATH);
+    if (discOp == DECRYPTION)
+        strcat(cmd,DISC_ENC_ADDCRYPT_PATH);
+    else
+        strcat(cmd,DISC_ENC_INITCRYPT_PATH);
+
     strcat(cmd,DISC_ENC_DEV_PATH);
 
     //printf("Command that will be executed : %s \n",cmd);
 
     //int i, discRetVal = system(cmd);
     //i=WEXITSTATUS(discRetVal);
+    printf("cmd: %s\n", cmd);
 
     int i = system(cmd);
 
-    //printf("Disk Operation Status = %s\n",i==0?"OK":"NOK");
+    printf("Disk Operation Status = %s\n",i==0?"OK":"NOK");
 
     return (i==0?SECURITY_RETURN_OK:ERR_SECURITY_RETURN_NOK);
 }
@@ -75,7 +78,7 @@ SECURITY_RETURN_TYPE securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
         {
             share="";
             try {
-                url = SHAMIR_SERVER_PATH + to_string(i) + SHAMIR_SERVER_PATH_EXTENSION;
+                url = SHAMIR_SERVER_PATH + to_string(7+i) + SHAMIR_SERVER_PATH_EXTENSION;
                 performer  = new HTTPPerform(url);
                 performer->perform(GETSHARE,share);
 
@@ -120,6 +123,8 @@ SECURITY_RETURN_TYPE securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
     else
     {
         //get salt from local storage
+
+        /*
         FILE *fp;
 
         fp = fopen(DISC_ENC_SALT_FILE_PATH, "rt");
@@ -139,6 +144,8 @@ SECURITY_RETURN_TYPE securityGetSaltValue(char *salt, SHAMIR_TYPE shamirOption)
             }
             salt[SALTLEN] = '\0';
         }
+        */
+        strcpy(salt, INITCONFIG.salt);
     }
     printf("\nSalt that will be used : %s \n",salt );
     return SECURITY_RETURN_OK;
@@ -157,10 +164,11 @@ SECURITY_RETURN_TYPE securityCheckPassword(const char *pwd, SHAMIR_TYPE shamirOp
     securityGetHashValue(pwd, strlen(pwd), (unsigned char*)salt, SALTLEN, hash, HASHLEN );
     hash[HASHLEN] = '\0';
 
-    //char hashHex[HASHLEN*2];
-    //for( int i=0; i<HASHLEN; ++i ) sprintf(&hashHex[i*2], "%02x", hash[i]); printf("Hash  Hex: %s\n",hashHex);
+    char hashHex[HASHLEN*2+1];
+    for( int i=0; i<HASHLEN; ++i ) sprintf(&hashHex[i*2], "%02x", hash[i]); //printf("Hash  Hex: %s\n",hashHex);
+    hashHex[HASHLEN*2]='\0';
 
-    return securityDiscOperation(hash,DISC_ENC_DEV_PATH,DECRYPTION);
+    return securityDiscOperation(/*hash*/hashHex,DISC_ENC_DEV_PATH,DECRYPTION);
 }
 
 SECURITY_RETURN_TYPE securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE shamirOption)
@@ -174,13 +182,15 @@ SECURITY_RETURN_TYPE securityInitDiscEncryption(const char *pwd, SHAMIR_TYPE sha
 
     if (retType != SECURITY_RETURN_OK)
         return retType;
+
     securityGetHashValue(pwd, strlen(pwd), (unsigned char*)salt, SALTLEN, hash, HASHLEN );
     hash[HASHLEN] = '\0';
 
-    //char hashHex[HASHLEN*2];
-    //for( int i=0; i<HASHLEN; ++i ) sprintf(&hashHex[i*2], "%02x", hash[i]); printf("Hash  Hex: %s\n",hashHex);
+    char hashHex[HASHLEN*2+1];
+    for( int i=0; i<HASHLEN; ++i ) sprintf(&hashHex[i*2], "%02x", hash[i]); //printf("Hash  Hex: %s\n",hashHex);
+    hashHex[HASHLEN*2]='\0';
 
-    return securityDiscOperation(hash,DISC_ENC_DEV_PATH,ENCRYPTION);
+    return securityDiscOperation(/*hash*/ hashHex ,DISC_ENC_DEV_PATH,ENCRYPTION);
 
 }
 
@@ -195,7 +205,7 @@ SECURITY_RETURN_TYPE securityResetDiscEncryption()
     int i =system(cmd);
    // printf("Disk Operation Status = %s\n",i==0?"OK":"NOK");
 
-    return (i==0?SECURITY_RETURN_OK:ERR_SECURITY_RETURN_NOK);
+    return (i==0?SECURITY_RETURN_OK:ERR_SECURITY_DISC_RESET);
 }
 
 /*

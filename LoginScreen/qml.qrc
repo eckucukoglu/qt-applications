@@ -8,5 +8,6 @@
         <file>InfoTextArea.qml</file>
         <file>pics/sober_newspecs/icon/error.png</file>
         <file>functions.js</file>
+        <file>CustomButton.qml</file>
     </qresource>
 </RCC>

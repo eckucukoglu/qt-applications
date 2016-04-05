@@ -7,7 +7,8 @@ var SECURITY_RETURN_TYPE = {
     ERR_SECURITY_SHAMIR_SERVER_NOT_REACHABLE : 3,
     ERR_SECURITY_DISC_ENC_SALT_FILE_NOT_EXIST : 4,
     ERR_SECURITY_DISC_ENC_SALT_LENGTH_ERROR : 5,
-    ERR_HTTP_REQUEST_ERROR : 6
+    ERR_SECURITY_DISC_RESET : 6,
+    ERR_HTTP_REQUEST_ERROR : 7
 };
 
 var LOGINHELPER_ERR_TYPE = {
@@ -35,7 +36,7 @@ function isInitMode() {
      }
      else{
      }
-     if(initMode === 0)
+     if(initMode === 1)
      {
          chckBoxArea.visible=false
      }
@@ -48,9 +49,9 @@ function func_initMode(){
     resultMsg = "shamir server connection is successful"
     if(res === SECURITY_RETURN_TYPE.SECURITY_RETURN_OK)
     {
-        loginHelper.set_initMode(0, numbersContent.isShamir);
+        loginHelper.set_initMode(1, numbersContent.isShamir);
         chckBoxArea.visible=false //hide shamir checkbox
-        initMode=0 //initmode is off
+        initMode=1 //initmode is off
         console.log("init mode: "+initMode)
         infoTextArea.textvalue  = qsTr("Enter Password..")
         numbersContent.counter = 0
@@ -58,6 +59,7 @@ function func_initMode(){
         console.log("loading desktop")
         loginHelper.query_login(0)
         console.log("loaded desktop")
+        clearInfoArea()
     }
     else{
         check_errors(res)
@@ -119,6 +121,12 @@ function check_errors(res){
         resultMsg += "qml: failed: Security return is NOT OK\n"
         messageDialog.text = "Password is incorrect!"
     }
+    else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_RETURN_NOK)
+    {
+        resultMsg  = "initialize failed:\n"
+        resultMsg += "qml: failed: Security return is NOT OK\n"
+        messageDialog.text = "Password is incorrect!"
+    }
     else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_SHAMIR_SERVER_NOT_REACHABLE)
 
     {
@@ -146,6 +154,12 @@ function check_errors(res){
         resultMsg  = "initialize failed:\n"
         resultMsg += "qml: failed: Disc encyription salt length error"
         messageDialog.text = "Internal Error! Salt value incorrect!"
+    }
+    else if(res === SECURITY_RETURN_TYPE.ERR_SECURITY_DISC_RESET) /********/
+    {
+        resultMsg  = "initialize failed:\n"
+        resultMsg += "qml: failed: Disc Reset Failed"
+        messageDialog.text = "Internal Error!"
     }
     else
     {

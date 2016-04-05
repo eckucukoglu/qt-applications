@@ -1,10 +1,8 @@
 #include "loginhelper.h"
-#include "security.h"
-#define DEBUG_PREFIX "tester: "
 
 LoginHelper::LoginHelper(QObject *parent) : QObject(parent)
 {
-
+       read_initconf();
 }
 
 int LoginHelper::check_password(QString password, bool _isShamir){
@@ -134,90 +132,74 @@ int LoginHelper::initDisc(QString password, bool _isShamir){
     return (int)result;
 }
 
-int LoginHelper::set_attemptCount(int attemptCount)
+void LoginHelper::set_attemptCount(int attemptCount)
 {
-        char data[10];
-        ofstream outfile;
-        outfile.open("/root/settings/attemptCount");
-        if(outfile.is_open())
-        {
-            sprintf(data,"%d", attemptCount);
-            outfile << data << endl;
-            outfile.close();
-        }
-        else{
-           return (int)LOGINHELPER_RET_ERROR;
-        }
- }
-int LoginHelper::get_attemptCount()
-{
-    char data[10];
-    ifstream infile;
-    infile.open("/root/settings/attemptCount");
-    if(infile.is_open())
-    {
-        infile >> data;
-        int ret=0;
-        sscanf(data, "%d", &ret);
-        return ret;
-    }
-    else{
-        return (int)LOGINHELPER_RET_ERROR;
-    }
+    INITCONFIG.attempt = attemptCount;
+    write_initconf(INITCONFIG.initialized, INITCONFIG.shamir, attemptCount);
 }
 
-int LoginHelper::set_initMode(int initMode, bool isShamir){
 
-    char data[10];
-    ofstream outfile;
-    outfile.open("/root/settings/initMode");
-    if(outfile.is_open())
-    {
-        sprintf(data,"%d", initMode);
-        outfile << data << isShamir <<endl;
-        outfile.close();
-    }
-    else
-    {
-        return (int)LOGINHELPER_RET_ERROR;
-    }
-    return (int)LOGINHELPER_RET_OK;
+void LoginHelper::set_initMode(int initMode, bool isShamir)
+{
+    INITCONFIG.initialized = initMode;
+    INITCONFIG.shamir = isShamir;
+    write_initconf(initMode, isShamir, INITCONFIG.attempt);
 }
 
 int LoginHelper::get_initMode(){
-    char data[2];
-    ifstream infile;
-    infile.open("/root/settings/initMode");
-    if(infile.is_open())
-    {
-        infile >> data;
-        int ret=0;
-        char initMode[1];
-        initMode[0] = data[0];
-        sscanf(initMode, "%d", &ret);
-        return ret;
-    }
-    else
-    {
-        return (int)LOGINHELPER_RET_ERROR;
-    }
+    return INITCONFIG.initialized;
 }
 
 int LoginHelper::get_isShamir(){
-    char data[2];
-    ifstream infile;
-    infile.open("/root/settings/initMode");
-    if(infile.is_open())
+    return INITCONFIG.shamir;
+}
+
+int LoginHelper::get_attemptCount()
+{
+    return INITCONFIG.attempt;
+}
+
+void LoginHelper::read_initconf(){
+    std::ifstream file(INITCONFFILE_PATH);
+    std::string str;
+    std::string delimiter = "=";
+    std::string tag;
+    std::string token;
+    while (std::getline(file, str))
     {
-        infile >> data;
-        int ret=0;
-        char initMode[1];
-        initMode[0] = data[1];
-        sscanf(initMode, "%d", &ret);
-        return ret;
+       tag = str.substr(0, str.find(delimiter));
+       token = str.substr(str.find(delimiter)+1, str.length());
+       if(tag == INITIALIZED)
+       {
+            INITCONFIG.initialized = atoi(token.c_str());
+       }
+       else if(tag == SHAMIR)
+       {
+            INITCONFIG.shamir = atoi(token.c_str());
+       }
+       else if(tag == ATTEMPT)
+       {
+            INITCONFIG.attempt = atoi(token.c_str());
+       }
+       else if(tag == SALT)
+       {
+            strcpy(INITCONFIG.salt ,token.c_str());
+       }
     }
-    else
-    {
-        return (int)LOGINHELPER_RET_ERROR;
-    }
+
+    cout << INITIALIZED << ":" << INITCONFIG.initialized << endl;
+    cout << SHAMIR << ":" << INITCONFIG.shamir << endl;
+    cout << ATTEMPT << ":" << INITCONFIG.attempt << endl;
+    cout << SALT << ":" << INITCONFIG.salt << endl;
+}
+
+void LoginHelper::write_initconf(int initialized, int shamir, int attempt)
+{
+   std::ofstream output;
+   output.open (INITCONFFILE_PATH, std::ofstream::out);
+   output << INITIALIZED << "=" << initialized << endl;
+   output << SHAMIR << "=" << shamir << endl;
+   output << ATTEMPT << "=" << attempt << endl;
+   output << SALT << "=" << INITCONFIG.salt << endl;
+   output.close();
 }
