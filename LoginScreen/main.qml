@@ -20,12 +20,13 @@ ApplicationWindow {
     property int isShamir: numbersContent.isShamir
 
 
+
     Rectangle{
         anchors.top: parent.top
         width: parent.width
         height: 18
         color: "black"
-        opacity: 0.3
+        opacity: 0.5
         z:1
     }
 
@@ -251,18 +252,6 @@ ApplicationWindow {
 
         }
     }
-    BusyIndicator {
-           id: busyIndication
-           anchors.centerIn: parent
-           visible:false
-           Text{
-               anchors.top: parent.bottom
-               anchors.horizontalCenter: parent.horizontalCenter
-               text: "loading desktop.."
-           }
-
-           z:1
-        }
 
     MessageDialog {
         id: messageDialog

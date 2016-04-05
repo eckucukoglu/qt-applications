@@ -4,22 +4,20 @@ const string INSTALL_PATH = "/root/AppStore/tmp/Install/"; // temporary install 
 const string MANIFEST_PATH = "/etc/appmand/";
 const string MOVE_PATH = "/data/bin/"; // binary path final destination
 const string CA_PATH = "/etc/certs/";
-
-const string CA_INFO = "/etc/certs/ca-chain.cert.pem"; // "/data/security/certs/ca-chain.cert.pem";
-const string CLIENT_CERT = "/etc/certs/client1.cert.pem"; // "/data/security/certs/client1.cert.pem";
-const string CLIENT_KEY = "/etc/certs/client1.key.pem"; // "/data/security/private/client1.key.pem";
-
+const string CA_INFO = "/etc/certs/ca-chain.cert.pem";
+const string CLIENT_CERT = "/etc/certs/client1.cert.pem";
+const string CLIENT_KEY = "/etc/certs/client1.key.pem";
 /*const string CA_PATH = "/home/burakmert/Projects/MMIS/scripts/Certificates/root_ca/intermediate/certs/";
 const string CA_INFO = "/home/burakmert/Projects/MMIS/scripts/Certificates/root_ca/intermediate/certs/ca-chain.cert.pem";
 const string CLIENT_CERT = "/home/burakmert/Projects/MMIS/scripts/Certificates/root_ca/intermediate/certs/client1.cert.pem";
-const string CLIENT_KEY = "/home/burakmert/Projects/MMIS/scripts/Certificates/root_ca/intermediate/private/client1.key.pem";*/
+const string CLIENT_KEY = "/home/burakmert/Projects/MMIS/scripts/Certificates/root_ca/intermediate/private/client1.key.pem";
 
 
-/*const string DOWNLOAD_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpDownload/";
-const string INSTALL_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpInstall/"; 
+const string DOWNLOAD_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpDownload/";
+const string INSTALL_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpInstall/";
 const string MANIFEST_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/tmpManifest/";
-const string MOVE_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/Install/";*/
-
+const string MOVE_PATH = "/home/burakmert/Projects/MMIS/DownloaderApp/Install/";
+*/
 
 void clearDirectories()
 {
@@ -222,7 +220,6 @@ int HTTPPerform::getContent(string url, string& content) {
     long httpCode;
     if(curl){
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPGET,1);
         curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
@@ -239,7 +236,7 @@ int HTTPPerform::getContent(string url, string& content) {
         curl_easy_setopt(curl,CURLOPT_SSLKEY,CLIENT_KEY.c_str());
         /*------------*/
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, function_pt);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);        
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
         try{
             res = curl_easy_perform(curl);
             curl_easy_getinfo(curl,CURLINFO_RESPONSE_CODE,&httpCode);
@@ -248,7 +245,7 @@ int HTTPPerform::getContent(string url, string& content) {
             cout << "Exception " << e.what() << endl;
         }
 
-        /* Check for errors */
+    /* Check for errors */
         if (res != CURLE_OK) {
             content = curl_easy_strerror(res);
             returnFlag=0;
@@ -256,8 +253,10 @@ int HTTPPerform::getContent(string url, string& content) {
         }
         if(httpCode != 200)
         {
+
             returnFlag = 0;
             content = "HTTP Response " + to_string(httpCode) + " returned!";
+
         }
     }
     return returnFlag;
@@ -295,7 +294,7 @@ int HTTPPerform::download(const string& url, application* app){
 
             if(res ==CURLE_OK)
             {
-                curl_easy_cleanup(curl);
+                //curl_easy_cleanup(curl);
                 fclose(fp);
                 installed = install(filePath, app);
                 if(installed != 0){
@@ -360,7 +359,7 @@ int HTTPPerform::sendMessage(string url, string msgToSend, string& content) {
         curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
-        
+
          /*------------*/
         /* Set certificate chain and directory to authanticate server certificate*/
         curl_easy_setopt(curl, CURLOPT_CAPATH,CA_PATH.c_str());
@@ -452,7 +451,7 @@ applications* HTTPPerform::perform(ACTION action, int appId){
             break;
         case SHOW:
             if(appId == 0)
-                url = this->baseUrl + "/";
+                url = this->baseUrl +"/";
             else
                 url = this->baseUrl + "/"+to_string(appId)+"/";
             status=this->getContent(url,retVal);
@@ -537,19 +536,19 @@ applications* HTTPPerform::parseString(string response)
     int appId;
     applications* appList = new applications;
     string fields[4];
-    
+
     if (!root) {
         printf("Error before: [%s]\n",cJSON_GetErrorPtr());
     }
     else {
         cJSON* trial = cJSON_GetObjectItem(root,"applications");
-        const string keys[6] = {"id", "name", "developer", "icon", "size", "cgroup"};
+        const string keys[8] = {"id", "name", "developer", "icon", "size", "cgroup", "version", "date"};
             if(!trial)
             {
                 application* app = new application;
                 appList->size = 1;
                 int arrayIndex=0;
-                for(int i = 0 ; i<6; i++)
+                for(int i = 0 ; i<8; i++)
                 {
                     cJSON* child = cJSON_GetObjectItem(root,keys[i].c_str());
                     if(child!=NULL){
@@ -559,8 +558,15 @@ applications* HTTPPerform::parseString(string response)
                         }
                         else if(i==4)
                         {
-                            app->size =child->valueint;
+                            app->size =child->valuedouble;
+
                         }
+                        else if (i == 6)
+                        {
+                            app->version = child->valuedouble;
+                        }
+                        else if (i==7)
+                            app->date = child->valuedouble;
                         else
                         {
                             fields[arrayIndex] = child->valuestring;
@@ -584,32 +590,36 @@ applications* HTTPPerform::parseString(string response)
                 int arraySize = cJSON_GetArraySize(appsArray);
                 appList->size = arraySize;
                 cJSON *arrayItem;
-                application *apps = new application[arraySize];                
+                application *apps = new application[arraySize];
                 for(int i =0 ; i < arraySize; i++)
                 {
                     arrayItem = cJSON_GetArrayItem(appsArray,i);
                     int index=0;
-                    for(int j = 0 ; j<6; j++)
+                    for(int j = 0 ; j<8; j++)
                     {
                         cJSON* child = cJSON_GetObjectItem(arrayItem,keys[j].c_str());
                         if(child!=NULL){
                             if(j==0)
                             {
                                 apps[i].id = child->valueint;
-                                
+
                             }
                             else if(j==4)
                             {
                                 apps[i].size = child->valueint;
                             }
+                            else if (j == 6)
+                                apps[i].version = child->valuedouble;
+                            else if (j==7)
+                                apps[i].date = child->valueint;
                             else
                             {
                                fields[index] = child->valuestring;
-                                index++;                               
+                                index++;
                             }
                         }
 
-                        else 
+                        else
                             cout << "Child is NULL" << endl;
                     }
                     apps[i].name = fields[0];
