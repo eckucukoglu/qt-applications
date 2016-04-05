@@ -34,15 +34,21 @@
         <file>pics/sober_newspecs/bg2.jpg</file>
         <file>pics/lock_icon.png</file>
         <file>pics/lock.png</file>
-        <file>pics/settings.png</file>
-        <file>pics/settings-icon.png</file>
         <file>pics/poweroff.png</file>
-        <file>pics/battery-icon.png</file>
         <file>Calculator.png</file>
         <file>Sci.png</file>
         <file>clock.png</file>
         <file>pics/sober_newspecs/icon/icon_remove.png</file>
         <file>pics/sober_newspecs/icon/icon-battery.png</file>
         <file>pics/sober_newspecs/icon/icon-settings.png</file>
+        <file>tetrix.png</file>
+        <file>security.png</file>
+        <file>notebook.png</file>
+        <file>NetworkConfiguration.png</file>
+        <file>MemoryTester.png</file>
+        <file>CpuAndMemoryMonitor.png</file>
+        <file>Calender.png</file>
+        <file>CustomMessageBox.qml</file>
+        <file>CustomButton.qml</file>
     </qresource>
 </RCC>

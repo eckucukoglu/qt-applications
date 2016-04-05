@@ -78,7 +78,7 @@ Component {
                         color: "red"
                     }
                     onVisibleChanged: {
-                        if(name === "APPSTORE")
+                        if(app_id === 0)
                         {
                            visible=false
                         }
@@ -150,16 +150,19 @@ Component {
             enabled: true
             z:1
             onPressed: {
+                _gradient .opacity = 1
                 mouse.accepted = true
                 console.log("pressed");
                 root.clicktime1 = new Date().valueOf()
             }
             onReleased: {
                 console.log("released");
+
                 root.clicktime2 = new Date().valueOf()
                 if((root.clicktime2-root.clicktime1) > 200){
                     if(root.isDeleteMode === false)
                     {
+                        busyIndication2.visible = true
                         root.t1 = new Date().valueOf()
                         var ret = -1
                         appDelegate.GridView.view.currentIndex = index
@@ -183,7 +186,7 @@ Component {
                             else if(ret === 0)//successful
                             {
                                 console.log("appname: " + name)
-                                 if(name === "APPSTORE")
+                                 if(app_id === 0) //if appstore reload list
                                 {
                                     content.reload()
                                 }
@@ -195,6 +198,7 @@ Component {
                             }
                         }
                         root.t2 = new Date().valueOf()
+                        busyIndication2.visible = false
                     }
                     else //delete mode
                     {
@@ -208,6 +212,7 @@ Component {
                         }
                     }
               }
+              _gradient .opacity = 0.45
             }
       }
     }

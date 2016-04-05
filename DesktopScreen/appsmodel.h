@@ -12,11 +12,11 @@
 #define DEBUG_PREFIX "tester: "
 #define MAX_NUMBER_APPLICATIONS 50
 using namespace std;
-typedef struct application {
+typedef struct application_desktop{
     unsigned int id;
     char* prettyname;
     char* icon;
-} application;
+} application_desktop;
 
 
 class AppsModel: public QObject
@@ -28,7 +28,7 @@ public:
   // Q_INVOKABLE QVariantList<QVariantMap> appList; //store app info
    Q_INVOKABLE QVariant appList;
    Q_INVOKABLE QVariant get_element_list();
-   Q_INVOKABLE void set_element_list(application list[]);
+   Q_INVOKABLE void set_element_list(application_desktop list[]);
    Q_INVOKABLE void query_listapps();
    Q_INVOKABLE int query_startapp(int app_id);
    Q_INVOKABLE bool is_active();
@@ -49,7 +49,7 @@ public:
    Q_INVOKABLE bool deleteApp(int app_id);
    Q_INVOKABLE int query_uninstallapps(unsigned int* app_ids, int appsize);
 
-   application APPLIST[MAX_NUMBER_APPLICATIONS];
+   application_desktop APPLIST[MAX_NUMBER_APPLICATIONS];
 
 private: 
     int current_index;

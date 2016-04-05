@@ -229,15 +229,6 @@ Rectangle{
              color: "transparent"
              height: 40
              Image{
-                source: "pics/delete.png"
-                scale: 0.4
-                anchors.right: deleteTxt.left
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: -10
-                opacity: 0.8
-
-             }
-             Image{
                 source: "pics/sober_newspecs/icon/icon_remove.png"
                 scale: 0.4
                 anchors.right: deleteTxt.left

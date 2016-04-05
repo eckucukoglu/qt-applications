@@ -26,7 +26,7 @@ AppsModel::~AppsModel()
 
 }
 */
-void AppsModel::set_element_list(application _list[]){
+void AppsModel::set_element_list(application_desktop _list[]){
     QVariantList _list1;
     string colours[] = {"#0e95c5", "#e89e0c", "#88aedb", "#fd9f1b", "#1abc9c", "#f37021", "#2aaf5c", "#e74c3c", "#b80505"};
     for(int i=0; i<number_of_applications;i++)

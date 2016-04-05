@@ -21,14 +21,6 @@ Item{
     }
 
     MessageDialog {
-        id: deleteAppMsg
-        visible: false
-        title: "Warning!"
-        icon: StandardIcon.Warning
-        text: "Deleting Application Mode is OFF!"
-        onAccepted: deleteAppMsg.visible=false
-    }
-    MessageDialog {
               id: error_msg2
               title: "Error"
               visible:false
@@ -65,7 +57,6 @@ Item{
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    deleteAppMsg.visible=true
                     root.isDeleteMode=false
                 }
             }

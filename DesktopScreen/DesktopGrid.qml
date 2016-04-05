@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.3
 
 Rectangle {
     id: rowItem
@@ -6,6 +7,23 @@ Rectangle {
     height:0
     color: "transparent"
     property int page:0
+
+    Rectangle{
+        id: backgroundBlack
+        visible: false
+        anchors.fill: parent
+        color: "#3b393e"
+        opacity: 0.9
+        z:1
+    }
+
+    BusyIndicator {
+           id: busyIndication2
+           visible:false
+           anchors.centerIn: parent
+           z:1
+        }
+
     GridView{
        anchors.leftMargin: 36
        anchors.rightMargin: 8
