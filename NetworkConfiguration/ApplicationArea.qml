@@ -3,21 +3,14 @@ import QtQuick.Dialogs 1.2
 import NetworkHandler 1.0
 
 Item{
-
-    property string currentIP
-    property string currentGateway
-    property string currentNetmask
-    property string currentDNS
-    property string currentMAC
-
     Rectangle {
         anchors.fill: parent
         color: "#444347"
 
         Column{
             id: switchesColumn
-            x: 389
-            y: 60
+            x: 280
+            y: 20
             spacing: 10
             SwitchField{
                 id: wirelessEthernetSwitchField
@@ -63,61 +56,95 @@ Item{
             }
         }
 
+
         Column{
             id: addressEntriesColumn
-            x:389
-            y:190
+            x:280
+            y:140
             spacing: 10
-
+            z:2
             AddressEntryField{
                 id: ipEntryField
-
+                z:1
                 info: "IP Address:"
                 readOnly: true
-
                 onTextEdited: {
                     currentIP = text;
                 }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        keyboard.activeText = "ipEntryField"
+                        keyboard.info = currentIP
+                        console.log((manualAutoSwitchField.activeText == "Manual") ? keyboard.visible=true : keyboard.visible=false)
+                    }
+
+                }
+
             }
 
             AddressEntryField{
                 id: netmaskEntryField
-
+                z:1
                 info: "Netmask:"
                 readOnly: true
-
                 onTextEdited: {
                     currentNetmask = netmaskEntryField.text;
+                }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        keyboard.activeText = "netmaskEntryField"
+                        keyboard.info = currentNetmask
+                        console.log((manualAutoSwitchField.activeText == "Manual") ? keyboard.visible=true : keyboard.visible=false)
+                    }
                 }
             }
 
             AddressEntryField{
                 id: gatewayEntryField
-
+                z:1
                 info: "Gateway Address:"
                 readOnly: true
-
+                text: "1 1 1"
                 onTextEdited: {
                     currentGateway = gatewayEntryField.text;
+                }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        keyboard.activeText = "gatewayEntryField"
+                        keyboard.info = currentGateway
+                        console.log((manualAutoSwitchField.activeText == "Manual") ? keyboard.visible=true : keyboard.visible=false)
+                    }
                 }
             }
 
             AddressEntryField{
                 id: dnsEntryField
-
+                z:1
                 info: "DNS Address:"
                 readOnly: true
 
                 onTextEdited: {
                     currentDNS = dnsEntryField.text;
                 }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        keyboard.activeText = "dnsEntryField"
+                        keyboard.info = currentDNS
+                        console.log((manualAutoSwitchField.activeText == "Manual") ? keyboard.visible=true : keyboard.visible=false)
+                    }
+                }
             }
         }
 
         Column{
             id: macAddressColumn
-            x:389
+            x:280
             y:370
+            z:0
             spacing: 10
 
             MacField{
@@ -128,10 +155,10 @@ Item{
 
 
         Row{
-            x:763
+            x:525
             y:420
             spacing: 20
-
+            z:1
             CustomButton{
                 id: checkButton
                 text: "Check"
@@ -206,7 +233,6 @@ Item{
 
             return str
         }
-
     }
 
     MessageDialog{
@@ -229,6 +255,8 @@ Item{
         id: networkHandler
     }
 
+
+
     Component.onCompleted: {
 
         //Filling the blanks initially.
@@ -242,6 +270,14 @@ Item{
         netmaskEntryField.text = currentNetmask;
         gatewayEntryField.text = currentGateway;
         macAddressField.text = currentMAC;
+    }
+
+
+    function refreshFields(){
+        ipEntryField.text = currentIP
+        netmaskEntryField.text = currentNetmask
+        gatewayEntryField.text = currentGateway
+        dnsEntryField.text = currentDNS
     }
 }
 

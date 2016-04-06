@@ -12,12 +12,11 @@ ApplicationWindow {
 
    //for delegates
     property int numberOfPages: 2
-    property int size: 100
 
     ApplicationArea{
         LeftWidgetArea{
-            title: "CPU and Memory Monitor"
-            description: "Monitor and test your Memory and CPU"
+            title: "Memory Monitor"
+            description: "You can monitor your Memory Usage"
             iconSource: "assets/icon_cpu.png"
             anchors.top: parent.top
             anchors.bottom: parent.bottom

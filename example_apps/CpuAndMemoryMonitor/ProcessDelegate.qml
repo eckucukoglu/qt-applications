@@ -132,43 +132,63 @@ Component{
                 anchors.leftMargin: 10
                 anchors.top: parent.top
                 anchors.topMargin: 10
-                font.pixelSize: 16
+                font.pixelSize: 18
 
                 text: name
             }
 
             Item{
                 id: content
-                width: 440
+                width: 300 * numberOfPages
                 x: contentContainer.x + 400
                 anchors.bottom: parent.bottom
                 anchors.top: parent.top
                 //color: "transparent"
 
-               SoberText{
+
+                SoberText{
                     id: memText
                     horizontalAlignment: Qt.AlignRight
                     anchors.top: parent.top
                     anchors.topMargin: 10
-                    font.pixelSize: 16
+
+                    font.pixelSize: 18
 
                     text: memory
                     Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
                 }
 
+                CustomButton{
+                    id: killProcessButton
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "End this process"
+                    x: parent.width * 0.90
 
+                    onClicked:{
+                        var result = cpuMemHandler.tryToKillProcess(parseInt(pid))
+                        updateProcessesList()
+                    }
+                    opacity: 0
+                    Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
+                }
 
-               SoberText{
-                   id: cpuUsageText
-                   anchors.top: parent.top
-                   anchors.topMargin: 10
-                   anchors.right: memText.right
-                   font.pixelSize: 16
+                CustomButton{
+                    id: cancelButton
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: killProcessButton.right
+                    anchors.leftMargin: 10
+                    text: "Cancel"
+                    buttonWidth: 60
+                    x: parent.width * 0.97
 
-                   text: ""
-                   Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
-               }
-        }
+                    onClicked: {
+                        swipeArea.swipe("right")
+                    }
+                    opacity: 0
+                    Behavior on opacity {NumberAnimation{easing.type: Easing.OutCurve; duration: 300}}
+                }
+            }
+
 
         }
         CpuMemHandler{

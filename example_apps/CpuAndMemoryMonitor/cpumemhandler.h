@@ -5,11 +5,6 @@
 #include <QFile>
 #include <QtCore>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-
 class CpuMemHandler : public QObject
 {
     Q_OBJECT
@@ -24,19 +19,12 @@ public:
     Q_INVOKABLE double getCpuPercentage(int i);
     Q_INVOKABLE QString readAllStatFiles();
     Q_INVOKABLE QString tryToKillProcess(QString pid);
-    Q_INVOKABLE int memtest_get_size();
-    Q_INVOKABLE bool memtest_allocate();
-    Q_INVOKABLE bool memtest_free_buffer();
 
 signals:
 
 public slots:
 
-
-
 private:
-    int memtest_size = 0;
-    char* memtest_buffer = NULL;
     int numberOfCpus;
     int* oldCpuTotals;
     int* oldCpuIdles;
@@ -47,8 +35,8 @@ private:
     QString procStatContent;
     QString procPidStatusContent;
     QStringList lines, currentLine;
-    QStringList memEntry, pidEntry, nameEntry, cpuEntry;
-    int total, _free, buffer, cached, used;
+    QStringList memEntry, pidEntry, nameEntry;
+    int total, free, buffer, cached, used;
 
 };
 

@@ -1,8 +1,8 @@
 import QtQuick 2.0
 
 Item {
-    width: 346
-    height: 600
+    width: 250
+    height: 480
 
     property alias title: titleText.text
     property alias description: descText.text
@@ -14,15 +14,16 @@ Item {
 
         Image{
             id: img
-            x: 120
-            y: 172
+            anchors.top: parent.top
+            anchors.topMargin: 80
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         SoberText{
             id:titleText
-            //x: 50
-            y: 306
-            font.pixelSize: 24
+            anchors.top: img.bottom
+            anchors.topMargin: 40
+            font.pixelSize: 22
             horizontalAlignment: Qt.AlignHCenter
             anchors.right: parent.right
             anchors.left: parent.left
@@ -30,8 +31,8 @@ Item {
 
         SoberText{
             id:descText
-            //x:80
-            y:337
+            anchors.top: titleText.bottom
+            anchors.topMargin: 40
             font.pixelSize: 14
             horizontalAlignment: Qt.AlignHCenter
             anchors.right: parent.right
@@ -45,6 +46,19 @@ Item {
             anchors.right: parent.right
             width: 1
             color: "#0b988b"
+        }
+
+        CustomButton{
+            id: quitBtn
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 40
+
+
+            text: "Quit"
+            onClicked: {
+              Qt.quit()
+            }
         }
     }
 

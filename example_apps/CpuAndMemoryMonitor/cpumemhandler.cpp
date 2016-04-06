@@ -3,8 +3,6 @@
 CpuMemHandler::CpuMemHandler(QObject *parent) : QObject(parent)
 {
 
-    memtest_buffer = NULL;
-
     numberOfCpus = getNumberOfCpus();
 
     oldCpuTotals = new int[numberOfCpus +1];
@@ -59,11 +57,11 @@ void CpuMemHandler::getRamStats(){
     lines = meminfoContent.split("\n");
     f.close();
     total = lines[0].split(QRegExp("\\s+"))[1].toInt();
-    _free = lines[1].split(QRegExp("\\s+"))[1].toInt();
+    free = lines[1].split(QRegExp("\\s+"))[1].toInt();
     buffer = lines[3].split(QRegExp("\\s+"))[1].toInt();
     cached = lines[4].split(QRegExp("\\s+"))[1].toInt();
 
-    used = total - (_free + buffer + cached);
+    used = total - (free + buffer + cached);
     total = total / 1024;
     used = used / 1024;
 }
@@ -156,21 +154,17 @@ QString CpuMemHandler::readAllStatFiles(){
             lines = procPidStatusContent.split("\n");
             foreach(QString line, lines){
                 if(line.startsWith("Name:"))
-                    nameEntry = line.split("\t");
+                     nameEntry = line.split("\t");
                 else if(line.startsWith("Pid:"))
                     pidEntry = line.split("\t");
                 else if (line.startsWith("VmRSS:"))
                     memEntry = line.split("\t");
-                else if (line.startsWith("xxx"))
-                    cpuEntry = line.split("\t");
             }
 
             statusFile.close();
 
-            if(nameEntry.size() != 0 && memEntry.size() != 0 ){
-             //   if(pidEntry == (int)getpid())
-                    allStatsString += nameEntry[1].trimmed() + " "  + memEntry[1].trimmed() + " " + pidEntry[1].trimmed() + "\n";
-            }
+            if(nameEntry.size() != 0 && memEntry.size() != 0 )
+                allStatsString += nameEntry[1].trimmed() + " "  + memEntry[1].trimmed() + " " + pidEntry[1].trimmed() + "\n";
 
         }
     }//endwhile
@@ -193,36 +187,4 @@ QString CpuMemHandler::tryToKillProcess(QString pid){
         qDebug() << "done!";
         return "The process "+ pid + " have been killed succesfully.";
     }
-}
-
-
-bool CpuMemHandler::memtest_allocate(){
-    printf("size: %d\n",memtest_size);
-    if(!memtest_buffer)
-        memtest_buffer = (char *)malloc(memtest_size*1024);
-    else
-        memtest_buffer = (char *)realloc(memtest_buffer, memtest_size*1024);
-
-   if(!memtest_buffer)
-       return false;
-
-   memset(memtest_buffer, 0, memtest_size*1024);
-   memtest_size = memtest_size + 100;
-   return true;
-}
-
-int CpuMemHandler::memtest_get_size()
-{
-    return memtest_size;
-}
-
-bool CpuMemHandler::memtest_free_buffer()
-{
-    if(memtest_buffer != NULL){
-        free(memtest_buffer);
-        memtest_buffer = NULL;
-        memtest_size = 100;
-        return true;
-    }
-    return false;
 }

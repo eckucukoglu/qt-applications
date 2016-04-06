@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
-import CpuMemHandler 1.0
 
 Item {
     width: 300
@@ -17,8 +16,8 @@ Item {
         Image{
             id: img
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 40
+            anchors.bottom: titleText.top
+            anchors.bottomMargin: 40
             Rectangle{
                 id: overlay
                 width: parent.width
@@ -55,8 +54,7 @@ Item {
             y: 306
             font.pixelSize: 24
             horizontalAlignment: Qt.AlignHCenter
-            anchors.top: img.bottom
-            anchors.topMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
             anchors.left: parent.left
         }
@@ -74,20 +72,6 @@ Item {
             anchors.left: parent.left
         }
 
-        SoberText{
-            id:infoText
-            //x:80
-            y:337
-            font.pixelSize: 16
-            horizontalAlignment: Qt.AlignHCenter
-            anchors.top: descText.bottom
-            anchors.topMargin: 40
-            anchors.right: parent.right
-            anchors.left: parent.left
-            text: ""
-            color: "red"
-        }
-
         Rectangle{
             id:greenRightStroke
             anchors.top: parent.top
@@ -96,26 +80,6 @@ Item {
             width: 1
             color: "#0b988b"
         }
-    }
-
-
-
-
-    CustomButton{
-        id: quitBtn
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 60
-
-        z:1
-        text: "Quit"
-        onClicked: {
-          Qt.quit()
-        }
-    }
-
-    CpuMemHandler{
-        id:cpuMemHandler
     }
 
 }

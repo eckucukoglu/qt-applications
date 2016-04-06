@@ -260,7 +260,7 @@ void NetworkHandler::prepareInterfacesConfigFile(QString interfaceName,QString a
     //Preparing the cfg file to be added:
     QString configContents = "";
     if(autoOrManual.toLower() == "manual"){
-        configContents += "auto " + interfaceName + "\n";
+        //configContents += "auto " + interfaceName + "\n";
         configContents += "iface " + interfaceName + " inet static\n";
         configContents += "\taddress " + ip + "\n";
         configContents += "\tnetmask " + netmask + "\n";

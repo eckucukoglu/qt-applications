@@ -14,7 +14,7 @@ Item{
         id: infoText
         text: info
         font.pixelSize: 20
-        width: 206
+        width: 110
         height: 20
         anchors.verticalCenter: parent.verticalCenter
     }
@@ -24,7 +24,7 @@ Item{
         anchors.verticalCenter: parent.verticalCenter
         color: "#4E4D55"
         anchors.left: infoText.right
-        anchors.leftMargin: 95
+        anchors.leftMargin: 100
 
         width: 286
         height: 33
@@ -35,7 +35,6 @@ Item{
             font.pixelSize: 20
             font.family: "Helvetica"
             width: 273
-
             anchors.centerIn: parent
 
             onTextChanged: {
@@ -44,13 +43,14 @@ Item{
             }
 
 
-
             inputMask:  "000.000.000.000;"
 //            validator:RegExpValidator{
 //            regExp:/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
 //            }
 
         }
+
     }
+
 }
 

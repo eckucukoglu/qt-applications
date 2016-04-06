@@ -16,7 +16,4 @@ include(deployment.pri)
 HEADERS += \
     cpumemhandler.h
 
-INCLUDEPATH +=   /usr/include/
-
-
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS

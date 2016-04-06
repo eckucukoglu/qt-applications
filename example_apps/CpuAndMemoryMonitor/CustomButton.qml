@@ -19,7 +19,7 @@ Item{
 
     Component{
         id: customButtonStyle
-        ButtonStyle {
+        ButtonStyle{
             background: Rectangle {
                 implicitWidth: root.width
                 implicitHeight: root.height

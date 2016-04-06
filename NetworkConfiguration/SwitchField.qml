@@ -8,7 +8,7 @@ Item{
     property string activeText
     signal switched()
 
-    width: 587
+    width: 520
     height: 33
 
     SequentialAnimation{
@@ -37,7 +37,7 @@ Item{
         text: info
         anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: 20
-        width: 206
+        width: 110
         height: 20
     }
 
@@ -48,18 +48,23 @@ Item{
         anchors.verticalCenter: parent.verticalCenter
 
         anchors.left: infoText.right
-        anchors.leftMargin: 95
+        anchors.leftMargin: 110
+
 
         Image{
             anchors.verticalCenter: parent.verticalCenter
             source: "assets/back_button.png"
             anchors.left: parent.left
             //anchors.verticalCenter: parent.verticalCenter
-
-
-            MouseArea{
-                anchors.fill: parent
-                onClicked: switched()
+            Rectangle{
+                width: 50
+                height:30
+                x: -20
+                color: "transparent"
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: switched()
+                }
             }
         }
 
@@ -81,10 +86,16 @@ Item{
             anchors.right: parent.right
             //anchors.verticalCenter: parent.verticalCenter
 
-
-            MouseArea{
-                anchors.fill: parent
-                onClicked: switched()
+            Rectangle{
+                width: 50
+                height:30
+                y: -10
+                x: -20
+                color: "transparent"
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: switched()
+                }
             }
         }
     }

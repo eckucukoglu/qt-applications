@@ -11,22 +11,26 @@ ApplicationWindow {
     visible: true
     property int size: 100
 
+  Rectangle{
+      anchors.fill: parent
+      color: "#3b393e"
+  }
+
   Text{
       id: titleTxt
-      color: "black"
       font.family: "Helvetica"
       text: "Memory Tester"
+      color: "white"
       anchors.horizontalCenter: parent.horizontalCenter
       anchors.top: parent.top
       font.pixelSize: 24
-      anchors.topMargin: 40
+      anchors.topMargin: 60
   }
 
-   Rectangle{
+
+    Rectangle{
        id: infoArea
-       border.width: 1
-       border.color: "black"
-       color: "white"
+       color: "#666569"
        width: 300
        height: 40
        anchors.horizontalCenter: parent.horizontalCenter
@@ -36,7 +40,7 @@ ApplicationWindow {
 
        Text{
            id: infoTxt
-           color: "black"
+           color: "white"
            font.family: "Helvetica"
            text: ""
            anchors.horizontalCenter: parent.horizontalCenter
@@ -44,7 +48,7 @@ ApplicationWindow {
        }
    }
 
-   Button{
+   CustomButton{
        id: btn
        anchors.horizontalCenter: parent.horizontalCenter
        anchors.verticalCenter: parent.verticalCenter
@@ -63,22 +67,9 @@ ApplicationWindow {
               infoTxt.text = "error"
            }
        }
-       style: ButtonStyle {
-               background: Rectangle {
-                   implicitWidth: 100
-                   implicitHeight: 25
-                   border.width: control.activeFocus ? 2 : 1
-                   border.color: "black"
-                   radius: 4
-                   gradient: Gradient {
-                       GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
-                       GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
-                   }
-               }
-           }
    }
 
-   Button{
+   CustomButton{
        id: freebtn
        anchors.horizontalCenter: parent.horizontalCenter
        anchors.top: btn.bottom
@@ -92,25 +83,13 @@ ApplicationWindow {
            {
                infoTxt.text = "Memory freed."
                size=helper.get_size()
+
            }
            else
            {
                infoTxt.text = ""
            }
       }
-       style: ButtonStyle {
-               background: Rectangle {
-                   implicitWidth: 100
-                   implicitHeight: 25
-                   border.width: control.activeFocus ? 2 : 1
-                   border.color: "black"
-                   radius: 4
-                   gradient: Gradient {
-                       GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
-                       GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
-                   }
-               }
-           }
    }
 
    Item{
@@ -143,12 +122,16 @@ ApplicationWindow {
            }
 
            Rectangle{
-               color: "black"
-               opacity: 0.6
+               color: "#666569"
                anchors.fill: parent
            }
        }
 
    }
 
+   CustomMessageBox{
+       id: customMsgBox
+       anchors.verticalCenter: parent.verticalCenter
+       anchors.horizontalCenter: parent.horizontalCenter
+   }
 }

@@ -30,7 +30,7 @@ Item{
             width: parent.width
             anchors.top: parent.top
             id: title
-            font.pixelSize: 22
+            font.pixelSize: 18
             height: 20
             color: "#04caad"
             text: "Processes"

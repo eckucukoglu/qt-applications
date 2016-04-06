@@ -38,37 +38,6 @@ Item{
                 spacing: 50
 
 
-              CustomProgressBar{
-                    id:totalCpuUsage
-                    width: 440
-                    height: 20
-                    anchors.left: parent.left
-                    anchors.leftMargin: -50
-                    value: cpuPercentages[0]
-                    text: "CPU Usage"
-                    fillColor: "#80808f"
-                    progressBarText: "0 %"
-                    bgText: "100 %"
-                    progressBarRightMargin: 3
-                }
-
-                Repeater{
-                    id: cpus
-                    model:numberOfCpus
-                    CustomProgressBar{
-                        width: 440
-                        height: 20
-                        anchors.left: parent.left
-                        anchors.leftMargin: -50
-                        value: cpuPercentages[index + 1]
-                        text: "Core " + index
-                        fillColor: cpuColors[index % cpuColors.length]
-                        progressBarRightMargin: 3
-                        progressBarText: "0 %"
-                        bgText: "100 %"
-                    }
-                }
-
                 CustomProgressBar{
                     id:deviceMemory
                     width: 440
@@ -105,7 +74,7 @@ Item{
         }
 
         //initially, the values of the cpus are all zeroes.
-        //totalCpuUsage.value = 0;
+        totalCpuUsage.value = 0;
         for(var i = 0; i < numberOfCpus; i++){
             cpus.itemAt(i).value = 0;
         }
