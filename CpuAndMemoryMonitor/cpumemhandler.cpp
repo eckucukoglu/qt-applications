@@ -91,7 +91,7 @@ void CpuMemHandler::updateCpuValues(){
     f.close();
 
     //Assign last values to previous total and idles
-    for(int i= 0; i < numberOfCpus; i++){
+    for(int i= 0; i <= numberOfCpus; i++){
         oldCpuTotals[i] = cpuTotals[i];
         oldCpuIdles[i] = cpuIdles[i];
     }

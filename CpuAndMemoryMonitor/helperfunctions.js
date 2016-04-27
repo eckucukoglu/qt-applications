@@ -40,7 +40,7 @@ function refreshCpuAndRamValues(){
     //update total percentage
     cpuPercentages[0] = cpuMemHandler.getCpuPercentage(0);
     cpuPercentagesHumanReadable[0] = (cpuPercentages[0] * 100).toFixed(0);
-    //totalCpuUsage.value = cpuPercentages[0];
+    totalCpuUsage.value = cpuPercentages[0];
 
     //update individual cpu percentages
     for(var i = 1; i <= numberOfCpus; i++){

@@ -105,7 +105,7 @@ Item{
         }
 
         //initially, the values of the cpus are all zeroes.
-        //totalCpuUsage.value = 0;
+        totalCpuUsage.value = 0;
         for(var i = 0; i < numberOfCpus; i++){
             cpus.itemAt(i).value = 0;
         }
